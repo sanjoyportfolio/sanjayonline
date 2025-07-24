@@ -232,17 +232,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
     
-    // Scroll to Top Button (already exists, keeping it)
-    const scrollBtn = document.querySelector('.scroll-top');
-    if (scrollBtn) {
-      window.addEventListener('scroll', () => {
-        scrollBtn.style.display = window.scrollY > 200 ? 'flex' : 'none';
-      });
-      scrollBtn.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
-    }
-    
     // Newsletter Form Submission (already exists, keeping it)
     const newsletterForm = document.querySelector('.newsletter-form');
     if (newsletterForm) {
@@ -346,25 +335,6 @@ document.addEventListener("DOMContentLoaded", () => {
         loginForm.style.visibility = 'hidden';
         loginForm.style.opacity = '0';
         loginForm.style.transform = 'translateX(-100%)';
-      }
-    }
-    
-    // Function to show a specific authentication form
-    function showAuthForm(formToShow) {
-      if (formToShow === 'login') {
-        loginForm.classList.add('active');
-        registerForm.classList.remove('active');
-        showLoginBtn.classList.add('active');
-        showRegisterBtn.classList.remove('active');
-        authToggleButtons.classList.remove('register-active'); // For styling the toggle buttons
-        setAuthFormWrapperHeight(loginForm);
-      } else {
-        loginForm.classList.remove('active');
-        registerForm.classList.add('active');
-        showLoginBtn.classList.remove('active');
-        showRegisterBtn.classList.add('active');
-        authToggleButtons.classList.add('register-active'); // For styling the toggle buttons
-        setAuthFormWrapperHeight(registerForm);
       }
     }
     
@@ -795,3 +765,122 @@ document.addEventListener("DOMContentLoaded", function() {
   
   typeWriter();
 });
+
+
+// --- Chat Bot Logic ---
+const chatToggleBtn = document.getElementById("chatToggleBtn");
+const chatBotContainer = document.getElementById("chatBotContainer");
+const closeChatBtn = document.getElementById("closeChatBtn");
+const chatMessages = document.getElementById("chatMessages");
+const chatInput = document.getElementById("chatInput");
+const sendMessageBtn = document.getElementById("sendMessageBtn");
+
+let chatBotOpen = false; // To track if the chat bot is open
+
+// Function to add a message to the chat interface
+function addMessage(message, sender) {
+  const messageElement = document.createElement("div");
+  messageElement.classList.add("message", `${sender}-message`);
+  messageElement.innerHTML = message; // Use innerHTML to render links
+  chatMessages.appendChild(messageElement);
+  chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll to the latest message
+}
+
+// Simple Chat Bot Responses with more text and social links
+function getBotResponse(userMessage) {
+  const lowerCaseMessage = userMessage.toLowerCase();
+  
+  // Social Media Links (replace with actual links)
+  const socialLinks = `
+    <ul>
+      <li><a href="https://www.facebook.com/yourprofile" target="_blank">Facebook</a></li>
+      <li><a href="https://github.com/yourprofile" target="_blank">GitHub</a></li>
+      <li><a href="https://wa.me/8801727503540" target="_blank">WhatsApp</a></li>
+      <li><a href="https://www.linkedin.com/in/yourprofile" target="_blank">LinkedIn</a></li>
+      <li><a href="https://twitter.com/yourprofile" target="_blank">Twitter</a></li>
+      <li><a href="https://www.instagram.com/yourprofile" target="_blank">Instagram</a></li>
+      <li><a href="https://www.youtube.com/yourchannel" target="_blank">YouTube</a></li>
+      <li><a href="mailto:im.the.devil.god2067@gmail.com">Email</a></li>
+      <li><a href="tel:+8801727503540">Phone</a></li>
+      <li><a href="https://yourwebsite.com" target="_blank">Personal Website</a></li>
+    </ul>
+  `;
+  
+  if (lowerCaseMessage.includes("hello") || lowerCaseMessage.includes("hi")) {
+    return "Hello! আমি সঞ্জয়ের সহায়ক সহকারী বট। আমি আপনাকে কিভাবে সাহায্য করতে পারি? তার ব্যাকগ্রাউন্ড, শিক্ষা, দক্ষতা, বা প্রকল্প সম্পর্কে জিজ্ঞাসা করতে পারেন। আমি আপনার যেকোনো প্রশ্নের উত্তর দিতে প্রস্তুত।";
+  } else if (lowerCaseMessage.includes("how are you")) {
+    return "আমি পুরোপুরি ঠিকঠাক কাজ করছি, জিজ্ঞাসা করার জন্য ধন্যবাদ! একজন এআই হিসেবে আমার কোনো আবেগ নেই, তবে সঞ্জয়ের পোর্টফোলিও সম্পর্কে তথ্য দিতে আমি সর্বদা প্রস্তুত। আপনার যদি কোনো নির্দিষ্ট প্রশ্ন থাকে, তাহলে নির্দ্বিধায় জিজ্ঞাসা করুন।";
+  } else if (lowerCaseMessage.includes("your name") || lowerCaseMessage.includes("who are you")) {
+    return "আমি একটি ভার্চুয়াল সহকারী যা সঞ্জয় দাস এবং তার কাজ সম্পর্কে তথ্য সরবরাহ করার জন্য ডিজাইন করা হয়েছে। আমার উদ্দেশ্য হল আপনাকে তার পোর্টফোলিও নেভিগেট করতে এবং একজন জুনিয়র ওয়েব ডেভেলপার হিসাবে তার ক্ষমতা সম্পর্কে আরও জানতে সহায়তা করা। আমি এখানে আপনার প্রশ্নের উত্তর দিতে এসেছি।";
+  } else if (lowerCaseMessage.includes("skills") || lowerCaseMessage.includes("technologies")) {
+    return "সঞ্জয়ের ওয়েব কন্টেন্ট স্ট্রাকচার করার জন্য **HTML5 (95%)** এবং স্টাইলিং ও রেসপনসিভ ডিজাইনের জন্য **CSS3 (90%)** এ শক্তিশালী মৌলিক দক্ষতা রয়েছে। তিনি ডাইনামিক এবং ইন্টারেক্টিভ ওয়েব অ্যাপ্লিকেশন তৈরির জন্য **জাভাস্ক্রিপ্ট (45%)** এও সক্রিয়ভাবে তার দক্ষতা বৃদ্ধি করছেন। আধুনিক ওয়েব ডেভেলপমেন্টের জন্য তার টুলকিট সর্বদা প্রসারিত করার জন্য তার শেখার প্রতি নিবেদন রয়েছে।";
+  } else if (lowerCaseMessage.includes("projects") || lowerCaseMessage.includes("portfolio work")) {
+    return "সঞ্জয় বেশ কয়েকটি উল্লেখযোগ্য প্রকল্প সম্পন্ন করেছেন, যার মধ্যে তার ব্যক্তিগত **পোর্টফোলিও ওয়েবসাইট** নিজেই রয়েছে, যা তার ফ্রন্ট-এন্ড ডেভেলপমেন্টের ক্ষমতা প্রদর্শন করে। তিনি একটি **ফেসবুক মেসেঞ্জার বট**ও তৈরি করেছেন, যা ইন্টারেক্টিভ এবং স্বয়ংক্রিয় সমাধান তৈরির তার ক্ষমতা প্রমাণ করে। তিনি সর্বদা নতুন চ্যালেঞ্জ গ্রহণ করতে এবং উদ্ভাবনী ওয়েব অভিজ্ঞতা তৈরি করতে আগ্রহী।";
+  } else if (lowerCaseMessage.includes("contact") || lowerCaseMessage.includes("hire me") || lowerCaseMessage.includes("get in touch")) {
+    return `আপনি সহজেই সঞ্জয় দাসের সাথে যোগাযোগ করতে পারেন। তার ইমেল হলো **im.the.devil.god2067@gmail.com** এবং তার ফোন নম্বর হলো **+880 1727 503540**। তিনি ঢাকা, বাংলাদেশে অবস্থিত এবং নতুন সুযোগের জন্য উন্মুক্ত। আপনি তার ওয়েবসাইটের মাধ্যমে সরাসরি একটি বার্তা পাঠাতে পারেন! এখানে তার কিছু সোশ্যাল মিডিয়া লিংক রয়েছে: ${socialLinks}`;
+  } else if (lowerCaseMessage.includes("about sanjay") || lowerCaseMessage.includes("about you")) {
+    return "সঞ্জয় দাস একজন নিবেদিতপ্রাণ এবং ফলাফল-ভিত্তিক জুনিয়র ওয়েব ডেভেলপার। তিনি ডাইনামিক, রেসপনসিভ এবং ব্যবহারকারী-বান্ধব ওয়েব অ্যাপ্লিকেশন তৈরিতে আগ্রহী। ওয়েব ডেভেলপমেন্টে তার যাত্রা একটি শক্তিশালী কৌতূহল দিয়ে শুরু হয়েছিল, যা দক্ষ এবং পরিমাপযোগ্য সমাধান তৈরির প্রতিশ্রুতির দিকে বিকশিত হয়েছে। তিনি পরিষ্কার, সিমেন্টিক কোড এবং আধুনিক ডিজাইন নীতিগুলির উপর মনোযোগ দেন।";
+  } else if (lowerCaseMessage.includes("education") || lowerCaseMessage.includes("study")) {
+    return "সঞ্জয় নটরডেম কলেজ, ঢাকা (2020-2022) থেকে তার **উচ্চ মাধ্যমিক স্কুল সার্টিফিকেট (HSC)** সম্পন্ন করেছেন, যেখানে তার প্রধান বিষয় ছিল বিজ্ঞান। তিনি হাই স্কুল, ঢাকা (2024-2025) থেকে তার **মাধ্যমিক স্কুল সার্টিফিকেট (SSC)** সম্পন্ন করেছেন, যেখানে তিনি বিজ্ঞান গ্রুপে 4.06 GPA অর্জন করেছেন। তিনি ক্রমাগত শিখছেন এবং তার একাডেমিক পটভূমিকে বাস্তব-বিশ্বের ডেভেলপমেন্ট চ্যালেঞ্জগুলিতে প্রয়োগ করছেন।";
+  } else if (lowerCaseMessage.includes("location") || lowerCaseMessage.includes("where are you")) {
+    return "সঞ্জয় দাস বর্তমানে **ঢাকা, বাংলাদেশে** অবস্থান করছেন।";
+  } else if (lowerCaseMessage.includes("date of birth") || lowerCaseMessage.includes("birthday")) {
+    return "সঞ্জয়ের জন্ম তারিখ হলো **20 জুন 2007**।";
+  } else if (lowerCaseMessage.includes("experience")) {
+    return "সঞ্জয়ের ওয়েব ডেভেলপমেন্টে **1 বছরেরও বেশি অভিজ্ঞতা** রয়েছে, যা রেসপনসিভ ওয়েব অ্যাপ্লিকেশন তৈরিতে কেন্দ্র করে। তিনি **3+ প্রকল্প** সম্পন্ন করেছেন এবং উচ্চ ক্লায়েন্ট সন্তুষ্টির লক্ষ্য রাখেন। তার অভিজ্ঞতা তাকে বিভিন্ন চ্যালেঞ্জ মোকাবেলায় সহায়তা করেছে।";
+  } else if (lowerCaseMessage.includes("thank you") || lowerCaseMessage.includes("thanks")) {
+    return "আপনাকে স্বাগতম! সঞ্জয় বা তার কাজ সম্পর্কে আপনার আর কিছু জানার আছে কি? আমি এখানে সাহায্য করার জন্য আছি।";
+  } else if (lowerCaseMessage.includes("bye") || lowerCaseMessage.includes("goodbye")) {
+    return "বিদায়! সঞ্জয়ের পোর্টফোলিওতে আসার জন্য ধন্যবাদ। আপনার দিনটি শুভ হোক!";
+  } else if (lowerCaseMessage.includes("help") || lowerCaseMessage.includes("সাহায্য")) {
+    return `আমি আপনাকে আমার কন্টাক্ট লিস্ট দিতে পারি। সঞ্জয়ের সাথে যোগাযোগের জন্য এই লিংকগুলো ব্যবহার করতে পারেন: ${socialLinks} আপনার আর কোনো প্রশ্ন থাকলে জিজ্ঞাসা করতে পারেন।`;
+  } else {
+    return "আমি দুঃখিত, আমি একটি সাধারণ বট এবং এই নির্দিষ্ট প্রশ্নটি বুঝতে পারছি না। আমি আপনাকে সঞ্জয়ের **দক্ষতা**, **প্রকল্প**, **শিক্ষা**, **যোগাযোগ** তথ্য, অথবা তার সম্পর্কে আরও কিছু জানাতে পারি। অনুগ্রহ করে এই বিষয়গুলির মধ্যে একটি জিজ্ঞাসা করার চেষ্টা করুন।";
+  }
+}
+
+// Toggle Chat Bot visibility
+chatToggleBtn.addEventListener("click", () => {
+  chatBotOpen = !chatBotOpen;
+  if (chatBotOpen) {
+    chatBotContainer.classList.add("show");
+    chatInput.focus(); // Focus on input when chat opens
+  } else {
+    chatBotContainer.classList.remove("show");
+  }
+});
+
+// Close Chat Bot
+closeChatBtn.addEventListener("click", () => {
+  chatBotOpen = false;
+  chatBotContainer.classList.remove("show");
+});
+
+// Send Message
+sendMessageBtn.addEventListener("click", () => {
+  const userMessage = chatInput.value.trim();
+  if (userMessage) {
+    addMessage(userMessage, "user");
+    chatInput.value = ""; // Clear input
+    
+    // Simulate bot response after a short delay
+    setTimeout(() => {
+      const botResponse = getBotResponse(userMessage);
+      addMessage(botResponse, "bot");
+    }, 500);
+  }
+});
+
+// Send message on Enter key press
+chatInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    sendMessageBtn.click(); // Simulate a click on the send button
+  }
+});
+
+// Keep chat button visible and remove scroll-to-top functionality
+if (chatToggleBtn) {
+  // We no longer need to check scroll position to show/hide it,
+  // as it's meant to be always visible and toggle the chat.
+  // The original scroll-to-top button display logic is removed.
+        }
