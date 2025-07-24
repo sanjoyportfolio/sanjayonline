@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SANJAY Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Signika&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        /* --- Root Variables for Color Scheme (Dark Theme Only) --- */
+        /* These should ideally be in style.css or repeated here for SweetAlert2 to pick up */
+        :root {
+            --primary-color: #00ffff;
+            /* Bright Cyan */
+            --secondary-color: #ff00ff;
+            /* Bright Magenta */
+            --accent-color: #00ff88;
+            /* Bright Green */
+            --text-color: #e0e0e0;
+            /* Light grey for main text */
+            --text-color-dark: #333;
+            /* Dark text for elements with bright backgrounds */
+            --bg-color-gradient-start: #2c3e50;
+            /* Dark Blue-Grey */
+            --bg-color-gradient-end: #34495e;
+            /* Slightly Lighter Blue-Grey */
+            --card-bg: #222;
+            /* Darker card background */
+            --input-bg: #333;
+            /* Dark input background */
+            --border-color: #444;
+            /* Dark border color */
+            --warning-bg: #4a3c00;
+            /* Dark amber for warning background */
+            --warning-text: #ffe082;
+            /* Light amber for warning text */
+            --warning-border: #ffcc00;
+            /* Amber for warning border */
+        }
+    </style>
+</head>
+
+<body>
+    <header class="navbar">
+        <a href="#" class="logo fancy-link">
+            <img src="assets/images/suspect.png" alt="Sanjay Das Logo" class="logo-img" id="profileIcon" />
+            <span></span>
+        </a>
+        <nav class="nav-links">
+            <ul>
+                <li><a href="#hero" class="fancy-link">Home</a></li>
+                <li><a href="#about" class="fancy-link">About</a></li>
+                <li><a href="#education" class="fancy-link">Education</a></li>
+                <li><a href="#skills" class="fancy-link">Skills</a></li>
+                <li><a href="#projects" class="fancy-link">Projects</a></li>
+                <li><a href="#contact" class="fancy-link">Contact</a></li>
+                <li><a href="login.html" class="fancy-link login-link">Registration</a></li>
+            </ul>
+        </nav>
+        <div class="menu-icon">
+            <i class="fas fa-bars"></i>
+        </div>
+    </header>
+    
+    <section id="hero" class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">Hello, I'm <span class="highlight">SANJAY DAS</span></h1>
+            <p class="hero-subtitle"><span id="dynamic-text"></span></p>
+            <div class="hero-buttons">
+                <a href="#contact" class="btn btn-primary fancy-link">Hire Me</a>
+                <a href="#" class="btn btn-secondary baton" >Let's Talk</a>
+            </div>
+            <div> <br />
+                <p>
+        Creating seamless, responsive web experiences that connect users to ideas. Passionate about clean code, design, and innovation.
+        <br><br>
+        I’m a self-taught full-stack web developer, turning ideas into beautiful, functional websites and apps.
+      </p>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="assets/images/profile.png" alt="Sanjay Halder Profile" />
+        </div>
+    </section>
+    
+    <section id="about" class="about-section common-section">
+        <div class="container">
+            <h2 class="section-title">About <span class="highlight">Me</span></h2>
+            <div class="about-content">
+                <div class="about-image">
+                    <img src="assets/images/profile.png" alt="Sanjay Halder" />
+                </div>
+                <div class="about-text">
+                    <h3>I'm Sanjay Das, a junior Web Developer</h3>
+                    <p>
+                        I am a dedicated and results-driven web developer with a passion for creating dynamic and responsive web applications.
+                        My journey in web development began with a strong curiosity for how websites work, evolving into a commitment to crafting efficient, scalable, and user-friendly solutions.
+                    </p>
+                    <p>
+                        I specialize in front-end development, bringing designs to life with clean, semantic HTML, modern CSS, and interactive JavaScript. I'm constantly exploring new technologies and frameworks to enhance my skills and deliver cutting-edge web experiences.
+                    </p>
+                    <div class="personal-details">
+                        <p><i class="fas fa-calendar-alt"></i> Date of Birth: 20 Jun 2007</p>
+                        <p><i class="fas fa-phone-alt"></i> Phone: +880 1727 503540</p>
+                        <p><i class="fas fa-map-marker-alt"></i> Address: Dhaka, Bangladesh</p>
+                        <p><i class="fas fa-envelope"></i> Email: im.the.devil.god2067@gmail.com</p>
+                    </div>
+                    <a href="#contact" class="btn btn-primary fancy-link">Contact Me</a>
+                </div>
+            </div>
+            <div class="about-stats">
+                <div class="stat-item">
+                    <span>3+</span>
+                    <p>Projects Completed</p>
+                </div>
+                <div class="stat-item">
+                    <span>1+</span>
+                    <p>Years Experience</p>
+                </div>
+                <div class="stat-item">
+                    <span>90%</span>
+                    <p>Client Satisfaction (Simulated)</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="education" class="education-section common-section">
+        <div class="container">
+            <h2 class="section-title">My <span class="highlight">Education</span></h2>
+            <div class="education-container">
+                <div class="edu-card">
+                    <i class="fas fa-school"></i>
+                    <h3>Higher Secondary School Certificate (HSC)</h3>
+                    <p class="institution">Notre Dame College, Dhaka</p>
+                    <p class="years">2020 - 2022</p>
+                    <p class="description">
+                        No Completed my HSC with a strong focus on Science, developing analytical and problem-solving skills crucial for engineering studies. <strong>Enter 1st year Continued</strong>
+                    </p>
+                </div>
+                <div class="edu-card">
+                    <i class="fas fa-book"></i>
+                    <h3> Completed secondary School Certificate (SSC)</h3>
+                    <p class="institution">High School, Dhaka</p>
+                    <p class="years">2024-2025</p>
+                    <p class="description">
+                        Completed my secondary education, building a strong foundation in various subjects and participating in extracurricular activities.
+                        <strong>SSC results GPA 4.06 group Science</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="skills" class="skills-section common-section">
+        <div class="container">
+            <h2 class="section-title">My <span class="highlight">Skills</span></h2>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <div class="skill-icon"><i class="fab fa-html5"></i></div>
+                    <h3>HTML5</h3>
+                    <div class="progress-bar" style="--fill-width: 95%;">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <span>95%</span>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon"><i class="fab fa-css3-alt"></i></div>
+                    <h3>CSS3</h3>
+                    <div class="progress-bar" style="--fill-width: 90%;">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <span>90%</span>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon"><i class="fab fa-js-square"></i></div>
+                    <h3>JavaScript</h3>
+                    <div class="progress-bar" style="--fill-width: 45%;">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <span>45%</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="projects" class="projects-section common-section">
+        <div class="container">
+            <h2 class="section-title">My <span class="highlight">Projects</span></h2>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <img src="assets/images/project1.jpg" alt="Project 1" class="project-img">
+                    <h3>Portfolio Website</h3>
+                    <p class="project-description">Designed and built a personal portfolio website to showcase skills, projects, and professional experience.</p>
+                    <div class="project-links">
+                        <a href="#" class="btn btn-small" target="_blank"><i class="fas fa-eye"></i> Live Demo</a>
+                        <a href="https://github.com/sanjoyportfolio/" class="btn btn-small" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <img src="assets/images/project2.jpg" alt="Project 2" class="project-img">
+                    <h3>Facebook Messenger Bot</h3>
+                    <p class="project-description">A smart and interactive chatbot for Facebook Messenger designed to automate customer support, provide instant responses, and enhance user engagement!</p>
+                    <div class="project-links">
+                        <a href="#" class="btn btn-small" target="_blank"><i class="fas fa-eye"></i> Live Demo</a>
+                        <a href="https://github.com/sanjoyportfolio/" class="btn btn-small" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="contact" class="contact-section common-section">
+        <div class="container">
+            <h2 class="section-title">Get In <span class="highlight">Touch</span></h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>Contact Information</h3>
+                    <p><i class="fas fa-user-alt"></i> Name: SANJAY DAS</p>
+                    <p><i class="fas fa-user-graduate"></i> Occupation: Student/Developer</p>
+                    <p><i class="fas fa-map-marker-alt"></i>Address: Dhaka, Bangladesh</p>
+                    <p><i class="fas fa-phone-alt"></i> Mobile: +880 1727 503540</p>
+                    <p><i class="fas fa-envelope"></i> E-mail: im.the.devil.god2067@gmail.com</p>
+                    <div class="follow">
+                        <h2>Any Help contact my social platform</h2>
+                    </div>
+                    <div class="social_icon">
+                        <a href="" target="_blank"><i class="fab fa-github"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <h3>Send Me a Message</h3>
+                    <form onsubmit="handleSubmit(event)">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="name" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" placeholder="Your Email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" name="message" rows="5" placeholder="Your Message" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    </form>
+                </div>
+            </div>
+            <div class="newsletter-section">
+                <h3>Subscribe to my Newsletter</h3>
+                <p>Stay updated with my latest projects and articles!</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Enter your email" required>
+                    <button type="submit" class="btn btn-secondary">Subscribe</button>
+                </form>
+            </div>
+        </div>
+    </section>
+    
+    <footer class="footer-section">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-about">
+                    <h3>SANJAY DAS</h3>
+                    <p>Building beautiful and functional web experiences.</p>
+                </div>
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#hero" class="fancy-link">Home</a></li>
+                        <li><a href="#about" class="fancy-link">About</a></li>
+                        <li><a href="#projects" class="fancy-link">Projects</a></li>
+                        <li><a href="#contact" class="fancy-link">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h3>Connect</h3>
+                    <p><i class="fas fa-phone-alt"></i> +880 1727 503540</p>
+                    <p><i class="fas fa-envelope"></i>im.the.devil.god2067@gmail.com</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Dhaka, Bangladesh</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 SANJAY Das. All Rights Reserved.</p>
+                <div class="social-icons">
+                    <a href="#" target="_blank"><i class="fab fa-github"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <button class="scroll-top"><i class="fas fa-arrow-up"></i></button>
+    
+    <script src="script.js"></script>
+</body>
+
+</html>

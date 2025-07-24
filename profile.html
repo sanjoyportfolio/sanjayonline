@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Profile - SANJAY Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Signika:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        /* --- Root Variables for Color Scheme (Dark Theme Only) --- */
+        :root {
+            --primary-color: #00ffff;
+            /* Bright Cyan */
+            --secondary-color: #ff00ff;
+            /* Bright Magenta */
+            --accent-color: #00ff88;
+            /* Bright Green */
+            --text-color: #e0e0e0;
+            /* Light grey for main text */
+            --text-color-dark: #333;
+            /* Dark text for elements with bright backgrounds */
+            --bg-color-gradient-start: #2c3e50;
+            /* Dark Blue-Grey */
+            --bg-color-gradient-end: #34495e;
+            /* Slightly Lighter Blue-Grey */
+            --card-bg: #222;
+            /* Darker card background */
+            --input-bg: #333;
+            /* Dark input background */
+            --input-readonly-bg: #444;
+            /* Darker input background for readonly fields */
+            --border-color: #444;
+            /* Dark border color */
+            --warning-bg: #4a3c00;
+            /* Dark amber for warning background */
+            --warning-text: #ffe082;
+            /* Light amber for warning text */
+            --warning-border: #ffcc00;
+            /* Amber for warning border */
+        }
+        
+        /* --- Global Body Styles --- */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            /* Use Poppins for a modern feel */
+            background: linear-gradient(135deg, var(--bg-color-gradient-start), var(--bg-color-gradient-end));
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            /* Prevent horizontal scroll */
+        }
+        
+        /* --- Profile Wrapper (Page Container) --- */
+        .profile-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            /* Align to top instead of center vertically */
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+            font-family: 'Signika', sans-serif;
+            /* Fallback/Specific usage */
+        }
+        
+        /* --- Profile Container (The main card) --- */
+        .profile-container {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 600px;
+            /* Max width for better readability */
+            margin-top: 50px;
+            /* Push down from top */
+            position: relative;
+            animation: fadeInScale 0.6s ease-out forwards;
+            border: 1px solid var(--border-color);
+            /* Subtle border */
+        }
+        
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .profile-container h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--primary-color);
+            font-size: 2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .profile-avatar-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .current-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 15px auto;
+            border: 4px solid var(--primary-color);
+            box-shadow: 0 0 0 6px rgba(0, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .current-avatar:hover {
+            transform: scale(1.05);
+        }
+        
+        .current-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .change-pic-btn {
+            background-color: var(--secondary-color);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 auto;
+            /* Center the button */
+        }
+        
+        .change-pic-btn:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--text-color);
+            /* Use general text-color for labels */
+            font-size: 0.95em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .input-group input[type="text"],
+        .input-group input[type="email"],
+        .input-group input[type="date"],
+        .input-group input[type="tel"],
+        .input-group textarea {
+            width: calc(100% - 24px);
+            /* Account for padding */
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .input-group input:focus,
+        .input-group textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.3);
+            /* Glow effect on focus */
+            outline: none;
+        }
+        
+        .input-group textarea {
+            resize: none;
+            /* Allow vertical resizing */
+            min-height: 80px;
+        }
+        
+        .input-group input[readonly] {
+            background-color: var(--input-readonly-bg);
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
+        .save-profile-btn {
+            background-color: var(--primary-color);
+            color: #000;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            display: block;
+            /* Make it a block element */
+            width: fit-content;
+            /* Fit content to button size */
+            margin: 30px auto 20px auto;
+            /* Center the button and add margin */
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .save-profile-btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 255, 255, 0.4);
+        }
+        
+        .profile-warning {
+            background-color: var(--warning-bg);
+            color: var(--warning-text);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 5px solid var(--warning-border);
+            margin-top: 30px;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .back-home {
+            text-align: center;
+            margin-top: 25px;
+        }
+        
+        .back-home a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .back-home a:hover {
+            color: var(--secondary-color);
+            text-decoration: underline;
+        }
+        
+        /* Gallery Modal Styles */
+        .gallery-modal {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            /* Stay in place */
+            z-index: 2000;
+            /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            /* Full width */
+            height: 100%;
+            /* Full height */
+            overflow: auto;
+            /* Enable scroll if needed */
+            background-color: rgba(0, 0, 0, 0.7);
+            /* Black w/ opacity */
+            backdrop-filter: blur(5px);
+            /* Blurred background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: var(--card-bg);
+            /* Use card-bg for consistency */
+            margin: auto;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 700px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            position: relative;
+            animation: modalFadeIn 0.3s ease-out;
+            color: var(--text-color);
+        }
+        
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modal-content h3 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: var(--primary-color);
+            font-size: 1.8em;
+        }
+        
+        .close-button {
+            color: var(--text-color);
+            /* Use general text color */
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 35px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .close-button:hover,
+        .close-button:focus {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+            justify-items: center;
+        }
+        
+        .gallery-item {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .gallery-item:hover {
+            border-color: var(--secondary-color);
+            transform: scale(1.08);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .gallery-item.selected {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(0, 255, 255, 0.4), 0 0 15px rgba(0, 255, 255, 0.6);
+            transform: scale(1.1);
+        }
+        
+        .confirm-selection-btn {
+            background-color: var(--primary-color);
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .confirm-selection-btn:hover:not(:disabled) {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        .confirm-selection-btn:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+            opacity: 0.6;
+            box-shadow: none;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .profile-container {
+                margin-top: 20px;
+                padding: 20px;
+                max-width: 95%;
+            }
+            
+            .profile-container h2 {
+                font-size: 1.6em;
+                margin-bottom: 20px;
+            }
+            
+            .profile-avatar-section {
+                margin-bottom: 20px;
+            }
+            
+            .current-avatar {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .input-group label {
+                font-size: 0.9em;
+            }
+            
+            .input-group input,
+            .input-group textarea {
+                font-size: 0.95em;
+                padding: 10px;
+                resize: none;
+            }
+            
+            .save-profile-btn {
+                padding: 10px 20px;
+                font-size: 1em;
+                margin-top: 20px;
+            }
+            
+            .profile-warning {
+                padding: 12px;
+                font-size: 0.85em;
+            }
+            
+            .modal-content {
+                width: 95%;
+                padding: 20px;
+            }
+            
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+                gap: 10px;
+            }
+            
+            .gallery-item {
+                width: 80px;
+                height: 80px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .profile-wrapper {
+                padding: 10px;
+            }
+            
+            .profile-container {
+                margin-top: 10px;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="profile-wrapper">
+        <div class="profile-container">
+            <h2><i class="fas fa-user-edit"></i> Edit Your Profile</h2>
+            
+            <div class="profile-avatar-section">
+                <div class="current-avatar">
+                    <img id="profileDisplayPic" src="assets/images/profile.png" alt="Current Profile Picture" />
+                </div>
+                <button id="changePicBtn" class="change-pic-btn"><i class="fas fa-camera"></i> Change Profile Picture</button>
+            </div>
+            
+            <form id="profileEditForm">
+                <div class="input-group">
+                    <label for="userName"><i class="fas fa-user"></i> Your Name</label>
+                    <input type="text" id="userName" required />
+                </div>
+                <div class="input-group">
+                    <label for="userEmail"><i class="fas fa-envelope"></i> Email (Read-only)</label>
+                    <input type="email" id="userEmail" readonly />
+                </div>
+                <div class="input-group">
+                    <label for="userDob"><i class="fas fa-calendar-alt"></i> Date of Birth</label>
+                    <input type="date" id="userDob" />
+                </div>
+                <div class="input-group">
+                    <label for="userPhone"><i class="fas fa-phone"></i> Phone Number</label>
+                    <input type="tel" id="userPhone" placeholder="e.g., +880 1234 567890" />
+                </div>
+                <div class="input-group">
+                    <label for="userAddress"><i class="fas fa-map-marker-alt"></i> Address</label>
+                    <input type="text" id="userAddress" placeholder="e.g., Khulna, Bangladesh" />
+                </div>
+                <div class="input-group">
+                    <label for="userAbout"><i class="fas fa-info-circle"></i> About Me</label>
+                    <textarea id="userAbout" rows="5" placeholder="Tell us a little about yourself..."></textarea>
+                </div>
+                <button type="submit" class="save-profile-btn"><i class="fas fa-save"></i> Save Changes</button>
+            </form>
+            
+            <div class="profile-warning">
+                <p>
+                    <i class="fas fa-exclamation-triangle"></i>
+                    **Note:** This is a front-end simulation. Profile changes and image uploads are not saved permanently without a backend.
+                </p>
+            </div>
+            
+            <div class="back-home">
+                <a href="index.html"><i class="fas fa-arrow-left"></i> Back to Home</a>
+            </div>
+        </div>
+    </div>
+    
+    <div id="galleryModal" class="gallery-modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h3>Select a Profile Picture</h3>
+            <div class="gallery-grid">
+                <img src="assets/images/gallery-pic-1.jpg" alt="Gallery Pic 1" data-path="assets/images/gallery-pic-1.jpg" class="gallery-item" />
+                <img src="assets/images/gallery-pic-2.jpg" alt="Gallery Pic 2" data-path="assets/images/gallery-pic-2.jpg" class="gallery-item" />
+                <img src="assets/images/gallery-pic-3.jpg" alt="Gallery Pic 3" data-path="assets/images/gallery-pic-3.jpg" class="gallery-item" />
+                <img src="assets/images/profile.png" alt="Gallery Pic Default" data-path="assets/images/profile.png" class="gallery-item" />
+            </div>
+            <button id="confirmSelectionBtn" class="confirm-selection-btn" disabled>Confirm Selection</button>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const profileDisplayPic = document.getElementById('profileDisplayPic');
+            const changePicBtn = document.getElementById('changePicBtn');
+            const galleryModal = document.getElementById('galleryModal');
+            const closeButton = document.querySelector('.gallery-modal .close-button');
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            const confirmSelectionBtn = document.getElementById('confirmSelectionBtn');
+            
+            const userNameInput = document.getElementById('userName');
+            const userEmailInput = document.getElementById('userEmail');
+            const userDobInput = document.getElementById('userDob');
+            const userPhoneInput = document.getElementById('userPhone');
+            const userAddressInput = document.getElementById('userAddress');
+            const userAboutInput = document.getElementById('userAbout');
+            const profileEditForm = document.getElementById('profileEditForm');
+            
+            let selectedProfilePicPath = null;
+            let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            let allUsers = JSON.parse(localStorage.getItem('users')) || [];
+            
+            // Redirect if not logged in
+            if (!currentUser) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Access Denied',
+                    text: 'Please log in to view your profile.',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    background: getComputedStyle(document.documentElement).getPropertyValue('--card-bg'),
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--text-color'),
+                    confirmButtonColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color')
+                }).then(() => {
+                    window.location.href = 'login.html'; // Redirect to login page
+                });
+                return; // Stop script execution
+            }
+            
+            // --- Load User Data ---
+            function loadUserData() {
+                // Fixed Name and Email
+                userNameInput.value = currentUser.name || ''; // Should load from currentUser as set in login
+                userEmailInput.value = currentUser.email || ''; // Should load from currentUser
+                
+                // Make Name and Email fields read-only
+                userNameInput.readOnly = true;
+                userEmailInput.readOnly = true;
+                
+                // Load other data from currentUser if available
+                userDobInput.value = currentUser.dob || '';
+                userPhoneInput.value = currentUser.phone || '';
+                userAddressInput.value = currentUser.address || '';
+                userAboutInput.value = currentUser.about || '';
+                profileDisplayPic.src = currentUser.profilePic || 'assets/images/profile.png';
+            }
+            
+            // --- Save User Data ---
+            profileEditForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Only update mutable fields in currentUser object
+                currentUser.dob = userDobInput.value;
+                currentUser.phone = userPhoneInput.value.trim();
+                currentUser.address = userAddressInput.value.trim();
+                currentUser.about = userAboutInput.value.trim();
+                currentUser.profilePic = profileDisplayPic.src; // Save the currently displayed pic
+                
+                // Update the user in the allUsers array
+                const userIndex = allUsers.findIndex(u => u.email === currentUser.email);
+                if (userIndex !== -1) {
+                    allUsers[userIndex] = {
+                        ...allUsers[userIndex],
+                        dob: currentUser.dob,
+                        phone: currentUser.phone,
+                        address: currentUser.address,
+                        about: currentUser.about,
+                        profilePic: currentUser.profilePic
+                    }; // Merge updated fields
+                } else {
+                    // This case should ideally not happen if user is logged in
+                    allUsers.push(currentUser); // Fallback, though user should exist
+                }
+                
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                localStorage.setItem('users', JSON.stringify(allUsers));
+                
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Profile Updated!',
+                    text: 'Your changes have been saved.',
+                    confirmButtonColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color'),
+                    background: getComputedStyle(document.documentElement).getPropertyValue('--card-bg'),
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--text-color')
+                });
+                loadUserData(); // Reload to ensure consistency
+            });
+            
+            // --- Profile Picture Gallery Modal ---
+            changePicBtn.addEventListener('click', () => {
+                galleryModal.style.display = 'flex'; // Use flex for centering
+                // Clear any previous selection and pre-select current if in gallery
+                galleryItems.forEach(item => {
+                    item.classList.remove('selected');
+                    const currentProfilePicFileName = profileDisplayPic.src.split('/').pop();
+                    const galleryItemFileName = item.dataset.path.split('/').pop();
+                    
+                    if (galleryItemFileName === currentProfilePicFileName) {
+                        item.classList.add('selected');
+                        selectedProfilePicPath = item.dataset.path;
+                    }
+                });
+                confirmSelectionBtn.disabled = !selectedProfilePicPath; // Disable if nothing pre-selected
+            });
+            
+            closeButton.addEventListener('click', () => {
+                galleryModal.style.display = 'none';
+            });
+            
+            galleryModal.addEventListener('click', (e) => {
+                if (e.target === galleryModal) {
+                    galleryModal.style.display = 'none';
+                }
+            });
+            
+            galleryItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    galleryItems.forEach(i => i.classList.remove('selected'));
+                    item.classList.add('selected');
+                    selectedProfilePicPath = item.dataset.path;
+                    confirmSelectionBtn.disabled = false;
+                });
+            });
+            
+            confirmSelectionBtn.addEventListener('click', () => {
+                if (selectedProfilePicPath) {
+                    profileDisplayPic.src = selectedProfilePicPath;
+                    currentUser.profilePic = selectedProfilePicPath; // Update current user immediately
+                    galleryModal.style.display = 'none';
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Picture Selected!',
+                        text: 'Remember to click "Save Changes" to make it permanent.',
+                        confirmButtonColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color'),
+                        background: getComputedStyle(document.documentElement).getPropertyValue('--card-bg'),
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--text-color')
+                    });
+                }
+            });
+            
+            // Initial load of user data when the page loads
+            loadUserData();
+        });
+    </script>
+</body>
+
+</html>
