@@ -23,7 +23,7 @@ All project images and design resources are neatly organized inside the `assets/
 ## 📱 Live Preview
 
 You can see the live version of this site at:  
-👉 [https://your-site-name.vercel.app](https://sanjayonline.vercel.app/) *(update this with your real Vercel link)*
+👉 [https://sanjayonline.vercel.app/](https://sanjayonline.vercel.app/) *(update this with your real Vercel link)*
 
 ## 📬 Contact
 
