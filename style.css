@@ -1790,3 +1790,223 @@ body.menu-open {
     color: #0ff;
     justify-content: center;
 }
+
+/* --- Chat Bot Button --- */
+.chat-toggle-btn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: var(--primary-color);
+  color: var(--bg-color);
+  width: 60px; /* Slightly larger for chat icon */
+  height: 60px; /* Slightly larger for chat icon */
+  border-radius: 50%;
+  display: flex; /* Always display flex for the icon */
+  justify-content: center;
+  align-items: center;
+  font-size: 1.8rem; /* Larger icon */
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+  transition: background-color 0.3s ease, transform 0.3s ease,
+    box-shadow 0.3s ease;
+  z-index: 999;
+}
+
+.chat-toggle-btn:hover {
+  background-color: #00cccc;
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 255, 255, 0.5);
+}
+
+/* --- Chat Bot Interface --- */
+.chat-bot-container {
+  position: fixed;
+  bottom: 100px; /* Position above the chat button */
+  right: 30px;
+  width: 350px;
+  height: 450px;
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 255, 255, 0.4);
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 998; /* Below the button, but above content */
+  transform: scale(0.8); /* Start smaller */
+  opacity: 0;
+  pointer-events: none; /* Make it unclickable when hidden */
+  transition: all 0.3s ease-in-out;
+}
+
+.chat-bot-container.show {
+  transform: scale(1);
+  opacity: 1;
+  pointer-events: auto; /* Make it clickable when shown */
+}
+
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: var(--primary-color);
+  color: var(--bg-color);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.chat-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.close-chat-btn {
+  background: transparent;
+  border: none;
+  color: var(--bg-color);
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.close-chat-btn:hover {
+  transform: rotate(90deg);
+}
+
+.chat-messages {
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  scroll-behavior: smooth;
+  /* Custom scrollbar for webkit browsers */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  &::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 10px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: #00cccc;
+  }
+}
+
+.message {
+  max-width: 80%;
+  padding: 10px 15px;
+  border-radius: 15px;
+  line-height: 1.5;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.user-message {
+  align-self: flex-end;
+  background-color: #4a90e2; /* Blue */
+  color: #fff;
+  border-bottom-right-radius: 2px;
+}
+
+.bot-message {
+  align-self: flex-start;
+  background-color: #333; /* Darker grey */
+  color: var(--text-color);
+  border-bottom-left-radius: 2px;
+}
+
+.chat-input-area {
+  display: flex;
+  padding: 15px 20px;
+  border-top: 1px solid var(--border-color);
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.chat-input-area input {
+  flex-grow: 1;
+  padding: 10px 15px;
+  border: 1px solid var(--border-color);
+  border-radius: 25px;
+  background-color: rgba(0, 0, 0, 0.2);
+  color: var(--text-color);
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.chat-input-area input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
+}
+
+.chat-input-area button {
+  background-color: var(--primary-color);
+  color: var(--bg-color);
+  border: none;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 3px 10px rgba(0, 255, 255, 0.3);
+}
+
+.chat-input-area button:hover {
+  background-color: #00cccc;
+  transform: scale(1.05);
+}
+
+/* Media Queries for Chat Bot (adjust for smaller screens) */
+@media (max-width: 580px) {
+  .chat-toggle-btn {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+    bottom: 20px;
+    right: 20px;
+  }
+
+  .chat-bot-container {
+    width: 90%;
+    right: 5%;
+    bottom: 80px;
+    height: 400px;
+  }
+
+  .chat-header h3 {
+    font-size: 1.1rem;
+  }
+
+  .close-chat-btn {
+    font-size: 1.3rem;
+  }
+
+  .message {
+    font-size: 0.9rem;
+  }
+
+  .chat-input-area input {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+
+  .chat-input-area button {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+    }
