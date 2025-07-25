@@ -767,7 +767,6 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 
-// --- Chat Bot Logic ---
 // --- DOM Elements ---
 const chatToggleBtn = document.getElementById("chatToggleBtn");
 const chatBotContainer = document.getElementById("chatBotContainer");
@@ -989,7 +988,7 @@ function getBotResponse(userMessage) {
   if (match(["how are you", "কেমন আছো"])) return getRandom(responses.howAreYou);
   if (match(["your name", "তোমার নাম"])) return getRandom(responses.whoAreYou);
   if (match(["skills", "technologies"])) return getRandom(responses.skills);
-  if (match(["admin", "sanjay"," sonjoy","সঞ্জয়"])) return getRandom(responses.admin);
+  if (match(["admin", "sanjay"])) return getRandom(responses.admin);
   if (match(["projects", "portfolio work"])) return getRandom(responses.projects);
   if (match(["contact", "hire me", "কন্টাক্ট"])) return getRandom(responses.contact) + socialLinks;
   if (match(["education", "study"])) return getRandom(responses.education);
