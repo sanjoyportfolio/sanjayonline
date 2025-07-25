@@ -683,6 +683,66 @@ body.menu-open {
     }
 }
 
+/* বাটনের ধারক */
+.show-project {
+  display: flex;
+  justify-content: center; /* বাটনগুলোকে মাঝখানে রাখে */
+  align-items: center;
+  margin: 20px 0; /* উপরে ও নিচে মার্জিন */
+  gap: 15px; /* দুটি বাটনের মধ্যে ফাঁকা স্থান */
+}
+
+/* সাধারণ বাটন স্টাইল */
+.visit {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px; /* আইকন এবং টেক্সটের মধ্যে ফাঁকা স্থান */
+  padding: 16px 30px; /* বাটনের প্যাডিং */
+  background: linear-gradient(135deg, #141e30, #243b55); /* গাঢ় নীল/ধূসর গ্রেডিয়েন্ট ব্যাকগ্রাউন্ড */
+  color: #fff; /* টেক্সটের রঙ সাদা */
+  border-radius: 12px; /* গোলাকার কোণা */
+  text-decoration: none; /* আন্ডারলাইন সরিয়ে দেয় */
+  font-family: 'Segoe UI', sans-serif; /* ফন্ট */
+  font-size: 1.1rem; /* ফন্ট সাইজ */
+  font-weight: bold; /* ফন্ট মোটা */
+  box-shadow: 0 0 15px rgba(0,255,255,0.1); /* হালকা সায়ান শ্যাডো */
+  transition: all 0.4s ease; /* সব ট্রানজিশনের জন্য */
+  overflow: hidden; /* ভেতরের উপাদান বাটনের বাইরে যেন না যায় */
+  border: 2px solid #00ffff20; /* হালকা সায়ান বর্ডার */
+  cursor: pointer; /* কার্সার পয়েন্টার */
+}
+
+/* বাটন হোভার প্রভাব */
+.visit:hover {
+  transform: scale(1.05); /* হোভার করলে সামান্য বড় হয় */
+  box-shadow: 0 0 30px #00ffff66; /* হোভারে শ্যাডো আরও উজ্জ্বল হয় */
+  border-color: #00ffff; /* হোভারে বর্ডার সায়ান হয় */
+  background: linear-gradient(135deg, #1f1f2e, #2a2d4a); /* হোভারে ব্যাকগ্রাউন্ড সামান্য পরিবর্তিত হয় */
+  color: #00ffff; /* হোভারে টেক্সটের রঙ সায়ান হয় */
+}
+
+/* বাটনের ভেতরের আইকন */
+.visit .icon {
+  font-size: 1.3rem; /* আইকনের সাইজ */
+  transition: transform 0.3s ease; /* আইকন ট্রানজিশন */
+}
+
+/* হোভার করলে আইকনের প্রভাব */
+.visit:hover .icon {
+  transform: translateX(6px) rotate(10deg); /* হোভার করলে আইকন সামান্য ডানে সরে ও ঘোরে */
+}
+
+/* ছবিতে দেখা লাইভ ডেমো বাটনের জন্য নির্দিষ্ট আইকন */
+.live-demo-btn .icon {
+  /* Font Awesome "play" আইকনের জন্য fas fa-play ক্লাস ব্যবহার করা হয়েছে */
+}
+
+/* ছবিতে দেখা গিটহাব বাটনের জন্য নির্দিষ্ট আইকন */
+.github-btn .icon {
+  /* Font Awesome "github" আইকনের জন্য fab fa-github ক্লাস ব্যবহার করা হয়েছে */
+}
+
 
 /* --- Contact Section --- */
 .contact-content {
