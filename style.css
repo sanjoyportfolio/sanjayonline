@@ -399,16 +399,24 @@ body.menu-open {
     margin-bottom: 2rem;
 }
 
-.personal-details p {
+.personal-details p,
+.personal-details a { /* Apply styles to both p and a */
     font-size: 1rem;
     margin-bottom: 10px;
     color: var(--text-color);
     display: flex;
     align-items: center;
     gap: 10px;
+    text-decoration: none; /* Remove underline for links */
+    transition: color 0.3s ease;
 }
 
-.personal-details p i {
+.personal-details a:hover {
+    color: var(--primary-color); /* Highlight on hover */
+}
+
+.personal-details p i,
+.personal-details a i { /* Apply styles to icons within both p and a */
     color: var(--primary-color);
     font-size: 1.2rem;
 }
@@ -705,16 +713,26 @@ body.menu-open {
     text-align: center;
 }
 
-.contact-info p {
+/* Style for contact info links (newly changed) */
+.contact-info p,
+.contact-info a {
     font-size: 1.1rem;
     margin-bottom: 15px;
     color: var(--text-color);
     display: flex;
     align-items: center;
     gap: 12px;
+    text-decoration: none; /* Remove underline for links */
+    transition: color 0.3s ease;
 }
 
-.contact-info p i {
+.contact-info a:hover {
+    color: var(--primary-color); /* Highlight on hover */
+}
+
+
+.contact-info p i,
+.contact-info a i { /* Apply styles to icons within both p and a */
     color: var(--primary-color);
     font-size: 1.3rem;
 }
@@ -729,21 +747,21 @@ body.menu-open {
 .social_icon a {
     width: 50px;
     height: 50px;
-    background-color: var(--primary-color);
-    color: var(--bg-color);
+    background-color: transparent;
     border-radius: 50%;
+    border: 2px solid #0fff;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 1.8rem;
     text-decoration: none;
     transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+    box-shadow: 0 5px 15px #00ffff;
 }
 
 .social_icon a:hover {
-    transform: translateY(-8px) scale(1.1);
-    background-color: #00cccc;
+    transform: translateY(-3px) scale(1.1);
+    background-color: transparent;
     box-shadow: 0 10px 20px rgba(0, 255, 255, 0.5);
 }
 
@@ -950,17 +968,25 @@ body.menu-open {
     }
 }
 
-
-.footer-contact p {
+/* Style for footer contact links/paragraphs */
+.footer-contact p,
+.footer-contact a {
     font-size: 1rem;
     margin-bottom: 10px;
     color: #bbb;
     display: flex;
     align-items: center;
     gap: 10px;
+    text-decoration: none; /* Remove underline for links */
+    transition: color 0.3s ease;
 }
 
-.footer-contact p i {
+.footer-contact a:hover {
+    color: var(--primary-color); /* Highlight on hover */
+}
+
+.footer-contact p i,
+.footer-contact a i { /* Apply styles to icons within both p and a */
     color: var(--primary-color);
     font-size: 1.1rem;
 }
@@ -1298,506 +1324,12 @@ body.menu-open {
         text-align: center;
     }
     
-    .footer-contact p {
+    .footer-contact p,
+    .footer-contact a { /* Apply central alignment for both */
         justify-content: center;
     }
 }
 
-/* --- Auth Pages (Login/Register) & Profile Page General Styles --- */
-/* These styles are left mostly untouched, but removed dark mode references.
-   If you intend to keep login/register, these would need separate files. */
-.auth-body,
-.profile-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background: linear-gradient(to bottom right, #0f0f0f, #1a1a1a);
-    color: var(--text-color);
-    padding: 20px;
-    transition: background 0.5s, color 0.5s;
-    font-family: 'Signika', sans-serif;
-    overflow-y: auto;
-}
-
-/* Specific background for auth/profile pages to avoid full-page parallax */
-.auth-body::before,
-.profile-body::before {
-    content: none;
-}
-
-/* Shared wrapper for centering content */
-.auth-wrapper,
-.profile-wrapper {
-    width: 100%;
-    max-width: 550px;
-    margin: auto;
-    padding: 20px 0;
-}
-
-
-.auth-container,
-.profile-container {
-    background: var(--card-bg);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    padding: 3rem 2.5rem;
-    box-shadow: var(--shadow);
-    width: 100%;
-    text-align: center;
-    transition: background 0.3s, box-shadow 0.3s;
-    margin-top: 50px;
-}
-
-/* Headings for forms */
-.auth-container h2 {
-    font-size: 2.2rem;
-    color: var(--primary-color);
-    margin-bottom: 2rem;
-    text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
-}
-
-.profile-container h2 {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-}
-
-.profile-container h2 i {
-    font-size: 2.5rem;
-}
-
-
-/* Input Group Styles */
-.input-group {
-    text-align: left;
-    margin-bottom: 1.5rem;
-}
-
-.input-group label {
-    display: block;
-    margin-bottom: 8px;
-    color: var(--primary-color);
-    font-weight: 600;
-    font-size: 1.1rem;
-}
-
-
-.auth-container form input {
-    width: 100%;
-    padding: 14px 15px;
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    background: rgba(0, 0, 0, 0.2);
-    color: var(--text-color);
-    font-size: 1.1rem;
-    outline: none;
-    transition: border-color 0.3s ease, background 0.3s ease;
-}
-
-.auth-container form input::placeholder {
-    color: rgba(255, 255, 255, 0.7);
-}
-
-.auth-container form input:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-}
-
-/* Form submission buttons */
-.auth-container button[type="submit"],
-.save-profile-btn {
-    background: var(--primary-color);
-    color: #111;
-    padding: 14px 30px;
-    border: none;
-    border-radius: 10px;
-    font-size: 1.2rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-    width: 100%;
-    margin-top: 1rem;
-    text-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-}
-
-.auth-container button[type="submit"]:hover,
-.save-profile-btn:hover {
-    background: #00cccc;
-    transform: translateY(-3px);
-    box-shadow: 0 8px 15px rgba(0, 255, 255, 0.3);
-}
-
-
-/* Auth Form Toggle Buttons */
-.form-toggle-buttons {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 2rem;
-    border-radius: 10px;
-    overflow: hidden;
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
-}
-
-.form-toggle-buttons button {
-    flex: 1;
-    padding: 15px 0;
-    border: none;
-    background: transparent;
-    color: var(--primary-color);
-    font-size: 1.2rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    outline: none;
-}
-
-.form-toggle-buttons button:hover {
-    background: rgba(0, 255, 255, 0.1);
-    color: var(--primary-color);
-}
-
-.form-toggle-buttons button.active {
-    background: var(--primary-color);
-    color: #1a1a1a;
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
-}
-
-
-/* Auth Form visibility */
-.auth-form {
-    display: none;
-    animation: fadeIn 0.5s ease-out forwards;
-}
-
-.auth-form.active {
-    display: block;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Notes and Back to Home */
-.auth-note {
-    margin-top: 1.5rem;
-    font-size: 1rem;
-    color: #bbb;
-}
-
-.auth-note a {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-weight: bold;
-    transition: color 0.3s ease;
-}
-
-.auth-note a:hover {
-    color: #00cccc;
-    text-decoration: underline;
-}
-
-.auth-warning,
-.profile-warning {
-    background: var(--warning-bg);
-    border: 1px solid var(--warning-border);
-    border-radius: 8px;
-    padding: 15px;
-    margin-top: 2rem;
-    font-size: 0.95rem;
-    color: var(--warning-text);
-    text-align: left;
-    line-height: 1.5;
-}
-
-.auth-warning i,
-.profile-warning i {
-    margin-right: 10px;
-    color: var(--warning-text);
-}
-
-
-.back-home {
-    margin-top: 2.5rem;
-    text-align: center;
-}
-
-.back-home a {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-size: 1.1rem;
-    transition: color 0.3s ease, transform 0.2s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 15px;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-}
-
-.back-home a:hover {
-    color: #00cccc;
-    transform: translateY(-2px);
-    border-color: #00cccc;
-    box-shadow: 0 4px 10px rgba(0, 255, 255, 0.2);
-}
-
-
-/* --- Profile Page Specific Styles --- */
-.profile-avatar-section {
-    margin-bottom: 2.5rem;
-}
-
-.current-avatar img {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 5px solid var(--primary-color);
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-    margin-bottom: 1.5rem;
-    transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-.current-avatar img:hover {
-    transform: scale(1.03);
-    box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
-}
-
-.change-pic-btn {
-    background: var(--secondary-color);
-    color: white;
-    padding: 12px 25px;
-    border: none;
-    border-radius: 30px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.change-pic-btn:hover {
-    background: #357ABD;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
-
-
-/* Gallery Modal */
-.gallery-modal {
-    display: none;
-    /* Hidden by default */
-    position: fixed;
-    /* Stay in place */
-    z-index: 10000;
-    /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%;
-    /* Full width */
-    height: 100%;
-    /* Full height */
-    overflow: auto;
-    /* Enable scroll if needed */
-    background-color: rgba(0, 0, 0, 0.7);
-    /* Black w/ opacity */
-    backdrop-filter: blur(5px);
-    padding-top: 60px;
-}
-
-.modal-content {
-    background-color: #1a1a1a;
-    margin: 5% auto;
-    padding: 30px;
-    border: 1px solid var(--primary-color);
-    border-radius: 15px;
-    width: 90%;
-    max-width: 700px;
-    position: relative;
-    box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
-    animation: zoomIn 0.3s ease-out;
-}
-
-@keyframes zoomIn {
-    from {
-        transform: scale(0.8);
-        opacity: 0;
-    }
-    
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-.modal-content h3 {
-    color: var(--primary-color);
-    font-size: 1.8rem;
-    margin-bottom: 25px;
-    text-align: center;
-    text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
-}
-
-.close-button {
-    color: #fff;
-    font-size: 30px;
-    font-weight: bold;
-    position: absolute;
-    top: 15px;
-    right: 25px;
-    cursor: pointer;
-    transition: color 0.3s;
-}
-
-.close-button:hover,
-.close-button:focus {
-    color: var(--primary-color);
-    text-decoration: none;
-}
-
-
-.gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 15px;
-    margin-bottom: 30px;
-}
-
-.gallery-item {
-    width: 100%;
-    height: 120px;
-    object-fit: cover;
-    border-radius: 10px;
-    border: 3px solid transparent;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
-}
-
-.gallery-item:hover {
-    transform: scale(1.05);
-    border-color: var(--primary-color);
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
-}
-
-.gallery-item.selected {
-    border-color: var(--warning-border);
-    box-shadow: 0 0 20px var(--warning-border), 0 0 30px rgba(255, 221, 0, 0.8);
-    transform: scale(1.08);
-}
-
-.confirm-selection-btn {
-    background: var(--primary-color);
-    color: #111;
-    padding: 12px 25px;
-    border: none;
-    border-radius: 30px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    width: auto;
-    display: block;
-    margin: 0 auto;
-    opacity: 0.7;
-    pointer-events: none;
-}
-
-.confirm-selection-btn:not([disabled]) {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.confirm-selection-btn:hover:not([disabled]) {
-    background: #00cccc;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
-}
-
-
-/* Responsive Adjustments for Auth and Profile Pages */
-@media (max-width: 580px) {
-    
-    .auth-container,
-    .profile-container {
-        padding: 2rem 1.5rem;
-    }
-    
-    .auth-container h2,
-    .profile-container h2 {
-        font-size: 1.8rem;
-    }
-    
-    .form-toggle-buttons {
-        flex-direction: column;
-    }
-    
-    .form-toggle-buttons button {
-        border-radius: 0;
-    }
-    
-    .form-toggle-buttons button:first-child {
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
-    }
-    
-    .form-toggle-buttons button:last-child {
-        border-bottom-left-radius: 10px;
-        border-bottom-right-radius: 10px;
-    }
-    
-    .input-group label {
-        font-size: 1rem;
-    }
-    
-    .auth-container form input {
-        padding: 12px 10px;
-        font-size: 1rem;
-    }
-    
-    .auth-container button[type="submit"],
-    .save-profile-btn {
-        padding: 12px 20px;
-        font-size: 1.1rem;
-    }
-    
-    .back-home a {
-        font-size: 1rem;
-        padding: 8px 12px;
-    }
-    
-    .gallery-grid {
-        grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
-    }
-    
-    .gallery-item {
-        height: 90px;
-    }
-    
-    .modal-content h3 {
-        font-size: 1.5rem;
-    }
-}
-
-/* Ensure navbar is not covering content on auth/profile pages if not full height */
-.auth-body .navbar,
-.profile-body .navbar {
-    display: none;
-    /* Hide main navbar on these specific pages */
-}
 
 .footer-bottom p:hover {
     color: #00ffff;
