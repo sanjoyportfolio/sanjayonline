@@ -768,6 +768,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 // --- Chat Bot Logic ---
+// --- DOM Elements ---
 const chatToggleBtn = document.getElementById("chatToggleBtn");
 const chatBotContainer = document.getElementById("chatBotContainer");
 const closeChatBtn = document.getElementById("closeChatBtn");
@@ -775,95 +776,253 @@ const chatMessages = document.getElementById("chatMessages");
 const chatInput = document.getElementById("chatInput");
 const sendMessageBtn = document.getElementById("sendMessageBtn");
 
-let chatBotOpen = false; // To track if the chat bot is open
+let chatBotOpen = false;
 
-// Function to add a message to the chat interface
+// --- Add Message ---
 function addMessage(message, sender) {
   const messageElement = document.createElement("div");
   messageElement.classList.add("message", `${sender}-message`);
-  messageElement.innerHTML = message; // Use innerHTML to render links
+  messageElement.innerHTML = message;
   chatMessages.appendChild(messageElement);
-  chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll to the latest message
+  chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-// Simple Chat Bot Responses with more text and social links
-function getBotResponse(userMessage) {
-  const lowerCaseMessage = userMessage.toLowerCase();
+// --- Bot Response Data ---
+const responses = {
+  greetings: [
+    "হ্যালো! 😊 আমি আছি আপনাকে সাহায্য করতে।",
+    "Hi there! কিভাবে সাহায্য করতে পারি?",
+    "Hey! Let's explore Sanjay's portfolio, shall we?",
+    "Welcome! আমি সঞ্জয়ের অ্যাসিস্টেন্ট। কি জানতে চান?",
+    "হাই! 😄 কিছু জানতে চাইলে জিজ্ঞাসা করুন।",
+  ],
+  howAreYou: [
+    "আমি ভালোই আছি, ধন্যবাদ! 😇 আপনি কেমন আছেন?",
+    "Bot never sleeps! 😴 চলুন কাজ শুরু করি!",
+    "Feeling great, কারণ সঞ্জয় সবসময় কিছু শিখছে।",
+    "ভালোই আছি, portfolio ready আছে দেখার জন্য!",
+    "চমৎকার! আপনার কিছুর দরকার আছে কি?",
+  ],
+  whoAreYou: [
+    "আমি Bot — তার ডিজিটাল সহকারী।",
+    "I'm built to guide you through Sanjay's skills.",
+    "AI Assistant 🤖, powered by Sanjay's portfolio!",
+    "সঞ্জয়ের পোর্টফোলিও এক্সপ্লোর করতে আমি আছি।",
+    "সহজ ভাষায় বললে — সঞ্জয় সম্পর্কে সব জানি!",
+  ],
+  skills: [
+    "**Skills**: HTML5 (95%), CSS3 (90%), JavaScript (45%) 🌐",
+    "Modern frontend skillset — clean & fast UI.",
+    "Coding with ❤️ — HTML, CSS, JS",
+    "Web dev দক্ষতা: সবই ইউজার ফ্রেন্ডলি ওয়েব বানাতে।",
+    "Ongoing learner, always upskilling 📚",
+  ],
+  projects: [
+    "Portfolio site 💻, Messenger Bot 🤖 — সবই নিজ হাতে বানানো।",
+    "Recent work: Top-up Website & AI Chat UI.",
+    "Project demo চাইলে বলবেন! 🧪",
+    "Sanjay loves real-world projects with clean UI.",
+    "Building, testing, delivering — that’s Sanjay's motto.",
+  ],
+  contact: [
+    "Here is everything about my owner, contact him!☺️"
+  ],
+  education: [
+    "🎓 HSC - Notre Dame College",
+    "📘 SSC - High School, GPA: 4.06",
+    "Studied Science, still exploring tech! 🧠",
+    "Academic to practical — তার পথ চলা এখনো চলছে।",
+    "Learner first, developer forever!",
+  ],
+  experience: [
+    "1+ year experience in web development 💻",
+    "Completed 3+ real projects with real users.",
+    "Building user-first apps with performance in mind.",
+    "Love solving real-world UI/UX problems.",
+    "Learning never stops, coding never sleeps!",
+  ],
+  about: [
+    "সঞ্জয় creative & detail-focused একজন frontend developer।",
+    "He codes not just to make things work, but to impress! 💥",
+    "User-first thinking makes him stand out.",
+    "He believes in clean UI & smooth UX.",
+    "Passion meets profession — that’s Sanjay!",
+  ],
+  location: [
+    "📍Currently living in Dhaka, Bangladesh.",
+    "Based in BD, working globally 🌍",
+    "From Dhaka with code! 🏙️",
+    "Location never limits vision.",
+    "ঢাকা শহর থেকেই বড় স্বপ্নের যাত্রা শুরু!",
+  ],
+  birthday: [
+    "🎂 20 June 2007 — সঞ্জয়ের জন্মদিন!",
+    " June 20th 2007!",
+    "The world got a coder on 20 June 💖",
+    "সেই দিনটি যেদিন ভবিষ্যতের কোডার জন্মেছিল।",
+    "Celebrates every birthday with one more skill learned!",
+  ],
+  goodbye: [
+    "👋 বিদায়! আবার দেখা হবে!",
+    "Take care! Visit Sanjay’s site again soon!",
+    "Thank you for stopping by 🙏",
+    "It was nice chatting with you!",
+    "Stay safe & keep exploring tech!",
+  ],
+  good: [
+    "Thanks You sir!",
+    "Take Care!",
+  ],
+  thanks: [
+    "আপনাকেও ধন্যবাদ! 😇",
+    "My pleasure to assist!",
+    "Thanks a lot! Need anything else?",
+    "Welcome anytime!",
+    "🙂 Always here to help!",
+  ],
+  admin: [`
+<div style="
+  font-family: 'Signika', sans-serif; 
+  max-width: 100%; 
+  background: linear-gradient(135deg, #1f1f2e, #27293d);
+  color: #e0e6f8; 
+  padding: 25px; 
+  border-radius: 16px; 
+  box-shadow: 0 8px 20px rgba(0, 255, 255, 0.3);
+  line-height: 1.5;
+">
+  <h2 style="text-align: center; color: #00f3ff; font-weight: 900; letter-spacing: 1px; margin-bottom: 20px;">
+    <i class="fa-solid fa-user"></i> SANJAY DAS
+  </h2>
   
-  // Social Media Links (replace with actual links)
-  const socialLinks = `
+  <div style="margin-bottom: 18px;">
+    <p><i class="fa-solid fa-cake-candles" style="color:#ff6b6b; margin-right: 8px;"></i><strong>Age:</strong> 18</p>
+    <p><i class="fa-solid fa-birthday-cake" style="color:#feca57; margin-right: 8px;"></i><strong>Birthday:</strong> 20 JUN 2007</p>
+    <p><i class="fa-solid fa-mars" style="color:#54a0ff; margin-right: 8px;"></i><strong>Gender:</strong> Male</p>
+  </div>
+  
+  <div style="font-style: italic; color: #48dbfb; margin-bottom: 20px;">
+    Mindset: Overthinker, Romantic, Loyal Lover<br>
+    Focus: <span style="font-weight: 700; color: #ff9f43;">10% Study | 90% Love & Vibe</span><br>
+    Education: 1st Year Student
+  </div>
+  
+  <div style="margin-bottom: 22px;">
+    <h3 style="border-bottom: 2px solid #00f3ff; padding-bottom: 6px; margin-bottom: 12px; font-weight: 700;">
+      <i class="fa-solid fa-code"></i> Skills
+    </h3>
+    <ul style="list-style: none; padding-left: 0; margin: 0;">
+      <li style="margin-bottom: 6px;"><i class="fa-solid fa-check" style="color: #ff6b6b;"></i> HTML - 95%</li>
+      <li style="margin-bottom: 6px;"><i class="fa-solid fa-check" style="color: #ff6b6b;"></i> CSS - 80%</li>
+      <li><i class="fa-solid fa-check" style="color: #ff6b6b;"></i> JavaScript - 40%</li>
+    </ul>
+  </div>
+  
+  <div style="margin-bottom: 22px;">
+    <h3 style="border-bottom: 2px solid #00f3ff; padding-bottom: 6px; margin-bottom: 12px; font-weight: 700;">
+      <i class="fa-solid fa-address-book"></i> Contact Info
+    </h3>
+    <p><i class="fa-solid fa-envelope" style="color: #54a0ff; margin-right: 8px;"></i><a href="mailto:sanjaydas@gmail.com" style="color: #70a1ff; text-decoration: none;">sanjaydas@gmail.com</a></p>
+    <p><i class="fa-solid fa-phone" style="color: #54a0ff; margin-right: 8px;"></i><a href="tel:+8801727503540" style="color: #70a1ff; text-decoration: none;">+880 1727 503540</a></p>
+    <p><i class="fa-brands fa-facebook" style="color: #3b5998; margin-right: 8px;"></i><span>সঞ্জয় দাস</span></p>
+    <p><i class="fa-brands fa-whatsapp" style="color: #25d366; margin-right: 8px;"></i><a href="https://wa.me/8801727503540" target="_blank" style="color: #70a1ff; text-decoration: none;">Chat Now</a></p>
+    <p><i class="fa-brands fa-instagram" style="color: #c13584; margin-right: 8px;"></i><a href="https://instagram.com/broken_hurt_143" target="_blank" style="color: #70a1ff; text-decoration: none;">@broken_hurt_143</a></p>
+  </div>
+  
+  <div style="margin-bottom: 22px;">
+    <h3 style="border-bottom: 2px solid #00f3ff; padding-bottom: 6px; margin-bottom: 12px; font-weight: 700;">
+      <i class="fa-solid fa-heart"></i> Relationship
+    </h3>
+    <p><strong>Taken by:</strong> <span style="color: #ff6b6b; font-weight: 700;">AISHI</span></p>
+    <p><strong>Loyalty:</strong> Infinite</p>
+  </div>
+  
+  <div>
+    <h3 style="border-bottom: 2px solid #00f3ff; padding-bottom: 6px; margin-bottom: 12px; font-weight: 700;">
+      <i class="fa-solid fa-star"></i> Favourites
+    </h3>
+    <p><strong>Song:</strong> Hua Hein Aaj Pehli Baar</p>
+    <p><strong>Food:</strong> Biriyani, Chicken</p>
+    <p><strong>Game:</strong> Free Fire</p>
+    <p><strong>Movie:</strong> Romantic</p>
+  </div>
+</div>
+`],
+  whoareu: [
+    "আমি একটা বট 🤖",
+    "সঞ্জয়ে'র সহকারী Robot!",
+  ],
+  help: [
+    "I can help you with all the contacts of Sanjay! Please contact him and tell him about your problem. Thank you.",
+  ],
+  unknown: [
+    "Sorry, এটা বুঝতে পারিনি 😅",
+    "আপনি কি একটু স্পষ্ট করে বলবেন?",
+    "Hmm… এটা হয়তো আমি জানি না, কিন্তু ট্রাই করতে পারি!",
+    "আমার বুদ্ধিতে একটু কমে গেছে মনে হচ্ছে 🤖",
+  ],
+};
+
+const socialLinks = `
     <ul>
-      <li><a href="https://www.facebook.com/yourprofile" target="_blank">Facebook</a></li>
-      <li><a href="https://github.com/yourprofile" target="_blank">GitHub</a></li>
-      <li><a href="https://wa.me/8801727503540" target="_blank">WhatsApp</a></li>
-      <li><a href="https://www.linkedin.com/in/yourprofile" target="_blank">LinkedIn</a></li>
-      <li><a href="https://twitter.com/yourprofile" target="_blank">Twitter</a></li>
-      <li><a href="https://www.instagram.com/yourprofile" target="_blank">Instagram</a></li>
-      <li><a href="https://www.youtube.com/yourchannel" target="_blank">YouTube</a></li>
       <li><a href="mailto:im.the.devil.god2067@gmail.com">Email</a></li>
       <li><a href="tel:+8801727503540">Phone</a></li>
-      <li><a href="https://yourwebsite.com" target="_blank">Personal Website</a></li>
+      <li><a href="https://sanjayonline.vercel.app" target="_blank">Website</a></li>
+      <li><a href="https://www.facebook.com/share/1Asrx5vw6q/" target="_blank">Facebook</a></li>
+      <li><a href="https://wa.me/8801727503540" target="_blank">WhatsApp</a></li>
+      <li><a href="https://www.instagram.com/broken_hurt_143/" target="_blank">Instagram</a></li>
     </ul>
   `;
-  
-  if (lowerCaseMessage.includes("hello") || lowerCaseMessage.includes("hi")) {
-    return "Hello! আমি সঞ্জয়ের সহায়ক সহকারী বট। আমি আপনাকে কিভাবে সাহায্য করতে পারি? তার ব্যাকগ্রাউন্ড, শিক্ষা, দক্ষতা, বা প্রকল্প সম্পর্কে জিজ্ঞাসা করতে পারেন। আমি আপনার যেকোনো প্রশ্নের উত্তর দিতে প্রস্তুত।";
-  } else if (lowerCaseMessage.includes("how are you")) {
-    return "আমি পুরোপুরি ঠিকঠাক কাজ করছি, জিজ্ঞাসা করার জন্য ধন্যবাদ! একজন এআই হিসেবে আমার কোনো আবেগ নেই, তবে সঞ্জয়ের পোর্টফোলিও সম্পর্কে তথ্য দিতে আমি সর্বদা প্রস্তুত। আপনার যদি কোনো নির্দিষ্ট প্রশ্ন থাকে, তাহলে নির্দ্বিধায় জিজ্ঞাসা করুন।";
-  } else if (lowerCaseMessage.includes("your name") || lowerCaseMessage.includes("who are you")) {
-    return "আমি একটি ভার্চুয়াল সহকারী যা সঞ্জয় দাস এবং তার কাজ সম্পর্কে তথ্য সরবরাহ করার জন্য ডিজাইন করা হয়েছে। আমার উদ্দেশ্য হল আপনাকে তার পোর্টফোলিও নেভিগেট করতে এবং একজন জুনিয়র ওয়েব ডেভেলপার হিসাবে তার ক্ষমতা সম্পর্কে আরও জানতে সহায়তা করা। আমি এখানে আপনার প্রশ্নের উত্তর দিতে এসেছি।";
-  } else if (lowerCaseMessage.includes("skills") || lowerCaseMessage.includes("technologies")) {
-    return "সঞ্জয়ের ওয়েব কন্টেন্ট স্ট্রাকচার করার জন্য **HTML5 (95%)** এবং স্টাইলিং ও রেসপনসিভ ডিজাইনের জন্য **CSS3 (90%)** এ শক্তিশালী মৌলিক দক্ষতা রয়েছে। তিনি ডাইনামিক এবং ইন্টারেক্টিভ ওয়েব অ্যাপ্লিকেশন তৈরির জন্য **জাভাস্ক্রিপ্ট (45%)** এও সক্রিয়ভাবে তার দক্ষতা বৃদ্ধি করছেন। আধুনিক ওয়েব ডেভেলপমেন্টের জন্য তার টুলকিট সর্বদা প্রসারিত করার জন্য তার শেখার প্রতি নিবেদন রয়েছে।";
-  } else if (lowerCaseMessage.includes("projects") || lowerCaseMessage.includes("portfolio work")) {
-    return "সঞ্জয় বেশ কয়েকটি উল্লেখযোগ্য প্রকল্প সম্পন্ন করেছেন, যার মধ্যে তার ব্যক্তিগত **পোর্টফোলিও ওয়েবসাইট** নিজেই রয়েছে, যা তার ফ্রন্ট-এন্ড ডেভেলপমেন্টের ক্ষমতা প্রদর্শন করে। তিনি একটি **ফেসবুক মেসেঞ্জার বট**ও তৈরি করেছেন, যা ইন্টারেক্টিভ এবং স্বয়ংক্রিয় সমাধান তৈরির তার ক্ষমতা প্রমাণ করে। তিনি সর্বদা নতুন চ্যালেঞ্জ গ্রহণ করতে এবং উদ্ভাবনী ওয়েব অভিজ্ঞতা তৈরি করতে আগ্রহী।";
-  } else if (lowerCaseMessage.includes("contact") || lowerCaseMessage.includes("hire me") || lowerCaseMessage.includes("get in touch")) {
-    return `আপনি সহজেই সঞ্জয় দাসের সাথে যোগাযোগ করতে পারেন। তার ইমেল হলো **im.the.devil.god2067@gmail.com** এবং তার ফোন নম্বর হলো **+880 1727 503540**। তিনি ঢাকা, বাংলাদেশে অবস্থিত এবং নতুন সুযোগের জন্য উন্মুক্ত। আপনি তার ওয়েবসাইটের মাধ্যমে সরাসরি একটি বার্তা পাঠাতে পারেন! এখানে তার কিছু সোশ্যাল মিডিয়া লিংক রয়েছে: ${socialLinks}`;
-  } else if (lowerCaseMessage.includes("about sanjay") || lowerCaseMessage.includes("about you")) {
-    return "সঞ্জয় দাস একজন নিবেদিতপ্রাণ এবং ফলাফল-ভিত্তিক জুনিয়র ওয়েব ডেভেলপার। তিনি ডাইনামিক, রেসপনসিভ এবং ব্যবহারকারী-বান্ধব ওয়েব অ্যাপ্লিকেশন তৈরিতে আগ্রহী। ওয়েব ডেভেলপমেন্টে তার যাত্রা একটি শক্তিশালী কৌতূহল দিয়ে শুরু হয়েছিল, যা দক্ষ এবং পরিমাপযোগ্য সমাধান তৈরির প্রতিশ্রুতির দিকে বিকশিত হয়েছে। তিনি পরিষ্কার, সিমেন্টিক কোড এবং আধুনিক ডিজাইন নীতিগুলির উপর মনোযোগ দেন।";
-  } else if (lowerCaseMessage.includes("education") || lowerCaseMessage.includes("study")) {
-    return "সঞ্জয় নটরডেম কলেজ, ঢাকা (2020-2022) থেকে তার **উচ্চ মাধ্যমিক স্কুল সার্টিফিকেট (HSC)** সম্পন্ন করেছেন, যেখানে তার প্রধান বিষয় ছিল বিজ্ঞান। তিনি হাই স্কুল, ঢাকা (2024-2025) থেকে তার **মাধ্যমিক স্কুল সার্টিফিকেট (SSC)** সম্পন্ন করেছেন, যেখানে তিনি বিজ্ঞান গ্রুপে 4.06 GPA অর্জন করেছেন। তিনি ক্রমাগত শিখছেন এবং তার একাডেমিক পটভূমিকে বাস্তব-বিশ্বের ডেভেলপমেন্ট চ্যালেঞ্জগুলিতে প্রয়োগ করছেন।";
-  } else if (lowerCaseMessage.includes("location") || lowerCaseMessage.includes("where are you")) {
-    return "সঞ্জয় দাস বর্তমানে **ঢাকা, বাংলাদেশে** অবস্থান করছেন।";
-  } else if (lowerCaseMessage.includes("date of birth") || lowerCaseMessage.includes("birthday")) {
-    return "সঞ্জয়ের জন্ম তারিখ হলো **20 জুন 2007**।";
-  } else if (lowerCaseMessage.includes("experience")) {
-    return "সঞ্জয়ের ওয়েব ডেভেলপমেন্টে **1 বছরেরও বেশি অভিজ্ঞতা** রয়েছে, যা রেসপনসিভ ওয়েব অ্যাপ্লিকেশন তৈরিতে কেন্দ্র করে। তিনি **3+ প্রকল্প** সম্পন্ন করেছেন এবং উচ্চ ক্লায়েন্ট সন্তুষ্টির লক্ষ্য রাখেন। তার অভিজ্ঞতা তাকে বিভিন্ন চ্যালেঞ্জ মোকাবেলায় সহায়তা করেছে।";
-  } else if (lowerCaseMessage.includes("thank you") || lowerCaseMessage.includes("thanks")) {
-    return "আপনাকে স্বাগতম! সঞ্জয় বা তার কাজ সম্পর্কে আপনার আর কিছু জানার আছে কি? আমি এখানে সাহায্য করার জন্য আছি।";
-  } else if (lowerCaseMessage.includes("bye") || lowerCaseMessage.includes("goodbye")) {
-    return "বিদায়! সঞ্জয়ের পোর্টফোলিওতে আসার জন্য ধন্যবাদ। আপনার দিনটি শুভ হোক!";
-  } else if (lowerCaseMessage.includes("help") || lowerCaseMessage.includes("সাহায্য")) {
-    return `আমি আপনাকে আমার কন্টাক্ট লিস্ট দিতে পারি। সঞ্জয়ের সাথে যোগাযোগের জন্য এই লিংকগুলো ব্যবহার করতে পারেন: ${socialLinks} আপনার আর কোনো প্রশ্ন থাকলে জিজ্ঞাসা করতে পারেন।`;
-  } else {
-    return "আমি দুঃখিত, আমি একটি সাধারণ বট এবং এই নির্দিষ্ট প্রশ্নটি বুঝতে পারছি না। আমি আপনাকে সঞ্জয়ের **দক্ষতা**, **প্রকল্প**, **শিক্ষা**, **যোগাযোগ** তথ্য, অথবা তার সম্পর্কে আরও কিছু জানাতে পারি। অনুগ্রহ করে এই বিষয়গুলির মধ্যে একটি জিজ্ঞাসা করার চেষ্টা করুন।";
-  }
+
+function getRandom(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
 }
 
-// Toggle Chat Bot visibility
+function getBotResponse(userMessage) {
+  const msg = userMessage.toLowerCase();
+  
+  const match = (keywords) => keywords.some(word => msg.includes(word));
+  
+  if (match(["hello", "hi", " হাই", "হ্যালো", "হেলো"])) return getRandom(responses.greetings);
+  if (match(["who are you", "who", "কে তুমি", "কে"])) return getRandom(responses.whoareu);
+  if (match(["good", "nice", " গুড", "নাইস"])) return getRandom(responses.good);
+  if (match(["how are you", "কেমন আছো"])) return getRandom(responses.howAreYou);
+  if (match(["your name", "তোমার নাম"])) return getRandom(responses.whoAreYou);
+  if (match(["skills", "technologies"])) return getRandom(responses.skills);
+  if (match(["admin", "sanjay"," sonjoy","সঞ্জয়"])) return getRandom(responses.admin);
+  if (match(["projects", "portfolio work"])) return getRandom(responses.projects);
+  if (match(["contact", "hire me", "কন্টাক্ট"])) return getRandom(responses.contact) + socialLinks;
+  if (match(["education", "study"])) return getRandom(responses.education);
+  if (match(["experience"])) return getRandom(responses.experience);
+  if (match(["about sanjay", "about you", "about"])) return getRandom(responses.about);
+  if (match(["location", "where are you"])) return getRandom(responses.location);
+  if (match(["birthday", "date of birth"])) return getRandom(responses.birthday);
+  if (match(["thank you", "thanks"])) return getRandom(responses.thanks);
+  if (match(["bye", "good bye", "বায়"])) return getRandom(responses.goodbye);
+  if (match(["help", "সাহায্য"])) return getRandom(responses.help) + socialLinks;
+  
+  return getRandom(responses.unknown);
+}
+
+// --- Toggle Chat ---
 chatToggleBtn.addEventListener("click", () => {
   chatBotOpen = !chatBotOpen;
-  if (chatBotOpen) {
-    chatBotContainer.classList.add("show");
-    chatInput.focus(); // Focus on input when chat opens
-  } else {
-    chatBotContainer.classList.remove("show");
-  }
+  chatBotContainer.classList.toggle("show", chatBotOpen);
+  if (chatBotOpen) chatInput.focus();
 });
 
-// Close Chat Bot
+// --- Close Chat ---
 closeChatBtn.addEventListener("click", () => {
   chatBotOpen = false;
   chatBotContainer.classList.remove("show");
 });
 
-// Send Message
+// --- Send Button ---
 sendMessageBtn.addEventListener("click", () => {
   const userMessage = chatInput.value.trim();
   if (userMessage) {
     addMessage(userMessage, "user");
-    chatInput.value = ""; // Clear input
-    
-    // Simulate bot response after a short delay
+    chatInput.value = "";
     setTimeout(() => {
       const botResponse = getBotResponse(userMessage);
       addMessage(botResponse, "bot");
@@ -871,16 +1030,7 @@ sendMessageBtn.addEventListener("click", () => {
   }
 });
 
-// Send message on Enter key press
+// --- Enter Key Press ---
 chatInput.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") {
-    sendMessageBtn.click(); // Simulate a click on the send button
-  }
+  if (e.key === "Enter") sendMessageBtn.click();
 });
-
-// Keep chat button visible and remove scroll-to-top functionality
-if (chatToggleBtn) {
-  // We no longer need to check scroll position to show/hide it,
-  // as it's meant to be always visible and toggle the chat.
-  // The original scroll-to-top button display logic is removed.
-        }
