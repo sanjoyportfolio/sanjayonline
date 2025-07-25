@@ -969,7 +969,7 @@ const socialLinks = `
       <li><a href="https://sanjayonline.vercel.app" target="_blank">Website</a></li>
       <li><a href="https://www.facebook.com/share/1Asrx5vw6q/" target="_blank">Facebook</a></li>
       <li><a href="https://wa.me/8801727503540" target="_blank">WhatsApp</a></li>
-      <li><a href="https://www.instagram.com/broken_hurt_143/" target="_blank">Instagram</a></li>
+      <li><a href="https://www.instagram.com/broken_hurt.143?igsh=dG1tOHFoYXVxbmRm" target="_blank">Instagram</a></li>
     </ul>
   `;
 
@@ -988,7 +988,7 @@ function getBotResponse(userMessage) {
   if (match(["how are you", "কেমন আছো"])) return getRandom(responses.howAreYou);
   if (match(["your name", "তোমার নাম"])) return getRandom(responses.whoAreYou);
   if (match(["skills", "technologies"])) return getRandom(responses.skills);
-  if (match(["admin", "sanjay"])) return getRandom(responses.admin);
+  if (match(["admin"," sonjoy","sanjoy","সঞ্জয়","সনজয়","sanjay"])) return getRandom(responses.admin);
   if (match(["projects", "portfolio work"])) return getRandom(responses.projects);
   if (match(["contact", "hire me", "কন্টাক্ট"])) return getRandom(responses.contact) + socialLinks;
   if (match(["education", "study"])) return getRandom(responses.education);
