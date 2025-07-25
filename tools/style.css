@@ -1,0 +1,528 @@
+/* Custom CSS Variables - Default Theme: Deep Blue Cyberpunk */
+:root {
+    --bg-color: #0b1120;
+    /* This will be the overlay color */
+    --card-bg: rgba(18, 30, 50, 0.8);
+    --border-color: #00ffff;
+    /* Default border set to #00FFFF */
+    --primary-text-color: #e0f2f7;
+    --secondary-text-color: #a0aec0;
+    --accent-color-light: #00ffff;
+    /* Changed to #00ffff as requested for default */
+    --accent-color-dark: #00a8a8;
+    --button-primary-bg: #00e6e6;
+    --button-primary-text: #0b1120;
+    --button-secondary-bg: transparent;
+    --button-secondary-border: #808080;
+    --button-secondary-text: #e0f2f7;
+    --shadow-color: rgba(0, 230, 230, 0.4);
+    --inner-shadow-color: rgba(0, 230, 230, 0.1);
+    /* New button specific variables */
+    --button-action-bg: #0f172a;
+    --button-action-border-color: #00ffff;
+    /* Changed to #00ffff as requested for default */
+}
+
+/* --- Theme Variations (Only Provided Colors) --- */
+
+/* Theme 1: Default (00FFFF) - Cyan / Aqua */
+body.theme-default {
+    --bg-color: #0b1120;
+    --card-bg: rgba(18, 30, 50, 0.8);
+    --border-color: #00ffff;
+    --primary-text-color: #e0f2f7;
+    --secondary-text-color: #a0aec0;
+    --accent-color-light: #00ffff;
+    --accent-color-dark: #00a8a8;
+    --button-primary-bg: #00e6e6;
+    --button-primary-text: #0b1120;
+    --button-secondary-border: #808080;
+    --button-secondary-text: #e0f2f7;
+    --shadow-color: rgba(0, 230, 230, 0.4);
+    --inner-shadow-color: rgba(0, 230, 230, 0.1);
+    --button-action-bg: #0f172a;
+    --button-action-border-color: #00ffff;
+}
+
+/* Theme 1 (Custom): Crimson */
+body.theme-custom-1 {
+    --primary-text-color: crimson;
+    --secondary-text-color: #f0e68c;
+    /* Khaki for better readability on dark */
+    --accent-color-light: crimson;
+    --accent-color-dark: #b22222;
+    /* Firebrick */
+    --border-color: crimson;
+    --button-action-border-color: crimson;
+    --shadow-color: rgba(220, 20, 60, 0.4);
+    --inner-shadow-color: rgba(220, 20, 60, 0.1);
+}
+
+/* Theme 2 (Custom): 9400D3 - Dark Violet */
+body.theme-custom-2 {
+    --primary-text-color: #9400D3;
+    /* Dark Violet */
+    --secondary-text-color: #e6b2ff;
+    /* Light purple for readability */
+    --accent-color-light: #9400D3;
+    --accent-color-dark: #7A00B0;
+    /* Darker Violet */
+    --border-color: #9400D3;
+    --button-action-border-color: #9400D3;
+    --shadow-color: rgba(148, 0, 211, 0.4);
+    --inner-shadow-color: rgba(148, 0, 211, 0.1);
+}
+
+/* Theme 3 (Custom): FF00FF - Magenta */
+body.theme-custom-3 {
+    --primary-text-color: #FF00FF;
+    /* Magenta */
+    --secondary-text-color: #ffbfff;
+    /* Light Magenta for readability */
+    --accent-color-light: #FF00FF;
+    --accent-color-dark: #CC00CC;
+    /* Darker Magenta */
+    --border-color: #FF00FF;
+    --button-action-border-color: #FF00FF;
+    --shadow-color: rgba(255, 0, 255, 0.4);
+    --inner-shadow-color: rgba(255, 0, 255, 0.1);
+}
+
+/* Theme 4 (Custom): 00FA9A - Medium Spring Green */
+body.theme-custom-4 {
+    --primary-text-color: #00FA9A;
+    /* Medium Spring Green */
+    --secondary-text-color: #99ffe0;
+    /* Lighter green for readability */
+    --accent-color-light: #00FA9A;
+    --accent-color-dark: #00C87B;
+    /* Darker Spring Green */
+    --border-color: #00FA9A;
+    --button-action-border-color: #00FA9A;
+    --shadow-color: rgba(0, 250, 154, 0.4);
+    --inner-shadow-color: rgba(0, 250, 154, 0.1);
+}
+
+/* Theme 5 (Custom): 00BFFF - Deep Sky Blue */
+body.theme-custom-5 {
+    --primary-text-color: #00BFFF;
+    /* Deep Sky Blue */
+    --secondary-text-color: #b3e0ff;
+    /* Light blue for readability */
+    --accent-color-light: #00BFFF;
+    --accent-color-dark: #009FE5;
+    /* Darker Sky Blue */
+    --border-color: #00BFFF;
+    --button-action-border-color: #00BFFF;
+    --shadow-color: rgba(0, 191, 255, 0.4);
+    --inner-shadow-color: rgba(0, 191, 255, 0.1);
+}
+
+/* Theme 6 (Custom): Gold */
+body.theme-custom-6 {
+    --primary-text-color: #FFD700;
+    /* Gold */
+    --secondary-text-color: #ffe87a;
+    /* Light Gold */
+    --accent-color-light: #FFD700;
+    --accent-color-dark: #ccac00;
+    /* Dark Gold */
+    --border-color: #FFD700;
+    --button-action-border-color: #FFD700;
+    --shadow-color: rgba(255, 215, 0, 0.4);
+    --inner-shadow-color: rgba(255, 215, 0, 0.1);
+}
+
+
+/* Universal Box-Sizing for better layout control */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* --- General Body Styles --- */
+body {
+    font-family: 'Signika', sans-serif;
+    color: var(--primary-text-color);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+    width: 100%;
+    transition: background-color 0.5s ease, color 0.5s ease;
+    position: relative;
+    /* Needed for pseudo-element positioning */
+    z-index: 1;
+    /* Ensure content is above pseudo-element */
+}
+
+/* Background image with brightness filter */
+body::before {
+    content: '';
+    position: fixed;
+    /* Fixed so it stays in place on scroll */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../bg.jpg');
+    /* Adjust path as needed */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    filter: brightness(0.5);
+    /* Darken the background */
+    z-index: -1;
+    /* Place behind body content */
+    transition: background-color 0.5s ease;
+    /* Transition for theme changes if you ever change bg color directly on body */
+    /* Add an overlay color that changes with theme */
+    background-color: var(--bg-color);
+    /* This will add an overlay color that changes */
+    background-blend-mode: multiply;
+    /* Blends the image with the background-color */
+}
+
+
+/* --- Main Content Area --- */
+.main-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 1rem;
+    margin-top: 30px;
+    position: relative;
+    /* Ensure content is above the pseudo-background */
+    z-index: 2;
+    /* Ensure content is on top */
+}
+
+/* --- Main Title Styling (My Tools) --- */
+.main-title {
+    font-family: 'Signika', sans-serif;
+    color: var(--accent-color-light);
+    font-size: 3.5rem;
+    text-shadow: 0 0 15px var(--accent-color-light), 0 0 25px var(--shadow-color);
+    /* Use variable */
+    margin-bottom: 1.5rem;
+    /* Reduced margin */
+    position: relative;
+    padding-bottom: 0.5rem;
+    text-align: center;
+    transition: color 0.5s ease, text-shadow 0.5s ease;
+}
+
+.main-title::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: var(--accent-color-light);
+    border-radius: 2px;
+    box-shadow: 0 0 10px var(--accent-color-light);
+    transition: background-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+@media (max-width: 768px) {
+    .main-title {
+        font-size: 2.5rem;
+    }
+}
+
+/* --- Projects Grid --- */
+.projects-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    /* Default to 1 column for very small screens */
+    gap: 2rem;
+    /* Reduced gap between cards */
+    width: 100%;
+    justify-items: center;
+    padding-bottom: 40px;
+}
+
+@media (min-width: 600px) {
+    
+    /* Two columns on screens 600px wide and up */
+    .projects-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* --- Project Card Styling --- */
+.project-card {
+    background: var(--card-bg);
+    /* Changed to use card-bg variable for transparency */
+    backdrop-filter: blur(20px);
+    /* This enables the blur effect */
+    border: 1px solid var(--border-color);
+    border-radius: 1.2rem;
+    box-shadow: 0 10px 30px #777, inset 0 0 15px var(--inner-shadow-color);
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    padding: 1rem;
+    /* Reduced padding inside card */
+    width: 95%;
+    /* Increased width */
+    max-width: 550px;
+    /* Increased max width */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    overflow: hidden;
+}
+
+.project-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px var(--shadow-color), inset 0 0 25px var(--inner-shadow-color);
+    /* Use variables */
+    border-color: var(--accent-color-light);
+}
+
+.card-image-wrapper {
+    width: calc(100% + 2rem);
+    /* Adjusted to new padding */
+    margin-left: -1rem;
+    /* Adjusted to new padding */
+    margin-right: -1rem;
+    margin-top: -1rem;
+    /* Adjusted to new padding */
+    height: 250px;
+    /* Slightly increased image height */
+    background-color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    /* Reduced margin below image */
+}
+
+.card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.project-card h3 {
+    font-family: 'Signika', sans-serif;
+    color: var(--accent-color-light);
+    font-size: 1.6rem;
+    /* Slightly reduced font size for better fit */
+    margin-bottom: 0.5rem;
+    /* Reduced margin */
+    font-weight: 700;
+    line-height: 1.3;
+    transition: color 0.5s ease;
+    display: flex;
+    /* Make h3 a flex container */
+    align-items: center;
+    /* Vertically align items */
+    gap: 0.5rem;
+    /* Space between icon and text */
+}
+
+.project-card p {
+    color: #fff; /* Fixed to white as requested */
+    font-size: 1rem;
+    /* Slightly reduced font size */
+    line-height: 1.5;
+    /* Adjusted line height */
+    margin-bottom: 1rem;
+    /* Reduced margin */
+    flex-grow: 1;
+    transition: color 0.5s ease;
+}
+
+/* Button Container Layout */
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.8rem;
+    /* Reduced gap between buttons */
+    width: 100%;
+    margin-top: auto;
+    flex-wrap: wrap;
+}
+
+
+.action-btn {
+    position: relative;
+    display: inline-block;
+    padding: 14px 30px;
+    background: var(--button-action-bg);
+    /* Now uses variable */
+    color: var(--primary-text-color);
+    /* Changed to primary-text-color for theme consistency */
+    font-weight: bold;
+    border-radius: 10px;
+    overflow: hidden;
+    z-index: 1;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-family: 'Signika', sans-serif;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.action-btn i {
+    margin-right: 10px;
+}
+
+/* 🔄 Rotating Outer Border */
+.action-btn::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(from 0deg,
+            var(--button-action-border-color)
+            /* Now uses variable */
+        );
+    animation: rotate-border 4s linear infinite;
+    z-index: -2;
+}
+
+/* ⬛ Inner Background Layer (above border) */
+.action-btn::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    right: 2px;
+    bottom: 2px;
+    background-color: var(--button-action-bg);
+    /* Now uses variable */
+    border-radius: 10px;
+    z-index: -1;
+}
+
+/* 🔁 Keyframes */
+@keyframes rotate-border {
+    0% {
+        transform: rotate(0deg);
+    }
+    
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.action-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px var(--shadow-color);
+    /* Using existing shadow variable */
+}
+
+/* --- General Utility/Feature Styles --- */
+/* Toast Message */
+.toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--button-primary-bg);
+    color: var(--button-primary-text);
+    padding: 15px 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px var(--shadow-color);
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.4s ease, background-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease;
+    font-weight: bold;
+    z-index: 1000;
+    min-width: 200px;
+    text-align: center;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    /* Adjusted position as back-to-top is removed */
+    background-color: var(--accent-color-light);
+    color: var(--button-primary-text);
+    padding: 1rem;
+    border-radius: 50%;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease-in-out, background-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease;
+    cursor: pointer;
+    border: none;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    width: 50px;
+    height: 50px;
+}
+
+.theme-toggle:hover {
+    background-color: var(--accent-color-dark);
+    box-shadow: 0 5px 20px var(--shadow-color);
+    transform: scale(1.1);
+}
+
+/* Keyboard Navigation Focus Highlight */
+.user-is-tabbing *:focus {
+    outline: 2px solid var(--accent-color-light);
+    outline-offset: 3px;
+    transition: outline 0.2s ease-in-out;
+}
+
+/* Cursor Trail */
+.cursor-dot {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    background: var(--accent-color-light);
+    /* Cursor dot now uses accent color */
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    animation: fadeOutTrail 0.5s forwards;
+    z-index: 9999;
+    transition: background-color 0.5s ease;
+    /* Smooth transition for dot color */
+}
+
+@keyframes fadeOutTrail {
+    from {
+        opacity: 0.6;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    
+    to {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.5);
+    }
+}
+
+/* Reading Time Style (if applicable) */
+.reading-time {
+    font-size: 0.85rem;
+    color: var(--secondary-text-color);
+    margin-top: 0.5rem;
+    display: block;
+    font-weight: 300;
+}
