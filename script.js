@@ -12,7 +12,7 @@ document.querySelectorAll('.fancy-link').forEach(link => {
         // Smooth scroll effect for internal links
         document.body.style.transition = 'opacity 0.8s ease';
         document.body.style.opacity = '0';
-        
+
         setTimeout(() => {
           targetElement.scrollIntoView({ behavior: 'smooth' });
           setTimeout(() => {
@@ -39,29 +39,31 @@ document.addEventListener("DOMContentLoaded", () => {
   const isIndexPage = !document.body.classList.contains('profile-body') && !document.body.classList.contains('auth-body');
   const isProfilePage = document.body.classList.contains('profile-body');
   const isAuthPage = document.body.classList.contains('auth-body');
-  
-  // Define session duration (6 hours in milliseconds)
-  const SESSION_DURATION = 6 * 60 * 60 * 1000; // 6 hours
-  
+
+  // Define session duration (12 hours in milliseconds) - CHANGED HERE
+  const SESSION_DURATION = 12 * 60 * 60 * 1000; // 12 hours
+
   // --- Session Management Logic (for all non-auth pages) ---
   if (!isAuthPage) {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     const lastLoginTime = localStorage.getItem('lastLoginTime');
-    
+
     if (isLoggedIn === 'true' && lastLoginTime) {
       const currentTime = Date.now();
       const timeElapsed = currentTime - parseInt(lastLoginTime);
-      
+
       if (timeElapsed > SESSION_DURATION) {
         // Session expired, force logout
         localStorage.removeItem('isLoggedIn');
         localStorage.removeItem('currentUser');
         localStorage.removeItem('lastLoginTime'); // Clear the timestamp too
-        
+        // Optionally, also clear 'hasVisitedSite' if you want a fresh redirect for expired sessions
+        localStorage.removeItem('hasVisitedSite');
+
         const swalBackground = getComputedStyle(document.documentElement).getPropertyValue('--card-bg');
         const swalColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
         const swalConfirmButtonColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
-        
+
         Swal.fire({
           icon: 'warning',
           title: 'Session Expired',
@@ -76,20 +78,23 @@ document.addEventListener("DOMContentLoaded", () => {
           window.location.replace('login.html'); // Use replace to prevent back button issues
         });
         return; // Stop further execution for this page
+      } else {
+        // Session is still active, if it's the index page, ensure profile pic is applied
+        if (isIndexPage) {
+          applyProfilePicToHero();
+        }
       }
-    } else if (isIndexPage) {
-      // If on index page and not logged in (and session didn't just expire),
-      // or if it's the very first visit (no lastLoginTime or isLoggedIn), redirect to login
-      const hasVisitedSite = localStorage.getItem('hasVisitedSite');
-      if (hasVisitedSite !== 'true') {
-        localStorage.setItem('hasVisitedSite', 'true');
+    } else {
+      // If not logged in and not an auth page, redirect to login
+      // This covers both index and profile pages if not authenticated
+      if (!isAuthPage) {
         window.location.replace('login.html');
         return; // Stop further execution
       }
     }
   }
-  
-  
+
+
   // Function to apply profile picture to hero section
   const applyProfilePicToHero = () => {
     const heroImageElement = document.querySelector('.hero-image img');
@@ -110,21 +115,22 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   };
-  
+
   // Apply profile picture on load for index page
   // This will run AFTER the potential redirect for login/session expire
-  if (isIndexPage) {
-    applyProfilePicToHero();
-  }
-  
-  
+  // Removed the explicit call here, as it's now handled within the session logic for active sessions.
+  // if (isIndexPage) {
+  //   applyProfilePicToHero();
+  // }
+
+
   // --- Main Page Specifics (if on index.html) ---
   if (isIndexPage) {
     const menuIcon = document.querySelector(".menu-icon i");
     const navLinks = document.querySelector(".nav-links"); // This is your mobile menu container
     const navbar = document.querySelector(".navbar");
     const mobileNavAnchorLinks = document.querySelectorAll(".nav-links a[href^='#']");
-    
+
     // Function to close the mobile menu
     const closeMobileMenu = () => {
       if (navLinks.classList.contains("show")) {
@@ -134,7 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.body.classList.remove("menu-open");
       }
     };
-    
+
     if (menuIcon && navLinks) {
       menuIcon.addEventListener("click", () => {
         navLinks.classList.toggle("show");
@@ -143,7 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.body.classList.toggle("menu-open");
       });
     }
-    
+
     if (navbar) {
       window.addEventListener("scroll", () => {
         if (window.scrollY > 50) {
@@ -153,14 +159,14 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
     }
-    
+
     // Close menu when clicking outside it
     document.addEventListener("click", (e) => {
       if (navLinks && menuIcon && !navLinks.contains(e.target) && !menuIcon.contains(e.target) && navLinks.classList.contains("show")) {
         closeMobileMenu();
       }
     });
-    
+
     // Close menu when a navigation link is clicked
     if (mobileNavAnchorLinks.length > 0) {
       mobileNavAnchorLinks.forEach(link => {
@@ -169,7 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       });
     }
-    
+
     // --- NEW: Profile Icon Navigation (for index.html) ---
     // Ensure your suspecte.png icon has the ID "profileIcon" in your HTML
     const profileIcon = document.getElementById('profileIcon');
@@ -194,13 +200,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
     }
-    
+
     // Skills animation (already exists, keeping it)
     document.querySelectorAll('.skill-card .progress-fill').forEach(el => {
       const width = el.parentElement.style.getPropertyValue('--fill-width') || '0%';
       el.style.width = width;
     });
-    
+
     // Scroll Reveal Animation (already exists, keeping it)
     const revealElements = document.querySelectorAll('.edu-card, .timeline-item, .skill-card, .footer-bottom .social-icons');
     const revealObserver = new IntersectionObserver((entries, observer) => {
@@ -221,7 +227,7 @@ document.addEventListener("DOMContentLoaded", () => {
       el.style.transform = 'translateY(50px)';
       revealObserver.observe(el);
     });
-    
+
     // Social Icons Click Effect (already exists, keeping it)
     document.querySelectorAll('.social_icon a').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -231,7 +237,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 400);
       });
     });
-    
+
     // Newsletter Form Submission (already exists, keeping it)
     const newsletterForm = document.querySelector('.newsletter-form');
     if (newsletterForm) {
@@ -239,7 +245,7 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
         const emailInput = this.querySelector('input[type="email"]');
         const email = emailInput.value.trim();
-        
+
         if (!email) {
           Swal.fire({
             toast: true,
@@ -276,7 +282,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
     }
-    
+
     // Contact Form Submission (Global function) (already exists, keeping it)
     window.handleSubmit = function(event) {
       event.preventDefault();
@@ -287,7 +293,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       const formData = new FormData(form);
       const name = formData.get('name');
-      
+
       Swal.fire({
         icon: 'success',
         title: 'Thank you!',
@@ -300,8 +306,8 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     };
   }
-  
-  
+
+
   // --- Authentication Page Specifics (login.html) ---
   if (isAuthPage) {
     const showLoginBtn = document.getElementById('showLoginBtn');
@@ -312,7 +318,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const linkToLogin = document.getElementById('linkToLogin');
     const authFormWrapper = document.querySelector('.auth-form-wrapper');
     const authToggleButtons = document.querySelector('.form-toggle-buttons'); // Corrected selector
-    
+
     // Function to dynamically adjust wrapper height based on active form
     function setAuthFormWrapperHeight(form) {
       // Temporarily make the active form visible to calculate its height accurately
@@ -320,10 +326,10 @@ document.addEventListener("DOMContentLoaded", () => {
       form.style.visibility = 'visible';
       form.style.opacity = '1';
       form.style.transform = 'translateX(0)';
-      
+
       const height = form.scrollHeight + 20; // Add some padding
       authFormWrapper.style.height = `${height}px`;
-      
+
       // Hide the inactive form (move it off-screen)
       if (form.id === 'loginForm') {
         registerForm.style.position = 'absolute';
@@ -337,17 +343,17 @@ document.addEventListener("DOMContentLoaded", () => {
         loginForm.style.transform = 'translateX(-100%)';
       }
     }
-    
+
     // Initial setup for form visibility and wrapper height
     // This ensures only login form is visible on load and height is correct
     registerForm.style.position = 'absolute';
     registerForm.style.visibility = 'hidden';
     registerForm.style.opacity = '0';
     registerForm.style.transform = 'translateX(100%)';
-    
+
     setAuthFormWrapperHeight(loginForm);
-    
-    
+
+
     // Event Listeners for switching forms
     showLoginBtn.addEventListener('click', () => showAuthForm('login'));
     showRegisterBtn.addEventListener('click', () => showAuthForm('register'));
@@ -359,28 +365,29 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       showAuthForm('login');
     });
-    
+
     // --- Handle Login Form Submission (simulated) ---
     loginForm.addEventListener('submit', function(e) {
       e.preventDefault();
       const email = document.getElementById('loginEmail').value;
       const password = document.getElementById('loginPassword').value;
-      
+
       // Retrieve users from local storage
       const users = JSON.parse(localStorage.getItem('users')) || [];
       const user = users.find(u => u.email === email && u.password === password);
-      
+
       const swalBackground = getComputedStyle(document.documentElement).getPropertyValue('--card-bg');
       const swalColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
       const swalConfirmButtonColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
-      
+
       if (user) {
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('lastLoginTime', Date.now().toString()); // Set last login time
-        const currentUserData = { ...user };
+        const currentUserData = { ...user
+        };
         delete currentUserData.password; // Don't store password in currentUser
         localStorage.setItem('currentUser', JSON.stringify(currentUserData));
-        
+
         Swal.fire({
           icon: 'success',
           title: 'Login Successful!',
@@ -404,7 +411,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     });
-    
+
     // --- Handle Register Form Submission (simulated) ---
     registerForm.addEventListener('submit', function(e) {
       e.preventDefault();
@@ -412,13 +419,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const email = document.getElementById('registerEmail').value.trim();
       const password = document.getElementById('registerPassword').value;
       const confirmPassword = document.getElementById('confirmPassword').value;
-      
+
       let users = JSON.parse(localStorage.getItem('users')) || [];
-      
+
       const swalBackground = getComputedStyle(document.documentElement).getPropertyValue('--card-bg');
       const swalColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
       const swalConfirmButtonColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
-      
+
       if (!name || !email || !password || !confirmPassword) {
         Swal.fire({
           icon: 'error',
@@ -430,7 +437,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         return;
       }
-      
+
       if (password !== confirmPassword) {
         Swal.fire({
           icon: 'error',
@@ -442,7 +449,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         return;
       }
-      
+
       if (users.some(u => u.email === email)) {
         Swal.fire({
           icon: 'error',
@@ -454,7 +461,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         return;
       }
-      
+
       const newUser = {
         name: name,
         email: email,
@@ -467,7 +474,7 @@ document.addEventListener("DOMContentLoaded", () => {
       };
       users.push(newUser);
       localStorage.setItem('users', JSON.stringify(users));
-      
+
       Swal.fire({
         icon: 'success',
         title: 'Registration Successful!',
@@ -482,8 +489,8 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   }
-  
-  
+
+
   // --- Profile Page Specifics (profile.html) ---
   if (isProfilePage) {
     const profileDisplayPic = document.getElementById('profileDisplayPic');
@@ -500,21 +507,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const confirmSelectionBtn = document.getElementById('confirmSelectionBtn');
     const profileEditForm = document.getElementById('profileEditForm');
     const logoutBtn = document.getElementById('logoutBtn');
-    
+
     let selectedGalleryPic = null;
-    
+
     // *** Authentication Check for Profile Page ***
     // This check is now integrated with the global session management
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     let currentUserData = JSON.parse(localStorage.getItem('currentUser'));
-    
+
     if (!isLoggedIn || !currentUserData || !currentUserData.email) {
       // This block will execute if the global session check has not already redirected
       // E.g., if directly navigating to profile.html without a valid session.
       const swalBackground = getComputedStyle(document.documentElement).getPropertyValue('--card-bg');
       const swalColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
       const swalConfirmButtonColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
-      
+
       Swal.fire({
         icon: 'warning',
         title: 'Access Denied',
@@ -530,27 +537,27 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       return;
     }
-    
+
     // --- NEW: Function to load and FIX profile data into fields ---
     function loadProfileData() {
       // FIX THE NAME AND EMAIL
       userNameInput.value = 'Sanjay Das'; // Fixed Name
       userEmailInput.value = 'sanjay.das@example.com'; // Fixed Email
-      
+
       // Load other data from currentUserData if it exists
       profileDisplayPic.src = currentUserData.profilePic || 'assets/images/profile.png';
       userDobInput.value = currentUserData.dob || '';
       userPhoneInput.value = currentUserData.phone || '';
       userAddressInput.value = currentUserData.address || '';
       userAboutTextarea.value = currentUserData.about || '';
-      
+
       // Disable Name and Email fields as they are fixed
       if (userNameInput) userNameInput.readOnly = true;
       if (userEmailInput) userEmailInput.readOnly = true;
     }
-    
+
     loadProfileData();
-    
+
     // Open gallery modal
     changePicBtn.addEventListener('click', () => {
       galleryModal.style.display = 'flex';
@@ -560,7 +567,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Adjust path comparison: ensure the stored path matches the gallery item's data-path
         const currentProfilePicPath = profileDisplayPic.src; // Full path from display
         const galleryItemFullPath = new URL(item.dataset.path, window.location.href).href; // Get full URL for comparison
-        
+
         // Simple comparison: if the full URLs match
         if (currentProfilePicPath === galleryItemFullPath) {
           item.classList.add('selected');
@@ -573,7 +580,7 @@ document.addEventListener("DOMContentLoaded", () => {
         confirmSelectionBtn.disabled = true;
       }
     });
-    
+
     // Close gallery modal
     closeButton.addEventListener('click', () => {
       galleryModal.style.display = 'none';
@@ -583,7 +590,7 @@ document.addEventListener("DOMContentLoaded", () => {
         galleryModal.style.display = 'none';
       }
     });
-    
+
     // Handle gallery item selection
     galleryItems.forEach(item => {
       item.addEventListener('click', () => {
@@ -593,27 +600,27 @@ document.addEventListener("DOMContentLoaded", () => {
         confirmSelectionBtn.disabled = false;
       });
     });
-    
+
     // Confirm profile picture selection
     confirmSelectionBtn.addEventListener('click', () => {
       if (selectedGalleryPic) {
         profileDisplayPic.src = selectedGalleryPic; // Update the profile picture on the profile page
-        
+
         currentUserData.profilePic = selectedGalleryPic;
-        
+
         let users = JSON.parse(localStorage.getItem('users')) || [];
         const userIndex = users.findIndex(u => u.email === currentUserData.email);
         if (userIndex !== -1) {
           users[userIndex].profilePic = selectedGalleryPic;
           localStorage.setItem('users', JSON.stringify(users));
         }
-        
+
         localStorage.setItem('currentUser', JSON.stringify(currentUserData));
         galleryModal.style.display = 'none';
-        
+
         const swalBackground = getComputedStyle(document.documentElement).getPropertyValue('--card-bg');
         const swalColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
-        
+
         Swal.fire({
           toast: true,
           icon: 'success', // Changed to success for confirmation
@@ -627,7 +634,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     });
-    
+
     // Handle Profile Edit Form Submission (simulated) (already exists, keeping it)
     profileEditForm.addEventListener('submit', function(e) {
       e.preventDefault();
@@ -636,17 +643,17 @@ document.addEventListener("DOMContentLoaded", () => {
       const newPhone = userPhoneInput.value.trim();
       const newAddress = userAddressInput.value.trim();
       const newAbout = userAboutTextarea.value.trim();
-      
+
       const swalBackground = getComputedStyle(document.documentElement).getPropertyValue('--card-bg');
       const swalColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
       const swalConfirmButtonColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
-      
-      
+
+
       currentUserData.dob = newDob;
       currentUserData.phone = newPhone;
       currentUserData.address = newAddress;
       currentUserData.about = newAbout;
-      
+
       let users = JSON.parse(localStorage.getItem('users')) || [];
       const userIndex = users.findIndex(u => u.email === currentUserData.email);
       if (userIndex !== -1) {
@@ -660,7 +667,7 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem('users', JSON.stringify(users));
       }
       localStorage.setItem('currentUser', JSON.stringify(currentUserData));
-      
+
       Swal.fire({
         icon: 'success',
         title: 'Profile Updated!',
@@ -671,16 +678,16 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       loadProfileData(); // Reload data to ensure consistency (will keep name/email fixed)
     });
-    
+
     // Handle Logout (already exists, keeping it)
     if (logoutBtn) {
       logoutBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        
+
         const swalBackground = getComputedStyle(document.documentElement).getPropertyValue('--card-bg');
         const swalColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
         const swalConfirmButtonColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
-        
+
         Swal.fire({
           title: 'Are you sure?',
           text: "You will be logged out!",
@@ -697,7 +704,7 @@ document.addEventListener("DOMContentLoaded", () => {
             localStorage.removeItem('currentUser');
             localStorage.removeItem('lastLoginTime'); // Clear last login time on explicit logout
             localStorage.removeItem('hasVisitedSite'); // Reset for next first visit
-            
+
             Swal.fire({
               icon: 'success',
               title: 'Logged Out!',
@@ -724,20 +731,20 @@ document.addEventListener("DOMContentLoaded", function() {
     "I'm a junior Web Developer",
     "Learning HTML, CSS and JS."
   ];
-  
+
   let phraseIndex = 0;
   let charIndex = 0;
   let isDeleting = false;
-  
+
   const typingSpeed = 70;
   const deletingSpeed = 40;
   const pauseBetweenPhrases = 1500;
-  
+
   function typeWriter() {
     if (!dynamicTextElement) return; // Add a check to ensure element exists
-    
+
     const currentPhrase = phrases[phraseIndex];
-    
+
     if (isDeleting) {
       dynamicTextElement.textContent = currentPhrase.substring(0, charIndex - 1);
       charIndex--;
@@ -745,12 +752,12 @@ document.addEventListener("DOMContentLoaded", function() {
       dynamicTextElement.textContent = currentPhrase.substring(0, charIndex + 1);
       charIndex++;
     }
-    
+
     let currentTypingSpeed = typingSpeed;
     if (isDeleting) {
       currentTypingSpeed = deletingSpeed;
     }
-    
+
     if (!isDeleting && charIndex === currentPhrase.length) {
       currentTypingSpeed = pauseBetweenPhrases;
       isDeleting = true;
@@ -759,10 +766,10 @@ document.addEventListener("DOMContentLoaded", function() {
       phraseIndex = (phraseIndex + 1) % phrases.length;
       currentTypingSpeed = typingSpeed;
     }
-    
+
     setTimeout(typeWriter, currentTypingSpeed);
   }
-  
+
   typeWriter();
 });
 
@@ -881,31 +888,31 @@ const responses = {
   ],
   admin: [`
 <div style="
-  font-family: 'Signika', sans-serif; 
-  max-width: 100%; 
+  font-family: 'Signika', sans-serif;
+  max-width: 100%;
   background: linear-gradient(135deg, #1f1f2e, #27293d);
-  color: #e0e6f8; 
-  padding: 25px; 
-  border-radius: 16px; 
+  color: #e0e6f8;
+  padding: 25px;
+  border-radius: 16px;
   box-shadow: 0 8px 20px rgba(0, 255, 255, 0.3);
   line-height: 1.5;
 ">
   <h2 style="text-align: center; color: #00f3ff; font-weight: 900; letter-spacing: 1px; margin-bottom: 20px;">
     <i class="fa-solid fa-user"></i> SANJAY DAS
   </h2>
-  
+
   <div style="margin-bottom: 18px;">
     <p><i class="fa-solid fa-cake-candles" style="color:#ff6b6b; margin-right: 8px;"></i><strong>Age:</strong> 18</p>
     <p><i class="fa-solid fa-birthday-cake" style="color:#feca57; margin-right: 8px;"></i><strong>Birthday:</strong> 20 JUN 2007</p>
     <p><i class="fa-solid fa-mars" style="color:#54a0ff; margin-right: 8px;"></i><strong>Gender:</strong> Male</p>
   </div>
-  
+
   <div style="font-style: italic; color: #48dbfb; margin-bottom: 20px;">
     Mindset: Overthinker, Romantic, Loyal Lover<br>
     Focus: <span style="font-weight: 700; color: #ff9f43;">10% Study | 90% Love & Vibe</span><br>
     Education: 1st Year Student
   </div>
-  
+
   <div style="margin-bottom: 22px;">
     <h3 style="border-bottom: 2px solid #00f3ff; padding-bottom: 6px; margin-bottom: 12px; font-weight: 700;">
       <i class="fa-solid fa-code"></i> Skills
@@ -916,7 +923,7 @@ const responses = {
       <li><i class="fa-solid fa-check" style="color: #ff6b6b;"></i> JavaScript - 40%</li>
     </ul>
   </div>
-  
+
   <div style="margin-bottom: 22px;">
     <h3 style="border-bottom: 2px solid #00f3ff; padding-bottom: 6px; margin-bottom: 12px; font-weight: 700;">
       <i class="fa-solid fa-address-book"></i> Contact Info
@@ -925,9 +932,9 @@ const responses = {
     <p><i class="fa-solid fa-phone" style="color: #54a0ff; margin-right: 8px;"></i><a href="tel:+8801727503540" style="color: #70a1ff; text-decoration: none;">+880 1727 503540</a></p>
     <p><i class="fa-brands fa-facebook" style="color: #3b5998; margin-right: 8px;"></i><span>সঞ্জয় দাস</span></p>
     <p><i class="fa-brands fa-whatsapp" style="color: #25d366; margin-right: 8px;"></i><a href="https://wa.me/8801727503540" target="_blank" style="color: #70a1ff; text-decoration: none;">Chat Now</a></p>
-    <p><i class="fa-brands fa-instagram" style="color: #c13584; margin-right: 8px;"></i><a href="https://instagram.com/broken_hurt_143" target="_blank" style="color: #70a1ff; text-decoration: none;">@broken_hurt_143</a></p>
+    <p><i class="fa-brands fa-instagram" style="color: #c13584; margin-right: 8px;"></i><a href="https://instagram.com/broken_hurt.143" target="_blank" style="color: #70a1ff; text-decoration: none;">@broken_hurt_143</a></p>
   </div>
-  
+
   <div style="margin-bottom: 22px;">
     <h3 style="border-bottom: 2px solid #00f3ff; padding-bottom: 6px; margin-bottom: 12px; font-weight: 700;">
       <i class="fa-solid fa-heart"></i> Relationship
@@ -935,7 +942,7 @@ const responses = {
     <p><strong>Taken by:</strong> <span style="color: #ff6b6b; font-weight: 700;">AISHI</span></p>
     <p><strong>Loyalty:</strong> Infinite</p>
   </div>
-  
+
   <div>
     <h3 style="border-bottom: 2px solid #00f3ff; padding-bottom: 6px; margin-bottom: 12px; font-weight: 700;">
       <i class="fa-solid fa-star"></i> Favourites
@@ -979,16 +986,16 @@ function getRandom(arr) {
 
 function getBotResponse(userMessage) {
   const msg = userMessage.toLowerCase();
-  
+
   const match = (keywords) => keywords.some(word => msg.includes(word));
-  
+
   if (match(["hello", "hi", " হাই", "হ্যালো", "হেলো"])) return getRandom(responses.greetings);
   if (match(["who are you", "who", "কে তুমি", "কে"])) return getRandom(responses.whoareu);
   if (match(["good", "nice", " গুড", "নাইস"])) return getRandom(responses.good);
   if (match(["how are you", "কেমন আছো"])) return getRandom(responses.howAreYou);
   if (match(["your name", "তোমার নাম"])) return getRandom(responses.whoAreYou);
   if (match(["skills", "technologies"])) return getRandom(responses.skills);
-  if (match(["admin"," sonjoy","sanjoy","সঞ্জয়","সনজয়","sanjay"])) return getRandom(responses.admin);
+  if (match(["admin", " sonjoy", "sanjoy", "সঞ্জয়", "সনজয়", "sanjay"])) return getRandom(responses.admin);
   if (match(["projects", "portfolio work"])) return getRandom(responses.projects);
   if (match(["contact", "hire me", "কন্টাক্ট"])) return getRandom(responses.contact) + socialLinks;
   if (match(["education", "study"])) return getRandom(responses.education);
@@ -999,7 +1006,7 @@ function getBotResponse(userMessage) {
   if (match(["thank you", "thanks"])) return getRandom(responses.thanks);
   if (match(["bye", "good bye", "বায়"])) return getRandom(responses.goodbye);
   if (match(["help", "সাহায্য"])) return getRandom(responses.help) + socialLinks;
-  
+
   return getRandom(responses.unknown);
 }
 
