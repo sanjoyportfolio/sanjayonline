@@ -14,7 +14,9 @@ document.querySelectorAll('.fancy-link').forEach(link => {
         document.body.style.opacity = '0';
 
         setTimeout(() => {
-          targetElement.scrollIntoView({ behavior: 'smooth' });
+          targetElement.scrollIntoView({
+            behavior: 'smooth'
+          });
           setTimeout(() => {
             document.body.style.opacity = '1';
             document.body.style.transition = 'none'; // Reset transition
