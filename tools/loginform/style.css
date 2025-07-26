@@ -1,0 +1,447 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playpen+Sans:wght@100..800&display=swap');
+
+/* --- 1. Basic Reset & Body Styling --- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif; /* আধুনিক এবং পরিষ্কার ফন্ট */
+  background: #888;/* একটি প্রাণবন্ত, অত্যাধুনিক গ্রেডিয়েন্ট */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* পুরো ভিউপোর্ট উচ্চতা নিশ্চিত করে */
+  overflow: hidden; /* সম্ভাব্য স্ক্রলবার লুকিয়ে রাখে */
+  position: relative;
+}
+
+/* --- 2. Abstract Background Shapes --- */
+body::before,
+body::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.8;
+  filter: blur(120px); /* নরম গ্লো এর জন্য ব্লার বাড়ানো হয়েছে */
+  animation: floatEffect 10s ease-in-out infinite alternate; /* ভাসমান অ্যানিমেশন */
+}
+
+body::before {
+  width: 300px;
+  height: 300px;
+  background-color: #add8e6; /* হালকা নীল */
+  top: -50px;
+  left: -50px;
+  animation-delay: 0s;
+}
+
+body::after {
+  width: 350px;
+  height: 350px;
+  background-color: #90ee90; /* হালকা সবুজ */
+  bottom: -50px;
+  right: -50px;
+  animation-delay: 2s;
+}
+
+@keyframes floatEffect {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(20px, 20px) scale(1.05); }
+}
+
+/* --- 3. Creator Text Styling --- */
+h3 {
+  color: #fff;
+  margin-bottom: 20px; /* আরও বেশি স্থান */
+  font-size: 1.3em;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-family: 'Playpen Sans', cursive;
+  text-align: center;
+  letter-spacing: 1.5px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* সূক্ষ্ম টেক্সট শ্যাডো */
+}
+
+/* --- 4. Container Styling (Glassmorphism Effect) --- */
+.container {
+  width: 90%;
+  max-width: 480px; /* আরও প্রশস্ত ফর্মের জন্য */
+  background: rgba(255, 255, 255, 0.08); /* আরও সূক্ষ্ম স্বচ্ছতা */
+  border-radius: 20px; /* আরও গোলাকার কোণ */
+  backdrop-filter: blur(15px); /* শক্তিশালী গ্লাসমর্ফিজমের জন্য ব্লার বৃদ্ধি */
+  -webkit-backdrop-filter: blur(15px); /* Safari ব্রাউজারের জন্য সমর্থন */
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3); /* গভীর শ্যাডো */
+  padding: 40px; /* ভিতরের দিকে আরও প্যাডিং */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  z-index: 1;
+  animation: scaleIn 0.8s ease-out forwards; /* স্কেল-ইন অ্যানিমেশন */
+  overflow: hidden; /* ভিতরের ব্যাকগ্রাউন্ড এলিমেন্টগুলির জন্য গুরুত্বপূর্ণ */
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* --- 5. Form Styling --- */
+.form {
+  padding: 35px; /* আরও প্যাডিং */
+  background: rgba(255, 255, 255, 0.95); /* কন্টেন্টের পঠনযোগ্যতার জন্য প্রায় অস্বচ্ছ সাদা */
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.form__text {
+  color: #333;
+  font-size: 38px; /* বড় হেডিং */
+  font-weight: 700;
+  margin-bottom: 30px;
+  text-transform: uppercase;
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: 2px; /* আরও স্পেসিং */
+}
+
+/* --- 6. Form Group & Input Styling --- */
+.form__group {
+  margin-bottom: 30px; /* ফিল্ডগুলির মধ্যে আরও স্পেসিং */
+  position: relative;
+}
+
+.form__input {
+  display: block;
+  font-size: 17px;
+  width: 100%;
+  background: #f8f9fa; /* ইনপুটগুলির জন্য খুব হালকা ধূসর */
+  color: #333;
+  padding: 20px 25px; /* উদার প্যাডিং */
+  border-radius: 10px; /* আরও গোলাকার ইনপুট ফিল্ড */
+  border: 1px solid #e0e0e0; /* নরম বর্ডার */
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* মসৃণ অ্যানিমেশন কার্ভ */
+}
+
+/* ইনপুট ফোকাস করার সময় স্টাইল */
+.form__input:focus {
+  outline: none;
+  border-color: #f5576c; /* গ্রেডিয়েন্টের সাথে মিলে যাওয়া বর্ডার কালার */
+  box-shadow: 0 0 0 4px rgba(245, 87, 108, 0.2); /* গ্রেডিয়েন্ট কালার সহ নরম গ্লো */
+  background-color: #fff; /* ফোকাসে সাদা ব্যাকগ্রাউন্ড */
+}
+
+/* যখন ইনপুট ফোকাস করা হয় তখন আরও একটি বর্ডার কালার (JS দ্বারা .is-focused ক্লাস) */
+.form__input.is-focused {
+  border-color: #f093fb; /* ফোকাসড হলে ভিন্ন বর্ডার কালার */
+  box-shadow: 0 0 0 4px rgba(240, 147, 251, 0.2); /* নতুন কালার সহ নরম গ্লো */
+}
+
+/* ডিফল্ট প্লেসহোল্ডার লুকান যখন লেবেলটি ভাসমান থাকে বা ইনপুটে কন্টেন্ট থাকে */
+.form__input:focus::placeholder,
+.form__input.has-content::placeholder {
+    opacity: 0;
+}
+
+.form__input::-webkit-input-placeholder {
+  color: #a0a0a0;
+  transition: opacity 0.3s; /* মসৃণ প্লেসহোল্ডার ফেড */
+}
+.form__input::-moz-placeholder {
+  color: #a0a0a0;
+  transition: opacity 0.3s;
+}
+.form__input:-ms-input-placeholder {
+  color: #a0a0a0;
+  transition: opacity 0.3s;
+}
+.form__input::placeholder {
+  color: #a0a0a0;
+  transition: opacity 0.3s;
+}
+
+/* ফ্লোটিং লেবেল স্টাইল */
+.form__label {
+  position: absolute;
+  top: 50%;
+  left: 25px;
+  transform: translateY(-50%);
+  color: #888;
+  font-size: 15px;
+  font-weight: 500;
+  text-transform: capitalize;
+  pointer-events: none; /* যাতে ইনপুট ক্লিক করতে বাধা না দেয় */
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  font-family: 'Poppins', sans-serif;
+}
+
+.form__input:focus + .form__label,
+.form__input.has-content + .form__label { /* .has-content ক্লাসের জন্য */
+  top: 8px; /* সক্রিয় হলে সামান্য নিচে অবস্থান */
+  left: 20px;
+  font-size: 12px;
+  color: #f093fb; /* গ্রেডিয়েন্টের সাথে মিলে যাওয়া কালার */
+  background-color: #fff;
+  padding: 0 8px;
+  transform: translateY(0);
+  border-radius: 3px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* ভাসমান লেবেলের জন্য ছোট শ্যাডো */
+  z-index: 1; /* লেবেল ইনপুটের উপরে আছে তা নিশ্চিত করে */
+}
+
+/* --- 7. Error Message Styling --- */
+.error-message {
+    color: #ff4d4d; /* ত্রুটির জন্য লাল রঙ */
+    font-size: 0.85em;
+    margin-top: 5px;
+    padding-left: 5px;
+    animation: fadeInError 0.3s ease-in-out;
+}
+
+@keyframes fadeInError {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ত্রুটিপূর্ণ ইনপুটের জন্য বর্ডার এবং শ্যাডো */
+.form__input.input-error {
+    border-color: #ff4d4d !important; /* ত্রুটির জন্য লাল বর্ডার */
+    box-shadow: 0 0 0 3px rgba(255, 77, 77, 0.2) !important; /* ত্রুটির জন্য লাল গ্লো */
+}
+
+/* ত্রুটিপূর্ণ ইনপুটের জন্য শেক অ্যানিমেশন */
+.form__group.shake-input {
+  animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+@keyframes shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+  40%, 60% { transform: translate3d(4px, 0, 0); }
+}
+
+/* --- 8. Button Styling --- */
+.form__button {
+  text-align: center;
+  margin-top: 40px; /* বাটনের উপরে আরও স্থান */
+  margin-bottom: 25px;
+}
+
+.btn {
+  display: inline-block;
+  cursor: pointer;
+  font-size: 19px;
+  font-weight: 600;
+  text-decoration: none;
+  background: linear-gradient(45deg, #f5576c 0%, #f093fb 100%); /* বডির গ্রেডিয়েন্টের সাথে মিলে যাওয়া বাটন */
+  color: #fff;
+  padding: 18px 45px; /* উদার প্যাডিং */
+  border-radius: 50px; /* পিল-আকৃতির বাটন */
+  text-transform: uppercase;
+  transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1); /* উন্নত ট্রানজিশন */
+  border: none;
+  box-shadow: 0 10px 20px rgba(245, 87, 108, 0.4); /* শক্তিশালী, রঙিন শ্যাডো */
+  letter-spacing: 1px;
+}
+
+.btn:hover {
+  transform: translateY(-5px); /* আরও সুস্পষ্ট লিফট */
+  box-shadow: 0 15px 30px rgba(245, 87, 108, 0.5);
+  background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%); /* হোভারে গ্রেডিয়েন্ট উল্টে যায় */
+}
+
+.btn:active {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(245, 87, 108, 0.3);
+}
+
+/* বাটন ক্লিক অ্যানিমেশন */
+.btn-clicked {
+  transform: scale(0.95);
+  background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%); /* ক্লিকে একই গ্রেডিয়েন্ট রাখে */
+  box-shadow: 0 5px 15px rgba(245, 87, 108, 0.3);
+}
+
+/* বাটনের লোডিং স্টেট (জাভাস্ক্রিপ্ট দ্বারা যোগ করা হয়) */
+.btn.btn-loading {
+    cursor: wait; /* লোডিং বোঝাতে কার্সর পরিবর্তন */
+    opacity: 0.8;
+    background: linear-gradient(45deg, #f5576c 0%, #f093fb 100%); /* একই স্টাইল বজায় রাখে */
+    box-shadow: 0 5px 15px rgba(245, 87, 108, 0.3); /* সামান্য কম শ্যাডো */
+    transform: none; /* হোভার/অ্যাক্টিভ ট্রান্সফর্ম থাকে না */
+}
+
+
+/* --- 9. Bottom Section Styling --- */
+.from__bottom {
+  text-align: center;
+  margin-top: 35px;
+  margin-bottom: 35px;
+}
+
+.from__bottom .sign {
+  color: #666; /* সামান্য গাঢ় ধূসর */
+  font-size: 15px;
+  text-transform: uppercase;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  margin-bottom: 18px;
+  letter-spacing: 0.8px;
+}
+
+.from__bottom .social {
+  font-size: 22px; /* আরও বড় আইকন */
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.social i {
+  height: 45px; /* বড় আইকন কন্টেইনার */
+  width: 45px;
+  margin: 0 18px;
+  border-radius: 50%;
+  background: #fff;
+  color: #666; /* ডিফল্ট আইকন কালার */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+  border: 1px solid rgba(255, 255, 255, 0.1); /* গ্লাস ইফেক্টের জন্য সূক্ষ্ম বর্ডার */
+}
+
+/* ব্র্যান্ড কালার */
+.social i.fa-facebook-f { color: #3b5998; }
+.social i.fa-twitter { color: #00acee; }
+.social i.fa-google { color: #ea4335; }
+
+/* সোশ্যাল আইকন হোভার ইফেক্ট */
+.social i:hover {
+  transform: translateY(-7px); /* আরও সুস্পষ্ট লিফট */
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+  background-color: #f8f9fa; /* হোভারে সামান্য হালকা */
+}
+
+/* সোশ্যাল আইকন অ্যাক্টিভ ইফেক্ট */
+.social i:active {
+  transform: translateY(-2px);
+}
+
+/* সোশ্যাল আইকন ক্লিক অ্যানিমেশন (জাভাস্ক্রিপ্ট দ্বারা) */
+.social i.social-clicked { 
+  transform: scale(0.9) translateY(0); 
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); 
+  transition: all 0.1s ease-out; 
+}
+
+
+/* --- 10. Other Links (Sign-in / Create) --- */
+.uther {
+  display: flex;
+  justify-content: space-around; /* সমান স্থান */
+  margin-top: 35px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.uther a {
+  text-decoration: none;
+  color: #666;
+  padding: 8px 12px;
+  border-radius: 8px; /* আরও গোলাকার লিংক */
+  transition: all 0.4s ease;
+  letter-spacing: 0.5px;
+}
+
+.uther .s {
+  color: #f093fb; /* গ্রেডিয়েন্ট থেকে নীল-গোলাপী */
+}
+
+.uther .s:hover {
+  background-color: #f093fb;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(240, 147, 251, 0.4);
+}
+
+.uther .c {
+  color: #f5576c; /* গ্রেডিয়েন্ট থেকে লাল-গোলাপী */
+}
+
+.uther .c:hover {
+  background-color: #f5576c;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(245, 87, 108, 0.4);
+}
+
+/* --- 11. Media Queries (Responsive Design) --- */
+@media (max-width: 768px) {
+  .container {
+    width: 95%;
+    padding: 30px;
+  }
+  
+  .form__text {
+    font-size: 32px;
+  }
+
+  .btn {
+    font-size: 17px;
+    padding: 15px 35px;
+  }
+
+  .social i {
+    height: 40px;
+    width: 40px;
+    margin: 0 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 25px;
+  }
+
+  .form__text {
+    font-size: 28px;
+    margin-bottom: 25px;
+  }
+
+  .form__input {
+    padding: 16px 20px;
+    font-size: 16px;
+  }
+
+  .form__label {
+    font-size: 14px;
+    left: 20px;
+  }
+  
+  .btn {
+    font-size: 16px;
+    padding: 12px 30px;
+  }
+
+  .social i {
+    height: 35px;
+    width: 35px;
+    margin: 0 10px;
+  }
+
+  .uther {
+    font-size: 14px;
+  }
+}
