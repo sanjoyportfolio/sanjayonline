@@ -2,622 +2,910 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login / Register - SANJAY Portfolio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Signika:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login / Register - SANJAY Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Signika:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <style>
+    /* --- Root Variables for Color Scheme --- */
+    :root {
+      --primary-color: #00ffff;
+      /* Bright Cyan */
+      --secondary-color: #ff00ff;
+      /* Bright Magenta */
+      --accent-color: #00ff88;
+      /* Bright Green */
+      --text-color: #e0e0e0;
+      /* Light grey for main text */
+      --text-color-dark: #333;
+      /* Dark text for light elements */
+      --bg-color-deep: #1a1a1a;
+      /* Very dark background */
+      --bg-color-gradient-start: #2c3e50;
+      /* Dark Blue-Grey */
+      --bg-color-gradient-end: #34495e;
+      /* Slightly Lighter Blue-Grey */
+      --card-bg: #222;
+      /* Darker card background */
+      --input-bg: #333;
+      /* Dark input background */
+      --border-color: #444;
+      /* Dark border color */
+      --button-hover-bg: #00d4d4;
+      /* Slightly darker cyan for hover */
+      --link-hover-color: #ff33ff;
+      /* Pinkish magenta for link hover */
+      --gradient-text: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    }
     
-    <style>
-        /* --- Root Variables for Color Scheme --- */
-        :root {
-            --primary-color: #00ffff;
-            /* Bright Cyan */
-            --secondary-color: #ff00ff;
-            /* Bright Magenta */
-            --accent-color: #00ff88;
-            /* Bright Green */
-            --text-color: #e0e0e0;
-            /* Light grey for main text */
-            --text-color-dark: #333;
-            /* Dark text for light elements */
-            --bg-color-deep: #1a1a1a;
-            /* Very dark background */
-            --bg-color-gradient-start: #2c3e50;
-            /* Dark Blue-Grey */
-            --bg-color-gradient-end: #34495e;
-            /* Slightly Lighter Blue-Grey */
-            --card-bg: #222;
-            /* Darker card background */
-            --input-bg: #333;
-            /* Dark input background */
-            --border-color: #444;
-            /* Dark border color */
-            --button-hover-bg: #00d4d4;
-            /* Slightly darker cyan for hover */
-            --link-hover-color: #ff33ff;
-            /* Pinkish magenta for link hover */
-            --gradient-text: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-        }
-        
-        /* --- Global Body Styles --- */
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Poppins', sans-serif;
-            /* Use Poppins for a modern feel */
-            background: linear-gradient(135deg, var(--bg-color-gradient-start), var(--bg-color-gradient-end));
-            color: var(--text-color);
-            line-height: 1.6;
-            overflow: hidden;
-            /* Hide scrollbars for the fullscreen effect */
-        }
-        
-        /* --- Auth Wrapper (Page Container) --- */
-        .auth-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            /* Full viewport height */
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        
-        /* --- Auth Container (The main form card) --- */
-        .auth-container {
-            background-color: var(--card-bg);
-            padding: 40px;
-            border-radius: 15px;
-            /* Slightly more rounded */
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
-            /* More prominent shadow */
-            width: 100%;
-            max-width: 480px;
-            /* Slightly wider */
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            animation: fadeInScale 0.8s ease-out forwards;
-            /* Slower, smoother animation */
-            border: 2px solid var(--primary-color);
-            /* A subtle border */
-            box-sizing: border-box;
-            /* Ensure padding/border don't expand width */
-        }
-        
-        @keyframes fadeInScale {
-            from {
-                opacity: 0;
-                transform: scale(0.95) translateY(20px);
-            }
-            
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-        
-        /* --- Toggle Buttons (Login/Register tabs) --- */
-        .auth-toggle-buttons {
-            display: flex;
-            margin-bottom: 35px;
-            /* More space below buttons */
-            border-radius: 10px;
-            /* More rounded tabs */
-            overflow: hidden;
-            background-color: var(--input-bg);
-            box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.4);
-            /* Deeper inset shadow */
-            position: relative;
-        }
-        
-        .auth-toggle-buttons button {
-            flex: 1;
-            padding: 14px 15px;
-            /* Larger padding */
-            border: none;
-            background-color: transparent;
-            color: var(--text-color);
-            /* Use text-color for inactive to be more visible */
-            font-size: 1.15em;
-            /* Slightly larger font */
-            font-weight: 600;
-            /* Bolder text */
-            cursor: pointer;
-            transition: color 0.3s ease, background-color 0.3s ease;
-            position: relative;
-            z-index: 2;
-            /* Ensure text is above the sliding background */
-        }
-        
-        .auth-toggle-buttons button.active {
-            color: var(--text-color-dark);
-            /* Dark text for active button */
-            text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-            /* Subtle text shadow */
-        }
-        
-        /* Sliding background for active tab */
-        .auth-toggle-buttons::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 50%;
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-            /* Gradient background for active tab */
-            border-radius: 10px;
-            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            /* Smoother transition */
-            z-index: 1;
-            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.4);
-            /* Shadow for the active tab */
-        }
-        
-        .auth-toggle-buttons.register-active::before {
-            transform: translateX(100%);
-        }
-        
-        /* --- Form Wrapper & Forms --- */
-        .auth-form-wrapper {
-            position: relative;
-            height: auto;
-            /* Managed by JS for smooth transitions */
-            transition: height 0.5s ease-in-out;
-        }
-        
-        .auth-form {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 0 5px;
-            /* Slight padding for inner content */
-            opacity: 0;
-            transform: translateX(-100%);
-            transition: opacity 0.5s ease, transform 0.5s ease;
-            box-sizing: border-box;
-            /* Added for initial measurement logic: */
-            visibility: hidden;
-        }
-        
-        .auth-form.active {
-            opacity: 1;
-            transform: translateX(0);
-            position: relative;
-            /* Take up space when active */
-            visibility: visible;
-            /* Make visible when active */
-        }
-        
-        .auth-form h2 {
-            margin-bottom: 30px;
-            /* More space below heading */
-            color: var(--secondary-color);
-            /* Magenta heading */
-            font-size: 2.2em;
-            /* Larger heading */
-            text-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
-            /* Subtle glowing effect */
-        }
-        
-        /* --- Input Groups --- */
-        .input-group {
-            margin-bottom: 25px;
-            /* More space between inputs */
-            text-align: left;
-        }
-        
-        .input-group label {
-            display: block;
-            margin-bottom: 10px;
-            /* Space between label and input */
-            font-weight: 600;
-            color: var(--text-color);
-            /* Use general text-color for labels */
-            font-size: 1em;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            /* Space between icon and label text */
-        }
-        
-        .input-group label i {
-            color: var(--primary-color);
-            /* Icon color */
-        }
-        
-        .input-group input {
-            width: calc(100% - 28px);
-            /* Account for padding and border */
-            padding: 14px;
-            /* Larger input fields */
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background-color: var(--input-bg);
-            color: var(--text-color);
-            font-size: 1.05em;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-            box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.3);
-            /* Inset shadow for depth */
-        }
-        
-        .input-group input:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 4px rgba(0, 255, 255, 0.3), inset 0 1px 5px rgba(0, 0, 0, 0.3);
-            /* Cyan glow on focus */
-            background-color: #444;
-            /* Slightly lighter on focus */
-            outline: none;
-        }
-        
-        /* --- Submit Button --- */
-        .submit-btn {
-            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-            /* Gradient button */
-            color: var(--text-color-dark);
-            /* Dark text on bright button */
-            padding: 15px 30px;
-            /* Larger button */
-            border-radius: 30px;
-            /* More rounded pill shape */
-            font-size: 1.2em;
-            /* Larger font */
-            font-weight: 700;
-            /* Extra bold */
-            width: 100%;
-            margin-top: 25px;
-            /* More space above button */
-            box-shadow: 0 6px 20px rgba(0, 255, 255, 0.4);
-            /* Stronger shadow */
-            text-transform: uppercase;
-            /* Uppercase text */
-            letter-spacing: 1px;
-            /* Spaced out letters */
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .submit-btn:hover {
-            background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
-            /* Hover gradient */
-            transform: translateY(-5px);
-            /* Lift effect */
-            box-shadow: 0 8px 25px rgba(255, 0, 255, 0.5);
-            /* Enhanced shadow */
-        }
-        
-        /* --- Link to other form --- */
-        .auth-form p {
-            margin-top: 30px;
-            /* More space above link */
-            font-size: 0.95em;
-            color: var(--text-color);
-            /* Use general text-color */
-        }
-        
-        .auth-form p a {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: bold;
-            transition: color 0.3s ease, text-decoration 0.3s ease;
-        }
-        
-        .auth-form p a:hover {
-            color: var(--secondary-color);
-            /* Magenta on hover */
-            text-decoration: underline;
-        }
-        
-        /* --- Back to Home Button --- */
-        .back-home {
-            text-align: center;
-            margin-top: 30px;
-            /* Space below form */
-            font-size: 1em;
-        }
-        
-        .back-home a {
-            color: var(--text-color);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: color 0.3s ease;
-            padding: 10px 15px;
-            border-radius: 20px;
-            background-color: rgba(0, 0, 0, 0.2);
-        }
-        
-        .back-home a:hover {
-            color: var(--accent-color);
-            /* Greenish accent on hover */
-            background-color: rgba(0, 0, 0, 0.4);
-            transform: translateY(-2px);
-            box-shadow: 0 2px 10px rgba(0, 255, 136, 0.3);
-        }
-        
-        /* --- Responsive Adjustments --- */
-        @media (max-width: 600px) {
-            .auth-container {
-                padding: 30px 20px;
-                max-width: 95%;
-            }
-            
-            .auth-form h2 {
-                font-size: 1.8em;
-            }
-            
-            .auth-toggle-buttons button {
-                font-size: 1em;
-                padding: 12px 10px;
-            }
-            
-            .input-group input {
-                font-size: 0.95em;
-                padding: 12px;
-            }
-            
-            .submit-btn {
-                padding: 12px 20px;
-                font-size: 1.1em;
-            }
-        }
-    </style>
+    /* --- Global Body Styles --- */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      /* Use Poppins for a modern feel */
+      background: linear-gradient(135deg, var(--bg-color-gradient-start), var(--bg-color-gradient-end));
+      color: var(--text-color);
+      line-height: 1.6;
+      overflow: hidden;
+      /* Hide scrollbars for the fullscreen effect */
+    }
+    
+    /* --- Auth Wrapper (Page Container) --- */
+    .auth-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      /* Full viewport height */
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    
+    /* --- Auth Container (The main form card) --- */
+    .auth-container {
+      background-color: var(--card-bg);
+      padding: 40px;
+      border-radius: 15px;
+      /* Slightly more rounded */
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+      /* More prominent shadow */
+      width: 100%;
+      max-width: 480px;
+      /* Slightly wider */
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      animation: fadeInScale 0.8s ease-out forwards;
+      /* Slower, smoother animation */
+      border: 2px solid var(--primary-color);
+      /* A subtle border */
+      box-sizing: border-box;
+      /* Ensure padding/border don't expand width */
+    }
+    
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: scale(0.95) translateY(20px);
+      }
+      
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+    
+    /* --- Toggle Buttons (Login/Register tabs) --- */
+    .auth-toggle-buttons {
+      display: flex;
+      margin-bottom: 35px;
+      /* More space below buttons */
+      border-radius: 10px;
+      /* More rounded tabs */
+      overflow: hidden;
+      background-color: var(--input-bg);
+      box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.4);
+      /* Deeper inset shadow */
+      position: relative;
+    }
+    
+    .auth-toggle-buttons button {
+      flex: 1;
+      padding: 14px 15px;
+      /* Larger padding */
+      border: none;
+      background-color: transparent;
+      color: var(--text-color);
+      /* Use text-color for inactive to be more visible */
+      font-size: 1.15em;
+      /* Slightly larger font */
+      font-weight: 600;
+      /* Bolder text */
+      cursor: pointer;
+      transition: color 0.3s ease, background-color 0.3s ease;
+      position: relative;
+      z-index: 2;
+      /* Ensure text is above the sliding background */
+    }
+    
+    .auth-toggle-buttons button.active {
+      color: var(--text-color-dark);
+      /* Dark text for active button */
+      text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+      /* Subtle text shadow */
+    }
+    
+    /* Sliding background for active tab */
+    .auth-toggle-buttons::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+      /* Gradient background for active tab */
+      border-radius: 10px;
+      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      /* Smoother transition */
+      z-index: 1;
+      box-shadow: 0 4px 15px rgba(0, 255, 255, 0.4);
+      /* Shadow for the active tab */
+    }
+    
+    .auth-toggle-buttons.register-active::before {
+      transform: translateX(100%);
+    }
+    
+    /* --- Form Wrapper & Forms --- */
+    .auth-form-wrapper {
+      position: relative;
+      height: auto;
+      /* Managed by JS for smooth transitions */
+      transition: height 0.5s ease-in-out;
+    }
+    
+    .auth-form {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 0 5px;
+      /* Slight padding for inner content */
+      opacity: 0;
+      transform: translateX(-100%);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      box-sizing: border-box;
+      /* Added for initial measurement logic: */
+      visibility: hidden;
+    }
+    
+    .auth-form.active {
+      opacity: 1;
+      transform: translateX(0);
+      position: relative;
+      /* Take up space when active */
+      visibility: visible;
+      /* Make visible when active */
+    }
+    
+    .auth-form h2 {
+      margin-bottom: 30px;
+      /* More space below heading */
+      color: var(--secondary-color);
+      /* Magenta heading */
+      font-size: 2.2em;
+      /* Larger heading */
+      text-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
+      /* Subtle glowing effect */
+    }
+    
+    /* --- Input Groups --- */
+    .input-group {
+      margin-bottom: 25px;
+      /* More space between inputs */
+      text-align: left;
+    }
+    
+    .input-group label {
+      display: block;
+      margin-bottom: 10px;
+      /* Space between label and input */
+      font-weight: 600;
+      color: var(--text-color);
+      /* Use general text-color for labels */
+      font-size: 1em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      /* Space between icon and label text */
+    }
+    
+    .input-group label i {
+      color: var(--primary-color);
+      /* Icon color */
+    }
+    
+    .input-group input {
+      width: calc(100% - 28px);
+      /* Account for padding and border */
+      padding: 14px;
+      /* Larger input fields */
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      background-color: var(--input-bg);
+      color: var(--text-color);
+      font-size: 1.05em;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+      box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.3);
+      /* Inset shadow for depth */
+    }
+    
+    .input-group input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 4px rgba(0, 255, 255, 0.3), inset 0 1px 5px rgba(0, 0, 0, 0.3);
+      /* Cyan glow on focus */
+      background-color: #444;
+      /* Slightly lighter on focus */
+      outline: none;
+    }
+    
+    /* Unique Password strength indicator styles */
+    .password-feedback {
+      margin-top: 5px;
+      height: 25px;
+      /* Increased height for better visibility */
+      width: 100%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .password-strength-bar-container {
+      flex-grow: 1;
+      height: 8px;
+      /* Slimmer bar */
+      background-color: var(--border-color);
+      /* Grey background for empty bar */
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+    
+    .password-strength-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #ff0000, #ff8c00);
+      /* Default gradient */
+      border-radius: 4px;
+      transition: width 0.3s ease-in-out, background 0.3s ease-in-out;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    
+    /* Dynamic background gradients for strength levels */
+    .password-strength-bar.weak {
+      width: 33%;
+      background: linear-gradient(90deg, #ff4c4c, #ff0000);
+      /* Reddish gradient for Weak */
+    }
+    
+    .password-strength-bar.good {
+      width: 66%;
+      background: linear-gradient(90deg, #ff8c00, #ffd700);
+      /* Orange to Gold for Good */
+    }
+    
+    .password-strength-bar.strong {
+      width: 100%;
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+      /* Your primary to accent for Strong */
+    }
+    
+    .password-strength-status {
+      font-size: 0.9em;
+      font-weight: 600;
+      color: var(--text-color);
+      min-width: 80px;
+      /* Ensure space for text and emoji */
+      text-align: right;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 5px;
+      transition: color 0.3s ease;
+    }
+    
+    .password-strength-status .emoji {
+      font-size: 1.2em;
+      /* Larger emoji */
+      line-height: 1;
+    }
+    
+    .password-strength-status.weak {
+      color: #ff4c4c;
+      /* Consistent with bar color */
+    }
+    
+    .password-strength-status.good {
+      color: #ffd700;
+      /* Consistent with bar color */
+    }
+    
+    .password-strength-status.strong {
+      color: var(--primary-color);
+      /* Consistent with bar color */
+    }
+    
+    .submit-btn {
+      position: relative;
+      margin-top: 10px;
+      width: 100%;
+      display: inline-block;
+      padding: 16px 40px;
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.05);
+      border: none;
+      border-radius: 40px;
+      cursor: pointer;
+      text-transform: uppercase;
+      overflow: hidden;
+      z-index: 1;
+      backdrop-filter: blur(8px);
+      box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1);
+    }
+    
+    .submit-btn::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      width: calc(100% + 4px);
+      height: calc(100% + 4px);
+      border-radius: 50px;
+      background: conic-gradient(#00ffff);
+      animation: spin 4s linear infinite;
+      z-index: -1;
+      padding: 2px;
+      mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      mask-composite: exclude;
+      -webkit-mask-composite: destination-out;
+      box-sizing: border-box;
+      filter: blur(2px);
+    }
+    
+    .submit-btn:hover::before {
+      animation-duration: 1.5s;
+      filter: blur(5px);
+    }
+    
+    .submit-btn:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.4),
+        0 0 40px rgba(255, 0, 255, 0.3);
+    }
+    
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+    
+    /* --- Link to other form --- */
+    .auth-form p {
+      margin-top: 30px;
+      /* More space above link */
+      font-size: 0.95em;
+      color: var(--text-color);
+      /* Use general text-color */
+    }
+    
+    .auth-form p a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s ease, text-decoration 0.3s ease;
+    }
+    
+    .auth-form p a:hover {
+      color: var(--secondary-color);
+      /* Magenta on hover */
+      text-decoration: underline;
+    }
+    
+    /* --- Back to Home Button --- */
+    .back-home {
+      text-align: center;
+      margin-top: 30px;
+      /* Space below form */
+      font-size: 1em;
+    }
+    
+    .back-home a {
+      color: var(--text-color);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.3s ease;
+      padding: 10px 15px;
+      border-radius: 20px;
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+    
+    .back-home a:hover {
+      color: var(--accent-color);
+      /* Greenish accent on hover */
+      background-color: rgba(0, 0, 0, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 2px 10px rgba(0, 255, 136, 0.3);
+    }
+    
+    /* --- Responsive Adjustments --- */
+    @media (max-width: 600px) {
+      .auth-container {
+        padding: 30px 20px;
+        max-width: 95%;
+      }
+      
+      .auth-form h2 {
+        font-size: 1.8em;
+      }
+      
+      .auth-toggle-buttons button {
+        font-size: 1em;
+        padding: 12px 10px;
+      }
+      
+      .input-group input {
+        font-size: 0.95em;
+        padding: 12px;
+      }
+      
+      .submit-btn {
+        padding: 12px 20px;
+        font-size: 1.1em;
+      }
+    }
+  </style>
 </head>
 
 <body class="auth-body">
-    <div class="auth-wrapper">
-        <div class="auth-container">
-            <div class="auth-toggle-buttons">
-                <button id="showLoginBtn" class="active">Login</button>
-                <button id="showRegisterBtn">Register</button>
+  <div class="auth-wrapper">
+    <div class="auth-container">
+      <div class="auth-toggle-buttons">
+        <button id="showLoginBtn" class="active">Login</button>
+        <button id="showRegisterBtn">Register</button>
+      </div>
+      
+      <div class="auth-form-wrapper">
+        <form id="loginForm" class="auth-form active">
+          <h2>LOGIN!</h2>
+          <div class="input-group">
+            <label for="loginEmail"><i class="fas fa-envelope"></i> Email</label>
+            <input type="email" id="loginEmail" required autocomplete="email">
+          </div>
+          <div class="input-group">
+            <label for="loginPassword"><i class="fas fa-lock"></i> Password</label>
+            <input type="password" id="loginPassword" required autocomplete="current-password">
+          </div>
+          <button type="submit" class="submit-btn">Login</button>
+          <p>Don't have an account? <a href="#" id="linkToRegister">Register here</a></p>
+        </form>
+        
+        <form id="registerForm" class="auth-form">
+          <h2>REGISTRATION!</h2>
+          <div class="input-group">
+            <label for="registerName"><i class="fas fa-user"></i> Name</label>
+            <input type="text" id="registerName" required autocomplete="name">
+          </div>
+          <div class="input-group">
+            <label for="registerEmail"><i class="fas fa-envelope"></i> Email</label>
+            <input type="email" id="registerEmail" required autocomplete="email">
+          </div>
+          <div class="input-group">
+            <label for="registerPassword"><i class="fas fa-lock"></i> Password</label>
+            <input type="password" id="registerPassword" required autocomplete="new-password">
+            <div class="password-feedback">
+              <div class="password-strength-bar-container">
+                <div id="passwordStrengthBar" class="password-strength-bar"></div>
+              </div>
+              <span id="passwordStrengthStatus" class="password-strength-status">
+                <span class="emoji"></span>
+                <span class="text"></span>
+              </span>
             </div>
-            
-            <div class="auth-form-wrapper">
-                <form id="loginForm" class="auth-form active">
-                    <h2>LOGIN!</h2>
-                    <div class="input-group">
-                        <label for="loginEmail"><i class="fas fa-envelope"></i> Email</label>
-                        <input type="email" id="loginEmail" required autocomplete="email">
-                    </div>
-                    <div class="input-group">
-                        <label for="loginPassword"><i class="fas fa-lock"></i> Password</label>
-                        <input type="password" id="loginPassword" required autocomplete="current-password">
-                    </div>
-                    <button type="submit" class="submit-btn">Login</button>
-                    <p>Don't have an account? <a href="#" id="linkToRegister">Register here</a></p>
-                </form>
-                
-                <form id="registerForm" class="auth-form">
-                    <h2>REGISTRATION!</h2>
-                    <div class="input-group">
-                        <label for="registerName"><i class="fas fa-user"></i> Name</label>
-                        <input type="text" id="registerName" required autocomplete="name">
-                    </div>
-                    <div class="input-group">
-                        <label for="registerEmail"><i class="fas fa-envelope"></i> Email</label>
-                        <input type="email" id="registerEmail" required autocomplete="email">
-                    </div>
-                    <div class="input-group">
-                        <label for="registerPassword"><i class="fas fa-lock"></i> Password</label>
-                        <input type="password" id="registerPassword" required autocomplete="new-password">
-                    </div>
-                    <div class="input-group">
-                        <label for="confirmPassword"><i class="fas fa-lock"></i> Confirm Password</label>
-                        <input type="password" id="confirmPassword" required autocomplete="new-password">
-                    </div>
-                    <button type="submit" class="submit-btn">Register</button>
-                    <p>Already have an account? <a href="#" id="linkToLogin">Login here</a></p>
-                </form>
-            </div>
-            
-            <div class="back-home">
-                <a href="index.html"><i class="fas fa-arrow-left"></i> Back to Home</a>
-            </div>
-        </div>
+          </div>
+          <div class="input-group">
+            <label for="confirmPassword"><i class="fas fa-lock"></i> Confirm Password</label>
+            <input type="password" id="confirmPassword" required autocomplete="new-password">
+          </div>
+          <button type="submit" class="submit-btn">Register</button>
+          <p>Already have an account? <a href="#" id="linkToLogin">Login here</a></p>
+        </form>
+      </div>
+      
+      <div class="back-home">
+        <a href="index.html"><i class="fas fa-arrow-left"></i> Back to Home</a>
+      </div>
     </div>
+  </div>
+  
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
     
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const showLoginBtn = document.getElementById('showLoginBtn');
-            const showRegisterBtn = document.getElementById('showRegisterBtn');
-            const loginForm = document.getElementById('loginForm');
-            const registerForm = document.getElementById('registerForm');
-            const linkToRegister = document.getElementById('linkToRegister');
-            const linkToLogin = document.getElementById('linkToLogin');
-            const authFormWrapper = document.querySelector('.auth-form-wrapper');
-            const authToggleButtons = document.querySelector('.auth-toggle-buttons');
-            
-            // Function to dynamically adjust wrapper height based on active form
-            function setAuthFormWrapperHeight(form) {
-                form.style.position = 'relative';
-                form.style.visibility = 'visible';
-                form.style.opacity = '1';
-                form.style.transform = 'translateX(0)';
-                
-                const height = form.scrollHeight + 20;
-                authFormWrapper.style.height = `${height}px`;
-                
-                if (form.id === 'loginForm') {
-                    registerForm.style.position = 'absolute';
-                    registerForm.style.visibility = 'hidden';
-                    registerForm.style.opacity = '0';
-                    registerForm.style.transform = 'translateX(100%)';
-                } else {
-                    loginForm.style.position = 'absolute';
-                    loginForm.style.visibility = 'hidden';
-                    loginForm.style.opacity = '0';
-                    loginForm.style.transform = 'translateX(-100%)';
-                }
-            }
-            
-            // Function to show a specific authentication form
-            function showAuthForm(formToShow) {
-                if (formToShow === 'login') {
-                    loginForm.classList.add('active');
-                    registerForm.classList.remove('active');
-                    showLoginBtn.classList.add('active');
-                    showRegisterBtn.classList.remove('active');
-                    authToggleButtons.classList.remove('register-active');
-                    setAuthFormWrapperHeight(loginForm);
-                } else {
-                    loginForm.classList.remove('active');
-                    registerForm.classList.add('active');
-                    showLoginBtn.classList.remove('active');
-                    showRegisterBtn.classList.add('active');
-                    authToggleButtons.classList.add('register-active');
-                    setAuthFormWrapperHeight(registerForm);
-                }
-            }
-            
-            // Initial height setting
-            setAuthFormWrapperHeight(loginForm);
-            
-            // Event Listeners for switching forms
-            showLoginBtn.addEventListener('click', () => showAuthForm('login'));
-            showRegisterBtn.addEventListener('click', () => showAuthForm('register'));
-            linkToRegister.addEventListener('click', (e) => {
-                e.preventDefault();
-                showAuthForm('register');
-            });
-            linkToLogin.addEventListener('click', (e) => {
-                e.preventDefault();
-                showAuthForm('login');
-            });
-            
-            // --- Handle Login Form Submission (simulated) ---
-            loginForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const email = document.getElementById('loginEmail').value;
-                const password = document.getElementById('loginPassword').value;
-                
-                const users = JSON.parse(localStorage.getItem('users')) || [];
-                const user = users.find(u => u.email === email && u.password === password);
-                
-                if (user) {
-                    // Set a flag that login was successful
-                    localStorage.setItem('hasLoggedInOnce', 'true'); // New flag
-                    localStorage.setItem('currentUser', JSON.stringify(user)); // Store full user data
-                    
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Login Successful!',
-                        text: 'You are now logged in. Redirecting...',
-                        showConfirmButton: false,
-                        timer: 1500,
-                        timerProgressBar: true,
-                        background: getComputedStyle(document.documentElement).getPropertyValue('--card-bg'),
-                        color: getComputedStyle(document.documentElement).getPropertyValue('--text-color'),
-                        confirmButtonColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color')
-                    }).then(() => {
-                        window.location.href = 'profile.html'; // Redirect to profile after successful login
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Login Failed',
-                        text: 'Invalid email or password. Please try again.',
-                        background: getComputedStyle(document.documentElement).getPropertyValue('--card-bg'),
-                        color: getComputedStyle(document.documentElement).getPropertyValue('--text-color'),
-                        confirmButtonColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color')
-                    });
-                }
-            });
-            
-            // --- Handle Register Form Submission (simulated) ---
-            registerForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const name = document.getElementById('registerName').value.trim();
-                const email = document.getElementById('registerEmail').value.trim();
-                const password = document.getElementById('registerPassword').value;
-                const confirmPassword = document.getElementById('confirmPassword').value;
-                
-                let users = JSON.parse(localStorage.getItem('users')) || [];
-                
-                if (!name || !email || !password || !confirmPassword) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Registration Failed',
-                        text: 'Please fill in all fields.',
-                        background: getComputedStyle(document.documentElement).getPropertyValue('--card-bg'),
-                        color: getComputedStyle(document.documentElement).getPropertyValue('--text-color'),
-                        confirmButtonColor: 'var(--primary-color)'
-                    });
-                    return;
-                }
-                
-                if (password !== confirmPassword) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Registration Failed',
-                        text: 'Passwords do not match.',
-                        background: getComputedStyle(document.documentElement).getPropertyValue('--card-bg'),
-                        color: getComputedStyle(document.documentElement).getPropertyValue('--text-color'),
-                        confirmButtonColor: 'var(--primary-color)'
-                    });
-                    return;
-                }
-                
-                if (users.some(u => u.email === email)) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Registration Failed',
-                        text: 'An account with this email already exists.',
-                        background: getComputedStyle(document.documentElement).getPropertyValue('--card-bg'),
-                        color: getComputedStyle(document.documentElement).getPropertyValue('--text-color'),
-                        confirmButtonColor: 'var(--primary-color)'
-                    });
-                    return;
-                }
-                
-                const newUser = {
-                    name: name,
-                    email: email,
-                    password: password,
-                    profilePic: 'assets/images/profile.png',
-                    dob: '',
-                    phone: '',
-                    address: '',
-                    about: ''
-                };
-                users.push(newUser);
-                localStorage.setItem('users', JSON.stringify(users));
-                
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Registration Successful!',
-                    text: 'You can now log in with your new account.',
-                    background: getComputedStyle(document.documentElement).getPropertyValue('--card-bg'),
-                    color: getComputedStyle(document.documentElement).getPropertyValue('--text-color'),
-                    confirmButtonColor: 'var(--primary-color)'
-                }).then(() => {
-                    document.getElementById('loginEmail').value = email;
-                    document.getElementById('loginPassword').value = '';
-                    showAuthForm('login');
-                });
-            });
-            
-            // Set up a default user if none exists (for demonstration)
-            let users = JSON.parse(localStorage.getItem('users')) || [];
-            if (users.length === 0) {
-                users.push({
-                    name: 'Sanjay Das',
-                    email: 'sanjay.das@example.com',
-                    password: '12345', // In real apps, hash passwords!
-                    dob: '2007-06-20',
-                    phone: '+880 1727 503540',
-                    address: 'Dhaka, Bangladesh',
-                    about: 'I am a dedicated and results-driven web developer with a passion for creating dynamic and responsive web applications.',
-                    profilePic: 'assets/images/profile.png'
-                });
-                localStorage.setItem('users', JSON.stringify(users));
-            }
-        });
-    </script>
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAfg2qEWyOCUBwJu2xCwOQppQSM26yUfOs",
+      authDomain: "online-shopping-2aac1.firebaseapp.com",
+      databaseURL: "https://online-shopping-2aac1-default-rtdb.firebaseio.com",
+      projectId: "online-shopping-2aac1",
+      storageBucket: "online-shopping-2aac1.firebasestorage.app",
+      messagingSenderId: "481431730276",
+      appId: "1:481431730276:web:e3eca833c09004a32d8771",
+      measurementId: "G-QCQ8G2QL89" // Only if you enable analytics
+    };
+    
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app); // Firestore Initialize
+    
+    document.addEventListener("DOMContentLoaded", () => {
+      const showLoginBtn = document.getElementById('showLoginBtn');
+      const showRegisterBtn = document.getElementById('showRegisterBtn');
+      const loginForm = document.getElementById('loginForm');
+      const registerForm = document.getElementById('registerForm');
+      const linkToRegister = document.getElementById('linkToRegister');
+      const linkToLogin = document.getElementById('linkToLogin');
+      const authFormWrapper = document.querySelector('.auth-form-wrapper');
+      const authToggleButtons = document.querySelector('.auth-toggle-buttons');
+      const loginEmailInput = document.getElementById('loginEmail'); // Added for login email validation
+      const registerEmailInput = document.getElementById('registerEmail');
+      const registerPasswordInput = document.getElementById('registerPassword'); // Correctly selected
+      const passwordStrengthBar = document.getElementById('passwordStrengthBar');
+      const passwordStrengthStatus = document.getElementById('passwordStrengthStatus');
+      const passwordStrengthEmoji = passwordStrengthStatus.querySelector('.emoji');
+      const passwordStrengthText = passwordStrengthStatus.querySelector('.text');
+      
+      // Function to dynamically adjust wrapper height based on active form
+      function setAuthFormWrapperHeight(form) {
+        form.style.position = 'relative';
+        form.style.visibility = 'visible';
+        form.style.opacity = '1';
+        form.style.transform = 'translateX(0)';
+        
+        const height = form.scrollHeight + 20;
+        authFormWrapper.style.height = `${height}px`;
+        
+        if (form.id === 'loginForm') {
+          registerForm.style.position = 'absolute';
+          registerForm.style.visibility = 'hidden';
+          registerForm.style.opacity = '0';
+          registerForm.style.transform = 'translateX(100%)';
+        } else {
+          loginForm.style.position = 'absolute';
+          loginForm.style.visibility = 'hidden';
+          loginForm.style.opacity = '0';
+          loginForm.style.transform = 'translateX(-100%)';
+        }
+      }
+      
+      // Function to show a specific authentication form
+      function showAuthForm(formToShow) {
+        if (formToShow === 'login') {
+          loginForm.classList.add('active');
+          registerForm.classList.remove('active');
+          showLoginBtn.classList.add('active');
+          showRegisterBtn.classList.remove('active');
+          authToggleButtons.classList.remove('register-active');
+          setAuthFormWrapperHeight(loginForm);
+        } else {
+          loginForm.classList.remove('active');
+          registerForm.classList.add('active');
+          showLoginBtn.classList.remove('active');
+          showRegisterBtn.classList.add('active');
+          authToggleButtons.classList.add('register-active');
+          setAuthFormWrapperHeight(registerForm);
+        }
+      }
+      
+      // Initial height setting
+      setAuthFormWrapperHeight(loginForm);
+      
+      // Event Listeners for switching forms
+      showLoginBtn.addEventListener('click', () => showAuthForm('login'));
+      showRegisterBtn.addEventListener('click', () => showAuthForm('register'));
+      linkToRegister.addEventListener('click', (e) => {
+        e.preventDefault();
+        showAuthForm('register');
+      });
+      linkToLogin.addEventListener('click', (e) => {
+        e.preventDefault();
+        showAuthForm('login');
+      });
+      
+      // --- Email Validation Function ---
+      // This regex is more robust for general email validation but might not catch all edge cases.
+      // Firebase's internal validation is the ultimate check.
+      function isValidEmail(email) {
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        return emailRegex.test(email);
+      }
+      
+      // --- Password Strength Checker Function ---
+      function checkPasswordStrength(password) {
+        let score = 0;
+        let text = '';
+        let emoji = '';
+        let className = '';
+        
+        if (!password || password.length === 0) {
+          return { text: '', emoji: '', className: '', score: 0 };
+        }
+        
+        // Criteria for scoring
+        if (password.length >= 8) score += 1; // Minimum length for security
+        if (password.length >= 12) score += 1; // Stronger length
+        if (/[A-Z]/.test(password)) score += 1; // Uppercase letters
+        if (/[a-z]/.test(password)) score += 1; // Lowercase letters
+        if (/\d/.test(password)) score += 1; // Numbers
+        if (/[^A-Za-z0-9]/.test(password)) score += 1; // Special characters
+        
+        if (score < 3) {
+          text = 'Weak';
+          emoji = '🙁'; // Frowning face
+          className = 'weak';
+        } else if (score < 5) {
+          text = 'Good';
+          emoji = '😊'; // Smiling face
+          className = 'good';
+        } else {
+          text = 'Strong';
+          emoji = '💪'; // Flexed biceps (strength)
+          className = 'strong';
+        }
+        
+        return { text: text, emoji: emoji, className: className, score: score };
+      }
+      
+      // --- Update Password Strength Indicator ---
+      registerPasswordInput.addEventListener('input', () => {
+        const password = registerPasswordInput.value;
+        const strength = checkPasswordStrength(password);
+        
+        passwordStrengthText.textContent = strength.text;
+        passwordStrengthEmoji.textContent = strength.emoji;
+        
+        // Remove previous classes and add the new one
+        passwordStrengthBar.className = 'password-strength-bar'; // Reset
+        passwordStrengthBar.classList.add(strength.className);
+        
+        passwordStrengthStatus.className = 'password-strength-status'; // Reset
+        passwordStrengthStatus.classList.add(strength.className);
+        
+        // If password is empty, hide the bar and text
+        if (password.length === 0) {
+          passwordStrengthBar.style.width = '0%'; // Explicitly reset width
+          passwordStrengthText.textContent = '';
+          passwordStrengthEmoji.textContent = '';
+          passwordStrengthStatus.className = 'password-strength-status';
+          passwordStrengthBar.className = 'password-strength-bar';
+        }
+      });
+      
+      // --- Log User Activity Function ---
+      async function logUserActivity(userId, userName, activityType, email) {
+        try {
+          await addDoc(collection(db, "activity_logs"), {
+            userId: userId,
+            userName: userName,
+            email: email,
+            activityType: activityType, // e.g., 'login', 'register'
+            timestamp: serverTimestamp() // Get server timestamp from Firestore
+          });
+          console.log("Activity logged successfully!");
+        } catch (error) {
+          console.error("Error logging activity: ", error);
+        }
+      }
+      
+      // --- Handle Login Form Submission (using Firebase) ---
+      loginForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const email = loginEmailInput.value; // Use the grabbed element
+        const password = document.getElementById('loginPassword').value;
+        
+        if (!isValidEmail(email)) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Login Failed',
+            text: 'Please enter a valid email address. Fake emails are not allowed.',
+            background: getComputedStyle(document.documentElement).getPropertyValue('--card-bg'),
+            color: getComputedStyle(document.documentElement).getPropertyValue('--text-color'),
+            confirmButtonColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color')
+          });
+          return;
+        }
+        
+        try {
+          const userCredential = await signInWithEmailAndPassword(auth, email, password);
+          const user = userCredential.user;
+          
+          localStorage.setItem('currentUserDisplayName', user.displayName || user.email);
+          
+          // Log activity after successful login
+          await logUserActivity(user.uid, user.displayName || 'N/A', 'login', user.email);
+          
+          Swal.fire({
+            icon: 'success',
+            title: 'Login Successful!',
+            text: 'You are now logged in. Redirecting...',
+            showConfirmButton: false,
+            timer: 1500,
+            timerProgressBar: true,
+            background: getComputedStyle(document.documentElement).getPropertyValue('--card-bg'),
+            color: getComputedStyle(document.documentElement).getPropertyValue('--text-color'),
+            confirmButtonColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color')
+          }).then(() => {
+            window.location.href = 'profile.html'; // Redirect to profile or dashboard
+          });
+        } catch (error) {
+          let errorMessage = 'An unknown error occurred. Please try again.';
+          switch (error.code) {
+            case 'auth/invalid-email':
+              errorMessage = 'Invalid email address format or user not found. Please try again.';
+              break;
+            case 'auth/user-disabled':
+              errorMessage = 'This account has been disabled. Please contact support.';
+              break;
+            case 'auth/user-not-found':
+            case 'auth/wrong-password':
+            case 'auth/invalid-credential':
+              errorMessage = 'Invalid email or password. Please check your credentials.';
+              break;
+            default:
+              errorMessage = error.message;
+          }
+          Swal.fire({
+            icon: 'error',
+            title: 'Login Failed',
+            text: errorMessage,
+            background: getComputedStyle(document.documentElement).getPropertyValue('--card-bg'),
+            color: getComputedStyle(document.documentElement).getPropertyValue('--text-color'),
+            confirmButtonColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color')
+          });
+        }
+      });
+      
+      // --- Handle Register Form Submission (using Firebase) ---
+      registerForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const name = document.getElementById('registerName').value.trim();
+        const email = registerEmailInput.value.trim();
+        const password = registerPasswordInput.value; // Correctly referencing the input field
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        
+        if (!name || !email || !password || !confirmPassword) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Registration Failed',
+            text: 'Please fill in all fields.',
+            background: getComputedStyle(document.documentElement).getPropertyValue('--card-bg'),
+            color: getComputedStyle(document.documentElement).getPropertyValue('--text-color'),
+            confirmButtonColor: 'var(--primary-color)'
+          });
+          return;
+        }
+        
+        if (!isValidEmail(email)) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Registration Failed',
+            text: 'Please enter a valid email address. Fake emails are not allowed.',
+            background: getComputedStyle(document.documentElement).getPropertyValue('--card-bg'),
+            color: getComputedStyle(document.documentElement).getPropertyValue('--text-color'),
+            confirmButtonColor: 'var(--primary-color)'
+          });
+          return;
+        }
+        
+        if (password !== confirmPassword) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Registration Failed',
+            text: 'Passwords do not match.',
+            background: getComputedStyle(document.documentElement).getPropertyValue('--card-bg'),
+            color: getComputedStyle(document.documentElement).getPropertyValue('--text-color'),
+            confirmButtonColor: 'var(--primary-color)'
+          });
+          return;
+        }
+        
+        const passwordStrength = checkPasswordStrength(password);
+        if (passwordStrength.text === 'Weak') {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Weak Password',
+            text: 'Your password is too weak. Please use a stronger password with a mix of characters.',
+            background: getComputedStyle(document.documentElement).getPropertyValue('--card-bg'),
+            color: getComputedStyle(document.documentElement).getPropertyValue('--text-color'),
+            confirmButtonColor: 'var(--primary-color)'
+          });
+          return; // এই লাইনটি পরিবর্তন করা হয়েছে: দুর্বল পাসওয়ার্ড হলে রেজিস্ট্রেশন হবে না।
+        }
+        
+        try {
+          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+          const user = userCredential.user;
+          
+          await updateProfile(user, {
+            displayName: name
+          });
+          
+          // Log activity after successful registration
+          await logUserActivity(user.uid, name, 'register', user.email);
+          
+          Swal.fire({
+            icon: 'success',
+            title: 'Registration Successful!',
+            text: 'Your account has been created. You can now log in.',
+            background: getComputedStyle(document.documentElement).getPropertyValue('--card-bg'),
+            color: getComputedStyle(document.documentElement).getPropertyValue('--text-color'),
+            confirmButtonColor: 'var(--primary-color)'
+          }).then(() => {
+            document.getElementById('loginEmail').value = email;
+            document.getElementById('loginPassword').value = '';
+            showAuthForm('login'); // Redirect to login form after successful registration
+          });
+        } catch (error) {
+          let errorMessage = 'An unknown error occurred during registration.';
+          switch (error.code) {
+            case 'auth/email-already-in-use':
+              errorMessage = 'This email address is already in use. Please use a different one or log in.';
+              break;
+            case 'auth/invalid-email':
+              errorMessage = 'The email address is not valid. Please ensure it\'s correctly formatted.';
+              break;
+            case 'auth/weak-password':
+              errorMessage = 'The password must be at least 6 characters long. Please choose a stronger one.';
+              break;
+            default:
+              errorMessage = error.message;
+          }
+          Swal.fire({
+            icon: 'error',
+            title: 'Registration Failed',
+            text: errorMessage,
+            background: getComputedStyle(document.documentElement).getPropertyValue('--card-bg'),
+            color: getComputedStyle(document.documentElement).getPropertyValue('--text-color'),
+            confirmButtonColor: 'var(--primary-color)'
+          });
+        }
+      });
+    });
+  </script>
 </body>
 
 </html>
