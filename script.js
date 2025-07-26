@@ -42,58 +42,104 @@ document.addEventListener("DOMContentLoaded", () => {
   const isProfilePage = document.body.classList.contains('profile-body');
   const isAuthPage = document.body.classList.contains('auth-body');
 
-  // Define session duration (12 hours in milliseconds) - CHANGED HERE
+  // Define session duration (12 hours in milliseconds)
   const SESSION_DURATION = 12 * 60 * 60 * 1000; // 12 hours
 
-  // --- Session Management Logic (for all non-auth pages) ---
+  // --- Centralized Session Management Logic ---
+  // This logic runs on every page load except for auth pages
   if (!isAuthPage) {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     const lastLoginTime = localStorage.getItem('lastLoginTime');
+    const currentUser = localStorage.getItem('currentUser'); // Ensure currentUser also exists
 
-    if (isLoggedIn === 'true' && lastLoginTime) {
+    // Log for debugging
+    console.log('Page Load Check:');
+    console.log('isLoggedIn:', isLoggedIn);
+    console.log('lastLoginTime:', lastLoginTime);
+    console.log('currentUser:', currentUser ? JSON.parse(currentUser).email : 'N/A');
+
+    if (isLoggedIn === 'true' && lastLoginTime && currentUser) {
       const currentTime = Date.now();
       const timeElapsed = currentTime - parseInt(lastLoginTime);
 
       if (timeElapsed > SESSION_DURATION) {
         // Session expired, force logout
-        localStorage.removeItem('isLoggedIn');
-        localStorage.removeItem('currentUser');
-        localStorage.removeItem('lastLoginTime'); // Clear the timestamp too
-        // Optionally, also clear 'hasVisitedSite' if you want a fresh redirect for expired sessions
-        localStorage.removeItem('hasVisitedSite');
+        console.log('Session expired. Logging out.');
+        clearUserSession(); // Use a dedicated function to clear session
+        showSessionExpiredAlert(); // Show alert and redirect
+      } else {
+        // Session is still active
+        console.log('Session active. Time remaining:', (SESSION_DURATION - timeElapsed) / (1000 * 60 * 60), 'hours');
+        if (isIndexPage) {
+          applyProfilePicToHero(); // Apply profile pic if on index page
+        }
+      }
+    } else {
+      // Not logged in or essential session data missing, redirect to login
+      console.log('Not logged in or session data missing. Redirecting to login.');
+      // Avoid redirecting immediately if user just came from login on profile page, or if it's the index page and they just navigated there.
+      // The current logic needs to distinguish between initial access and session expiry.
+      // Let's ensure this redirect only happens if there's truly no active session and it's not the login page itself.
+      if (window.location.pathname.endsWith('profile.html')) {
+        showAccessDeniedAlert(); // Specific alert for profile page access
+      } else if (window.location.pathname.endsWith('index.html')) {
+         // On index, if not logged in, just redirect to login without an alert if they haven't visited before (or after explicit logout/session expire)
+         // This is handled by the initial check for 'hasVisitedSite' in a more robust way.
+         // For now, if the session data is missing, we redirect.
+         window.location.replace('login.html');
+      } else {
+        window.location.replace('login.html'); // Default redirect for other non-auth pages
+      }
+      return; // Stop further execution for this page
+    }
+  }
 
-        const swalBackground = getComputedStyle(document.documentElement).getPropertyValue('--card-bg');
-        const swalColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
-        const swalConfirmButtonColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
+  // --- Helper Functions for Session Management ---
+  function clearUserSession() {
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('lastLoginTime');
+    localStorage.removeItem('hasVisitedSite'); // Crucial for proper redirect on next visit
+  }
 
-        Swal.fire({
+  function showSessionExpiredAlert() {
+    const swalBackground = getComputedStyle(document.documentElement).getPropertyValue('--card-bg');
+    const swalColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
+    const swalConfirmButtonColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
+
+    Swal.fire({
+      icon: 'warning',
+      title: 'Session Expired',
+      text: 'Your session has expired. Please log in again.',
+      allowOutsideClick: false,
+      showCancelButton: false,
+      confirmButtonText: 'Go to Login',
+      confirmButtonColor: swalConfirmButtonColor,
+      background: swalBackground,
+      color: swalColor
+    }).then(() => {
+      window.location.replace('login.html'); // Use replace to prevent back button issues
+    });
+  }
+
+  function showAccessDeniedAlert() {
+      const swalBackground = getComputedStyle(document.documentElement).getPropertyValue('--card-bg');
+      const swalColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
+      const swalConfirmButtonColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
+
+      Swal.fire({
           icon: 'warning',
-          title: 'Session Expired',
-          text: 'Your session has expired. Please log in again.',
+          title: 'Access Denied',
+          text: 'Please log in to view this page.',
           allowOutsideClick: false,
           showCancelButton: false,
           confirmButtonText: 'Go to Login',
           confirmButtonColor: swalConfirmButtonColor,
           background: swalBackground,
           color: swalColor
-        }).then(() => {
-          window.location.replace('login.html'); // Use replace to prevent back button issues
-        });
-        return; // Stop further execution for this page
-      } else {
-        // Session is still active, if it's the index page, ensure profile pic is applied
-        if (isIndexPage) {
-          applyProfilePicToHero();
-        }
-      }
-    } else {
-      // If not logged in and not an auth page, redirect to login
-      // This covers both index and profile pages if not authenticated
-      if (!isAuthPage) {
-        window.location.replace('login.html');
-        return; // Stop further execution
-      }
-    }
+      }).then(() => {
+          window.location.replace('login.html');
+      });
   }
 
 
@@ -101,29 +147,20 @@ document.addEventListener("DOMContentLoaded", () => {
   const applyProfilePicToHero = () => {
     const heroImageElement = document.querySelector('.hero-image img');
     const aboutImageElement = document.querySelector('.about-image img'); // Also update about section image
-    if (heroImageElement) {
-      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-      if (currentUser && currentUser.profilePic) {
-        heroImageElement.src = currentUser.profilePic;
-        if (aboutImageElement) { // Update about section image if it exists
-          aboutImageElement.src = currentUser.profilePic;
-        }
-      } else {
-        // If no profile pic, use default
-        heroImageElement.src = 'assets/images/profile.png';
-        if (aboutImageElement) {
-          aboutImageElement.src = 'assets/images/profile.png';
-        }
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (heroImageElement && currentUser && currentUser.profilePic) {
+      heroImageElement.src = currentUser.profilePic;
+      if (aboutImageElement) { // Update about section image if it exists
+        aboutImageElement.src = currentUser.profilePic;
+      }
+    } else if (heroImageElement) {
+      // If no current user or profile pic, use default
+      heroImageElement.src = 'assets/images/profile.png';
+      if (aboutImageElement) {
+        aboutImageElement.src = 'assets/images/profile.png';
       }
     }
   };
-
-  // Apply profile picture on load for index page
-  // This will run AFTER the potential redirect for login/session expire
-  // Removed the explicit call here, as it's now handled within the session logic for active sessions.
-  // if (isIndexPage) {
-  //   applyProfilePicToHero();
-  // }
 
 
   // --- Main Page Specifics (if on index.html) ---
@@ -178,13 +215,11 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // --- NEW: Profile Icon Navigation (for index.html) ---
-    // Ensure your suspecte.png icon has the ID "profileIcon" in your HTML
+    // --- Profile Icon Navigation (for index.html) ---
     const profileIcon = document.getElementById('profileIcon');
     if (profileIcon) {
       profileIcon.style.cursor = 'pointer'; // Make it clear it's clickable
       profileIcon.addEventListener('click', function() {
-        // Check if user is logged in before redirecting to profile
         const isLoggedIn = localStorage.getItem('isLoggedIn');
         if (isLoggedIn === 'true') {
           window.location.href = 'profile.html';
@@ -319,20 +354,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const linkToRegister = document.getElementById('linkToRegister');
     const linkToLogin = document.getElementById('linkToLogin');
     const authFormWrapper = document.querySelector('.auth-form-wrapper');
-    const authToggleButtons = document.querySelector('.form-toggle-buttons'); // Corrected selector
+    const authToggleButtons = document.querySelector('.form-toggle-buttons');
 
     // Function to dynamically adjust wrapper height based on active form
     function setAuthFormWrapperHeight(form) {
-      // Temporarily make the active form visible to calculate its height accurately
       form.style.position = 'relative';
       form.style.visibility = 'visible';
       form.style.opacity = '1';
       form.style.transform = 'translateX(0)';
 
-      const height = form.scrollHeight + 20; // Add some padding
+      const height = form.scrollHeight + 20;
       authFormWrapper.style.height = `${height}px`;
 
-      // Hide the inactive form (move it off-screen)
       if (form.id === 'loginForm') {
         registerForm.style.position = 'absolute';
         registerForm.style.visibility = 'hidden';
@@ -347,7 +380,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Initial setup for form visibility and wrapper height
-    // This ensures only login form is visible on load and height is correct
     registerForm.style.position = 'absolute';
     registerForm.style.visibility = 'hidden';
     registerForm.style.opacity = '0';
@@ -357,16 +389,56 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // Event Listeners for switching forms
-    showLoginBtn.addEventListener('click', () => showAuthForm('login'));
-    showRegisterBtn.addEventListener('click', () => showAuthForm('register'));
-    linkToRegister.addEventListener('click', (e) => {
+    // Added null checks to prevent errors if elements aren't found
+    if (showLoginBtn) showLoginBtn.addEventListener('click', () => showAuthForm('login'));
+    if (showRegisterBtn) showRegisterBtn.addEventListener('click', () => showAuthForm('register'));
+    if (linkToRegister) linkToRegister.addEventListener('click', (e) => {
       e.preventDefault();
       showAuthForm('register');
     });
-    linkToLogin.addEventListener('click', (e) => {
+    if (linkToLogin) linkToLogin.addEventListener('click', (e) => {
       e.preventDefault();
       showAuthForm('login');
     });
+
+    function showAuthForm(formType) {
+        if (formType === 'login') {
+            loginForm.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
+            registerForm.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
+
+            loginForm.style.transform = 'translateX(0%)';
+            loginForm.style.opacity = '1';
+            loginForm.style.visibility = 'visible';
+            loginForm.style.position = 'relative';
+
+            registerForm.style.transform = 'translateX(100%)';
+            registerForm.style.opacity = '0';
+            registerForm.style.visibility = 'hidden';
+            registerForm.style.position = 'absolute';
+
+            showLoginBtn.classList.add('active');
+            showRegisterBtn.classList.remove('active');
+            setAuthFormWrapperHeight(loginForm);
+        } else {
+            loginForm.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
+            registerForm.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
+
+            loginForm.style.transform = 'translateX(-100%)';
+            loginForm.style.opacity = '0';
+            loginForm.style.visibility = 'hidden';
+            loginForm.style.position = 'absolute';
+
+            registerForm.style.transform = 'translateX(0%)';
+            registerForm.style.opacity = '1';
+            registerForm.style.visibility = 'visible';
+            registerForm.style.position = 'relative';
+
+            showRegisterBtn.classList.add('active');
+            showLoginBtn.classList.remove('active');
+            setAuthFormWrapperHeight(registerForm);
+        }
+    }
+
 
     // --- Handle Login Form Submission (simulated) ---
     loginForm.addEventListener('submit', function(e) {
@@ -374,7 +446,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const email = document.getElementById('loginEmail').value;
       const password = document.getElementById('loginPassword').value;
 
-      // Retrieve users from local storage
       const users = JSON.parse(localStorage.getItem('users')) || [];
       const user = users.find(u => u.email === email && u.password === password);
 
@@ -400,7 +471,8 @@ document.addEventListener("DOMContentLoaded", () => {
           background: swalBackground,
           color: swalColor
         }).then(() => {
-          window.location.href = 'index.html'; // Redirect to index.html after login
+          // *** Crucial Fix: Use replace to prevent back button issues and ensure clean history ***
+          window.location.replace('index.html');
         });
       } else {
         Swal.fire({
@@ -514,39 +586,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // *** Authentication Check for Profile Page ***
     // This check is now integrated with the global session management
-    const isLoggedIn = localStorage.getItem('isLoggedIn');
     let currentUserData = JSON.parse(localStorage.getItem('currentUser'));
 
-    if (!isLoggedIn || !currentUserData || !currentUserData.email) {
-      // This block will execute if the global session check has not already redirected
-      // E.g., if directly navigating to profile.html without a valid session.
-      const swalBackground = getComputedStyle(document.documentElement).getPropertyValue('--card-bg');
-      const swalColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
-      const swalConfirmButtonColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
-
-      Swal.fire({
-        icon: 'warning',
-        title: 'Access Denied',
-        text: 'Please log in to view your profile.',
-        allowOutsideClick: false,
-        showCancelButton: false,
-        confirmButtonText: 'Go to Login',
-        confirmButtonColor: swalConfirmButtonColor,
-        background: swalBackground,
-        color: swalColor
-      }).then(() => {
-        window.location.replace('login.html'); // Use replace here too
-      });
+    // If currentUserData is null or essential info is missing, redirect
+    if (!currentUserData || !currentUserData.email) {
+      showAccessDeniedAlert(); // Use the shared access denied alert
       return;
     }
 
-    // --- NEW: Function to load and FIX profile data into fields ---
+    // --- Function to load profile data into fields ---
     function loadProfileData() {
-      // FIX THE NAME AND EMAIL
+      // FIX THE NAME AND EMAIL (as per previous instructions)
       userNameInput.value = 'Sanjay Das'; // Fixed Name
       userEmailInput.value = 'sanjay.das@example.com'; // Fixed Email
 
-      // Load other data from currentUserData if it exists
+      // Load other data from currentUserData
       profileDisplayPic.src = currentUserData.profilePic || 'assets/images/profile.png';
       userDobInput.value = currentUserData.dob || '';
       userPhoneInput.value = currentUserData.phone || '';
@@ -558,35 +612,36 @@ document.addEventListener("DOMContentLoaded", () => {
       if (userEmailInput) userEmailInput.readOnly = true;
     }
 
-    loadProfileData();
+    loadProfileData(); // Load data on page load
 
     // Open gallery modal
-    changePicBtn.addEventListener('click', () => {
-      galleryModal.style.display = 'flex';
-      galleryItems.forEach(item => {
-        item.classList.remove('selected');
-        // Pre-select if current profile pic is in gallery
-        // Adjust path comparison: ensure the stored path matches the gallery item's data-path
-        const currentProfilePicPath = profileDisplayPic.src; // Full path from display
-        const galleryItemFullPath = new URL(item.dataset.path, window.location.href).href; // Get full URL for comparison
+    if (changePicBtn) { // Null check
+        changePicBtn.addEventListener('click', () => {
+            galleryModal.style.display = 'flex';
+            galleryItems.forEach(item => {
+                item.classList.remove('selected');
+                const currentProfilePicPath = profileDisplayPic.src;
+                const galleryItemFullPath = new URL(item.dataset.path, window.location.href).href;
 
-        // Simple comparison: if the full URLs match
-        if (currentProfilePicPath === galleryItemFullPath) {
-          item.classList.add('selected');
-          selectedGalleryPic = item.dataset.path;
-          confirmSelectionBtn.disabled = false;
-        }
-      });
-      // If no pre-selected, disable confirm button
-      if (!selectedGalleryPic) {
-        confirmSelectionBtn.disabled = true;
-      }
-    });
+                if (currentProfilePicPath === galleryItemFullPath) {
+                    item.classList.add('selected');
+                    selectedGalleryPic = item.dataset.path;
+                    confirmSelectionBtn.disabled = false;
+                }
+            });
+            if (!selectedGalleryPic) {
+                confirmSelectionBtn.disabled = true;
+            }
+        });
+    }
+
 
     // Close gallery modal
-    closeButton.addEventListener('click', () => {
-      galleryModal.style.display = 'none';
-    });
+    if (closeButton) { // Null check
+        closeButton.addEventListener('click', () => {
+            galleryModal.style.display = 'none';
+        });
+    }
     window.addEventListener('click', (e) => {
       if (e.target == galleryModal) {
         galleryModal.style.display = 'none';
@@ -604,84 +659,89 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Confirm profile picture selection
-    confirmSelectionBtn.addEventListener('click', () => {
-      if (selectedGalleryPic) {
-        profileDisplayPic.src = selectedGalleryPic; // Update the profile picture on the profile page
+    if (confirmSelectionBtn) { // Null check
+        confirmSelectionBtn.addEventListener('click', () => {
+            if (selectedGalleryPic) {
+                profileDisplayPic.src = selectedGalleryPic;
 
-        currentUserData.profilePic = selectedGalleryPic;
+                currentUserData.profilePic = selectedGalleryPic;
 
-        let users = JSON.parse(localStorage.getItem('users')) || [];
-        const userIndex = users.findIndex(u => u.email === currentUserData.email);
-        if (userIndex !== -1) {
-          users[userIndex].profilePic = selectedGalleryPic;
-          localStorage.setItem('users', JSON.stringify(users));
-        }
+                let users = JSON.parse(localStorage.getItem('users')) || [];
+                // Find user by their email (which is fixed to 'sanjay.das@example.com')
+                const userIndex = users.findIndex(u => u.email === 'sanjay.das@example.com');
+                if (userIndex !== -1) {
+                    users[userIndex].profilePic = selectedGalleryPic;
+                    localStorage.setItem('users', JSON.stringify(users));
+                }
 
-        localStorage.setItem('currentUser', JSON.stringify(currentUserData));
-        galleryModal.style.display = 'none';
+                localStorage.setItem('currentUser', JSON.stringify(currentUserData));
+                galleryModal.style.display = 'none';
 
-        const swalBackground = getComputedStyle(document.documentElement).getPropertyValue('--card-bg');
-        const swalColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
+                const swalBackground = getComputedStyle(document.documentElement).getPropertyValue('--card-bg');
+                const swalColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
 
-        Swal.fire({
-          toast: true,
-          icon: 'success', // Changed to success for confirmation
-          title: 'Profile picture updated!',
-          position: 'top-end',
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          background: swalBackground,
-          color: swalColor,
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: 'Profile picture updated!',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    background: swalBackground,
+                    color: swalColor,
+                });
+            }
         });
-      }
-    });
+    }
 
-    // Handle Profile Edit Form Submission (simulated) (already exists, keeping it)
-    profileEditForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-      // Name and Email are now fixed, so no need to get their values from inputs for update
-      const newDob = userDobInput.value;
-      const newPhone = userPhoneInput.value.trim();
-      const newAddress = userAddressInput.value.trim();
-      const newAbout = userAboutTextarea.value.trim();
+    // Handle Profile Edit Form Submission (simulated)
+    if (profileEditForm) { // Null check
+        profileEditForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const newDob = userDobInput.value;
+            const newPhone = userPhoneInput.value.trim();
+            const newAddress = userAddressInput.value.trim();
+            const newAbout = userAboutTextarea.value.trim();
 
-      const swalBackground = getComputedStyle(document.documentElement).getPropertyValue('--card-bg');
-      const swalColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
-      const swalConfirmButtonColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
+            const swalBackground = getComputedStyle(document.documentElement).getPropertyValue('--card-bg');
+            const swalColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
+            const swalConfirmButtonColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
 
+            // Update currentUserData directly (since name/email are fixed)
+            currentUserData.dob = newDob;
+            currentUserData.phone = newPhone;
+            currentUserData.address = newAddress;
+            currentUserData.about = newAbout;
 
-      currentUserData.dob = newDob;
-      currentUserData.phone = newPhone;
-      currentUserData.address = newAddress;
-      currentUserData.about = newAbout;
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            // Find user by fixed email and update their data
+            const userIndex = users.findIndex(u => u.email === 'sanjay.das@example.com');
+            if (userIndex !== -1) {
+                users[userIndex] = {
+                    ...users[userIndex], // Keep existing properties
+                    dob: newDob,
+                    phone: newPhone,
+                    address: newAddress,
+                    about: newAbout
+                };
+                localStorage.setItem('users', JSON.stringify(users));
+            }
+            localStorage.setItem('currentUser', JSON.stringify(currentUserData));
 
-      let users = JSON.parse(localStorage.getItem('users')) || [];
-      const userIndex = users.findIndex(u => u.email === currentUserData.email);
-      if (userIndex !== -1) {
-        users[userIndex] = {
-          ...users[userIndex],
-          dob: newDob,
-          phone: newPhone,
-          address: newAddress,
-          about: newAbout
-        };
-        localStorage.setItem('users', JSON.stringify(users));
-      }
-      localStorage.setItem('currentUser', JSON.stringify(currentUserData));
+            Swal.fire({
+                icon: 'success',
+                title: 'Profile Updated!',
+                text: 'Your profile information has been updated (simulated).',
+                confirmButtonColor: swalConfirmButtonColor,
+                background: swalBackground,
+                color: swalColor
+            });
+            loadProfileData(); // Reload data to ensure consistency
+        });
+    }
 
-      Swal.fire({
-        icon: 'success',
-        title: 'Profile Updated!',
-        text: 'Your profile information has been updated (simulated).',
-        confirmButtonColor: swalConfirmButtonColor,
-        background: swalBackground,
-        color: swalColor
-      });
-      loadProfileData(); // Reload data to ensure consistency (will keep name/email fixed)
-    });
-
-    // Handle Logout (already exists, keeping it)
+    // Handle Logout
     if (logoutBtn) {
       logoutBtn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -702,11 +762,7 @@ document.addEventListener("DOMContentLoaded", () => {
           color: swalColor
         }).then((result) => {
           if (result.isConfirmed) {
-            localStorage.removeItem('isLoggedIn');
-            localStorage.removeItem('currentUser');
-            localStorage.removeItem('lastLoginTime'); // Clear last login time on explicit logout
-            localStorage.removeItem('hasVisitedSite'); // Reset for next first visit
-
+            clearUserSession(); // Use the dedicated function for logout
             Swal.fire({
               icon: 'success',
               title: 'Logged Out!',
@@ -1013,32 +1069,51 @@ function getBotResponse(userMessage) {
 }
 
 // --- Toggle Chat ---
-chatToggleBtn.addEventListener("click", () => {
-  chatBotOpen = !chatBotOpen;
-  chatBotContainer.classList.toggle("show", chatBotOpen);
-  if (chatBotOpen) chatInput.focus();
-});
+// Added null checks to prevent errors if elements aren't found
+if (chatToggleBtn) {
+    chatToggleBtn.addEventListener("click", () => {
+        chatBotOpen = !chatBotOpen;
+        chatBotContainer.classList.toggle("show", chatBotOpen);
+        if (chatBotOpen) chatInput.focus();
+    });
+}
+
 
 // --- Close Chat ---
-closeChatBtn.addEventListener("click", () => {
-  chatBotOpen = false;
-  chatBotContainer.classList.remove("show");
-});
+// Added null checks
+if (closeChatBtn) {
+    closeChatBtn.addEventListener("click", () => {
+        chatBotOpen = false;
+        chatBotContainer.classList.remove("show");
+    });
+}
+
 
 // --- Send Button ---
-sendMessageBtn.addEventListener("click", () => {
-  const userMessage = chatInput.value.trim();
-  if (userMessage) {
-    addMessage(userMessage, "user");
-    chatInput.value = "";
-    setTimeout(() => {
-      const botResponse = getBotResponse(userMessage);
-      addMessage(botResponse, "bot");
-    }, 500);
-  }
-});
+// Added null checks
+if (sendMessageBtn) {
+    sendMessageBtn.addEventListener("click", () => {
+        const userMessage = chatInput.value.trim();
+        if (userMessage) {
+            addMessage(userMessage, "user");
+            chatInput.value = "";
+            setTimeout(() => {
+                const botResponse = getBotResponse(userMessage);
+                addMessage(botResponse, "bot");
+            }, 500);
+        }
+    });
+}
+
 
 // --- Enter Key Press ---
-chatInput.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") sendMessageBtn.click();
-});
+// Added null checks
+if (chatInput) {
+    chatInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+            if (sendMessageBtn) { // Ensure sendMessageBtn exists before clicking
+                sendMessageBtn.click();
+            }
+        }
+    });
+}
