@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Signika:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
+
     <style>
         /* --- Root Variables for Color Scheme (Dark Theme Only) --- */
         :root {
@@ -42,14 +42,16 @@
             /* Amber for warning border */
 
             /* Validation Colors */
-            --error-color: #ff6b6b; /* Soft Red */
-            --success-color: #6bff6b; /* Soft Green */
+            --error-color: #ff6b6b;
+            /* Soft Red */
+            --success-color: #6bff6b;
+            /* Soft Green */
 
             /* Unique Completion Bar Colors */
             --completion-track-color: #1a1a1a;
             --completion-glow-color: rgba(0, 255, 255, 0.4);
         }
-        
+
         /* --- Global Body Styles --- */
         body {
             margin: 0;
@@ -62,7 +64,7 @@
             overflow-x: hidden;
             /* Prevent horizontal scroll */
         }
-        
+
         /* --- Profile Wrapper (Page Container) --- */
         .profile-wrapper {
             display: flex;
@@ -75,7 +77,7 @@
             font-family: 'Signika', sans-serif;
             /* Fallback/Specific usage */
         }
-        
+
         /* --- Profile Container (The main card) --- */
         .profile-container {
             background-color: var(--card-bg);
@@ -92,19 +94,19 @@
             border: 1px solid var(--border-color);
             /* Subtle border */
         }
-        
+
         @keyframes fadeInScale {
             from {
                 opacity: 0;
                 transform: scale(0.9);
             }
-            
+
             to {
                 opacity: 1;
                 transform: scale(1);
             }
         }
-        
+
         .profile-container h2 {
             text-align: center;
             margin-bottom: 30px;
@@ -115,7 +117,7 @@
             justify-content: center;
             gap: 10px;
         }
-        
+
         /* --- Unique Profile Completion Bar --- */
         .profile-completion {
             margin-bottom: 35px;
@@ -123,7 +125,7 @@
             padding: 10px 0;
             background-color: var(--input-bg);
             border-radius: 10px;
-            box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
             border: 1px solid var(--border-color);
         }
 
@@ -146,14 +148,15 @@
             border-radius: 10px;
             overflow: hidden;
             margin: 0 auto;
-            box-shadow: 0 0 5px rgba(0,0,0,0.3);
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
         }
 
         .completion-bar {
             height: 100%;
             width: 0%;
             background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
-            transition: width 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smooth animation */
+            transition: width 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+            /* Smooth animation */
             position: relative;
             display: flex;
             align-items: center;
@@ -162,12 +165,13 @@
         }
 
         .completion-percentage-text {
-            position: absolute; /* Changed from text-align right to absolute positioning */
+            position: absolute;
+            /* Changed from text-align right to absolute positioning */
             right: 8px;
             color: var(--text-color-dark);
             font-size: 0.8em;
             font-weight: bold;
-            text-shadow: 0 0 3px rgba(0,0,0,0.6);
+            text-shadow: 0 0 3px rgba(0, 0, 0, 0.6);
             transition: color 0.3s ease;
         }
 
@@ -180,7 +184,7 @@
             text-align: center;
             margin-bottom: 30px;
         }
-        
+
         .current-avatar {
             width: 120px;
             height: 120px;
@@ -191,17 +195,17 @@
             box-shadow: 0 0 0 6px rgba(0, 255, 255, 0.2);
             transition: transform 0.3s ease;
         }
-        
+
         .current-avatar:hover {
             transform: scale(1.05);
         }
-        
+
         .current-avatar img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-        
+
         .change-pic-btn {
             background-color: var(--secondary-color);
             color: #fff;
@@ -217,17 +221,17 @@
             margin: 0 auto;
             /* Center the button */
         }
-        
+
         .change-pic-btn:hover {
             background-color: var(--primary-color);
             transform: translateY(-2px);
         }
-        
+
         .input-group {
             margin-bottom: 20px;
             position: relative;
         }
-        
+
         .input-group label {
             display: block;
             margin-bottom: 8px;
@@ -239,7 +243,7 @@
             align-items: center;
             gap: 8px;
         }
-        
+
         .input-group input[type="text"],
         .input-group input[type="email"],
         .input-group input[type="date"],
@@ -273,13 +277,15 @@
             color: var(--error-color);
             font-size: 0.85em;
             margin-top: 5px;
-            display: none; /* Hidden by default */
+            display: none;
+            /* Hidden by default */
         }
 
         .input-group.error .error-message {
-            display: block; /* Show when there's an error */
+            display: block;
+            /* Show when there's an error */
         }
-        
+
         .input-group input:focus,
         .input-group textarea:focus {
             border-color: var(--primary-color);
@@ -287,22 +293,24 @@
             /* Glow effect on focus */
             outline: none;
         }
-        
+
         .input-group textarea {
-            resize: vertical; /* Allow vertical resizing only */
+            resize: vertical;
+            /* Allow vertical resizing only */
             min-height: 80px;
-            max-height: 200px; /* Prevent excessively large text areas */
+            max-height: 200px;
+            /* Prevent excessively large text areas */
         }
-        
+
         .input-group input[readonly] {
             background-color: var(--input-readonly-bg);
             opacity: 0.7;
             cursor: not-allowed;
             /* No edit button for readonly fields */
         }
-        
+
         /* Removed .input-with-edit and .edit-field-btn styles as name/email are now permanently readonly */
-        
+
         .form-actions {
             display: flex;
             justify-content: center;
@@ -324,13 +332,13 @@
             align-items: center;
             gap: 10px;
         }
-        
+
         .save-profile-btn {
             background-color: var(--primary-color);
             color: #000;
             box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
         }
-        
+
         .save-profile-btn:hover {
             background-color: var(--secondary-color);
             transform: translateY(-3px);
@@ -361,7 +369,7 @@
             opacity: 0.6;
             box-shadow: none;
         }
-        
+
         .profile-warning {
             background-color: var(--warning-bg);
             color: var(--warning-text);
@@ -374,12 +382,12 @@
             align-items: center;
             gap: 10px;
         }
-        
+
         .back-home {
             text-align: center;
             margin-top: 25px;
         }
-        
+
         .back-home a {
             color: var(--primary-color);
             text-decoration: none;
@@ -389,12 +397,12 @@
             align-items: center;
             gap: 8px;
         }
-        
+
         .back-home a:hover {
             color: var(--secondary-color);
             text-decoration: underline;
         }
-        
+
         /* Gallery Modal Styles */
         .gallery-modal {
             display: none;
@@ -419,7 +427,7 @@
             justify-content: center;
             align-items: center;
         }
-        
+
         .modal-content {
             background-color: var(--card-bg);
             /* Use card-bg for consistency */
@@ -433,26 +441,26 @@
             animation: modalFadeIn 0.3s ease-out;
             color: var(--text-color);
         }
-        
+
         @keyframes modalFadeIn {
             from {
                 opacity: 0;
                 transform: translateY(-20px);
             }
-            
+
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-        
+
         .modal-content h3 {
             text-align: center;
             margin-bottom: 25px;
             color: var(--primary-color);
             font-size: 1.8em;
         }
-        
+
         .close-button {
             color: var(--text-color);
             /* Use general text color */
@@ -464,13 +472,13 @@
             cursor: pointer;
             transition: color 0.3s ease;
         }
-        
+
         .close-button:hover,
         .close-button:focus {
             color: var(--primary-color);
             text-decoration: none;
         }
-        
+
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
@@ -478,7 +486,7 @@
             margin-bottom: 25px;
             justify-items: center;
         }
-        
+
         .gallery-item {
             width: 100px;
             height: 100px;
@@ -489,19 +497,19 @@
             transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
-        
+
         .gallery-item:hover {
             border-color: var(--secondary-color);
             transform: scale(1.08);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
-        
+
         .gallery-item.selected {
             border-color: var(--primary-color);
             box-shadow: 0 0 0 4px rgba(0, 255, 255, 0.4), 0 0 15px rgba(0, 255, 255, 0.6);
             transform: scale(1.1);
         }
-        
+
         .confirm-selection-btn {
             background-color: var(--primary-color);
             color: #000;
@@ -514,12 +522,12 @@
             display: block;
             margin: 0 auto;
         }
-        
+
         .confirm-selection-btn:hover:not(:disabled) {
             background-color: var(--secondary-color);
             transform: translateY(-2px);
         }
-        
+
         .confirm-selection-btn:disabled {
             background-color: #555;
             cursor: not-allowed;
@@ -560,7 +568,8 @@
         }
 
         #fileInput {
-            display: none; /* Hide the actual file input */
+            display: none;
+            /* Hide the actual file input */
         }
 
         #fileNameDisplay {
@@ -576,7 +585,12 @@
             text-align: right;
             margin-top: 5px;
         }
-        
+
+        .hidden {
+            display: none !important;
+        }
+
+
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .profile-container {
@@ -584,32 +598,32 @@
                 padding: 20px;
                 max-width: 95%;
             }
-            
+
             .profile-container h2 {
                 font-size: 1.6em;
                 margin-bottom: 20px;
             }
-            
+
             .profile-avatar-section {
                 margin-bottom: 20px;
             }
-            
+
             .current-avatar {
                 width: 100px;
                 height: 100px;
             }
-            
+
             .input-group label {
                 font-size: 0.9em;
             }
-            
+
             .input-group input,
             .input-group textarea {
                 font-size: 0.95em;
                 padding: 10px;
                 resize: none;
             }
-            
+
             .form-actions {
                 flex-direction: column;
                 gap: 10px;
@@ -622,40 +636,43 @@
                 padding: 10px 20px;
                 font-size: 1em;
             }
-            
+
             .profile-warning {
                 padding: 12px;
                 font-size: 0.85em;
             }
-            
+
             .modal-content {
                 width: 95%;
                 padding: 20px;
             }
-            
+
             .gallery-grid {
                 grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
                 gap: 10px;
             }
-            
+
             .gallery-item {
                 width: 80px;
                 height: 80px;
             }
+
             .custom-file-upload {
                 padding: 8px 15px;
                 font-size: 0.9em;
             }
+
             .completion-bar-wrapper {
-                width: 100%; /* Adjust for smaller screens */
+                width: 100%;
+                /* Adjust for smaller screens */
             }
         }
-        
+
         @media (max-width: 480px) {
             .profile-wrapper {
                 padding: 10px;
             }
-            
+
             .profile-container {
                 margin-top: 10px;
                 padding: 15px;
@@ -677,14 +694,14 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="profile-avatar-section">
                 <div class="current-avatar">
                     <img id="profileDisplayPic" src="assets/images/profile.png" alt="Current Profile Picture" />
                 </div>
                 <button id="changePicBtn" class="change-pic-btn"><i class="fas fa-camera"></i> Change Profile Picture</button>
             </div>
-            
+
             <form id="profileEditForm">
                 <div class="input-group" data-field-name="name">
                     <label for="userName"><i class="fas fa-user"></i> Your Name</label>
@@ -720,21 +737,21 @@
                     <button type="button" class="discard-changes-btn" id="discardChangesBtn" disabled><i class="fas fa-times-circle"></i> Discard Changes</button>
                 </div>
             </form>
-            
+
             <div class="profile-warning">
                 <p>
                     <i class="fas fa-exclamation-triangle"></i>
                     **Note:** This is a front-end simulation. Profile changes and image uploads are not saved permanently without a backend.
                 </p>
             </div>
-            
+
             <div class="back-home">
                 <a href="index.html"><i class="fas fa-arrow-left"></i> Back to Home</a>
             </div>
         </div>
     </div>
-    
-    <div id="galleryModal" class="gallery-modal">
+
+    <div id="galleryModal" class="gallery-modal hidden">
         <div class="modal-content">
             <span class="close-button">&times;</span>
             <h3>Select a Profile Picture</h3>
@@ -756,8 +773,27 @@
             </div>
         </div>
     </div>
-    
-    <script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
+
+        // Your web app's Firebase configuration (copy from login.html)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAfg2qEWyOCUBwJu2xCwOQppQSM26yUfOs",
+            authDomain: "online-shopping-2aac1.firebaseapp.com",
+            databaseURL: "https://online-shopping-2aac1-default-rtdb.firebaseio.com",
+            projectId: "online-shopping-2aac1",
+            storageBucket: "online-shopping-2aac1.firebasestorage.app",
+            messagingSenderId: "481431730276",
+            appId: "1:481431730276:web:e3eca833c09004a32d8771",
+            measurementId: "G-QCQ8G2QL89"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
         document.addEventListener('DOMContentLoaded', () => {
             const profileDisplayPic = document.getElementById('profileDisplayPic');
             const changePicBtn = document.getElementById('changePicBtn');
@@ -765,7 +801,7 @@
             const closeButton = document.querySelector('.gallery-modal .close-button');
             const galleryItems = document.querySelectorAll('.gallery-item');
             const confirmSelectionBtn = document.getElementById('confirmSelectionBtn');
-            
+
             const userNameInput = document.getElementById('userName');
             const userEmailInput = document.getElementById('userEmail');
             const userDobInput = document.getElementById('userDob');
@@ -773,8 +809,7 @@
             const userAddressInput = document.getElementById('userAddress');
             const userAboutInput = document.getElementById('userAbout');
             const profileEditForm = document.getElementById('profileEditForm');
-            
-            // Removed editFieldBtns as Name/Email are now permanently readonly
+
             const fileInput = document.getElementById('fileInput');
             const fileNameDisplay = document.getElementById('fileNameDisplay');
             const saveProfileBtn = document.getElementById('saveProfileBtn');
@@ -782,35 +817,80 @@
 
             const profileProgressBar = document.getElementById('profileProgressBar');
             const completionPercentage = document.getElementById('completionPercentage');
-            // const progressText = profileProgressBar.querySelector('.progress-text'); // Renamed for clarity
-
             const aboutWordCount = document.getElementById('aboutWordCount');
 
             let selectedProfilePicPath = null;
-            let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            // Use a specific default profile picture path for comparison
+            const DEFAULT_PROFILE_PIC_PATH = 'assets/images/profile.png'; 
+            
+            let currentUser = null; // Will be set by Firebase auth state
             let allUsers = JSON.parse(localStorage.getItem('users')) || [];
             let originalUserData = {}; // To store the initial state for discard
-            
-            // Note: userNameInput and userEmailInput are permanently readonly now.
+
             // Only mutable fields are part of formFields for validation/completion tracking.
-            let formFields = [userDobInput, userPhoneInput, userAddressInput, userAboutInput];
-            
-            // Redirect if not logged in
-            if (!currentUser) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Access Denied',
-                    text: 'Please log in to view your profile.',
-                    showConfirmButton: false,
-                    timer: 2000,
-                    background: getComputedStyle(document.documentElement).getPropertyValue('--card-bg'),
-                    color: getComputedStyle(document.documentElement).getPropertyValue('--text-color'),
-                    confirmButtonColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color')
-                }).then(() => {
-                    window.location.href = 'login.html'; // Redirect to login page
-                });
-                return; // Stop script execution
-            }
+            const formFields = [userDobInput, userPhoneInput, userAddressInput, userAboutInput];
+
+            // --- Firebase Authentication State Listener ---
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    // User is signed in. Load their data.
+                    currentUser = {
+                        uid: user.uid,
+                        email: user.email,
+                        name: user.displayName || 'N/A', // Get display name from Firebase or default
+                        profilePic: user.photoURL || DEFAULT_PROFILE_PIC_PATH, // Get photoURL or default
+                        dob: localStorage.getItem(`dob_${user.uid}`) || '', // Load from local storage specific to user
+                        phone: localStorage.getItem(`phone_${user.uid}`) || '',
+                        address: localStorage.getItem(`address_${user.uid}`) || '',
+                        about: localStorage.getItem(`about_${user.uid}`) || ''
+                    };
+                    
+                    // Check if this user exists in allUsers, if not, add them with default data
+                    let existingUserInAllUsers = allUsers.find(u => u.email === currentUser.email);
+                    if (!existingUserInAllUsers) {
+                        allUsers.push({
+                            uid: currentUser.uid,
+                            email: currentUser.email,
+                            name: currentUser.name,
+                            profilePic: currentUser.profilePic,
+                            dob: currentUser.dob,
+                            phone: currentUser.phone,
+                            address: currentUser.address,
+                            about: currentUser.about
+                        });
+                        localStorage.setItem('users', JSON.stringify(allUsers));
+                    } else {
+                        // Update currentUser with the latest data from allUsers if available
+                        currentUser = existingUserInAllUsers;
+                        // Ensure name and photoURL from Firebase Auth take precedence if set there
+                        if (user.displayName && user.displayName !== existingUserInAllUsers.name) {
+                            currentUser.name = user.displayName;
+                        }
+                        if (user.photoURL && user.photoURL !== existingUserInAllUsers.profilePic) {
+                            currentUser.profilePic = user.photoURL;
+                        }
+                    }
+
+                    loadUserData();
+                    checkFormChanges(); // Initial check for discard button state
+                    document.querySelector('.profile-wrapper').classList.remove('hidden'); // Show content
+                } else {
+                    // No user is signed in. Redirect to login page.
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Access Denied',
+                        text: 'Please log in to view your profile.',
+                        showConfirmButton: false,
+                        timer: 2000,
+                        background: getComputedStyle(document.documentElement).getPropertyValue('--card-bg'),
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--text-color'),
+                        confirmButtonColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color')
+                    }).then(() => {
+                        window.location.replace('login.html'); // Use replace to prevent back button access
+                    });
+                }
+            });
+
 
             // --- Validation Functions ---
             const validateField = (inputElement) => {
@@ -825,6 +905,7 @@
 
                 switch (inputElement.id) {
                     case 'userDob':
+                        // Only validate if a value is present
                         if (inputElement.value) {
                             const dob = new Date(inputElement.value);
                             const today = new Date();
@@ -832,10 +913,8 @@
                                 isValid = false;
                                 errorMessage = 'Date of Birth cannot be in the future.';
                             }
-                        } else {
-                            isValid = false;
-                            errorMessage = 'Date of Birth is required.';
                         }
+                        // DOB is not strictly required for form validity if left empty, but will impact completion
                         break;
                     case 'userPhone':
                         // Simple phone number validation for Bangladesh (+880 1...)
@@ -846,13 +925,14 @@
                         }
                         break;
                     case 'userAbout':
-                        const wordCount = inputElement.value.trim().split(/\s+/).filter(word => word.length > 0).length;
+                        const text = inputElement.value.trim();
+                        const wordCount = text ? text.split(/\s+/).filter(word => word.length > 0).length : 0;
                         const maxWords = 150; // Defined max words
                         if (wordCount > maxWords) {
                             isValid = false;
                             errorMessage = `About Me cannot exceed ${maxWords} words. Current: ${wordCount} words.`;
-                        } else if (inputElement.value.trim().length > 0 && wordCount < 5) {
-                            isValid = false; // Require min 5 words if anything is typed
+                        } else if (text.length > 0 && wordCount < 5) { // Require min 5 words if anything is typed
+                            isValid = false;
                             errorMessage = 'Please write at least 5 words about yourself.';
                         }
                         aboutWordCount.textContent = `${wordCount}/${maxWords} words`;
@@ -869,7 +949,7 @@
                     inputGroup.classList.add('error');
                     errorMessageElement.textContent = errorMessage;
                     errorMessageElement.style.display = 'block';
-                } else if (inputElement.value.trim().length > 0) { // Mark as success only if not empty
+                } else if (inputElement.value.trim().length > 0) { // Mark as success only if not empty and valid
                     inputGroup.classList.add('success');
                 }
                 return isValid;
@@ -877,8 +957,11 @@
 
             const validateAllFields = () => {
                 let allValid = true;
-                // Only validate mutable fields, userName and userEmail are fixed
-                formFields.forEach(field => { 
+                formFields.forEach(field => {
+                    // Important: Even if a field is not 'required' (like DOB, phone), 
+                    // its *current input value* must pass validation if it's not empty.
+                    // If it's empty, and not required, it's considered valid for the form submission, 
+                    // but won't contribute to completion.
                     if (!validateField(field)) {
                         allValid = false;
                     }
@@ -886,32 +969,32 @@
                 return allValid;
             };
 
+
             // --- Profile Completion Calculation ---
             const updateProfileCompletion = () => {
                 let completedFields = 0;
                 // Fields considered for completion: Name, Email, DOB, Phone, Address, About, ProfilePic
-                const totalFields = 7; 
+                const totalFields = 7;
 
-                // Name and Email are assumed to be always filled/fixed for completion purposes
-                if (userNameInput.value.trim() !== '') completedFields++; // Assumed filled
-                if (userEmailInput.value.trim() !== '') completedFields++; // Assumed filled
+                // Name and Email are always assumed to be filled (from Firebase Auth/registration)
+                if (userNameInput.value.trim() !== '') completedFields++;
+                if (userEmailInput.value.trim() !== '') completedFields++;
 
+                // Only count fields as "completed" if they have a value AND pass their specific validation
                 if (userDobInput.value.trim() !== '' && validateField(userDobInput)) completedFields++;
                 if (userPhoneInput.value.trim() !== '' && validateField(userPhoneInput)) completedFields++;
                 if (userAddressInput.value.trim() !== '' && validateField(userAddressInput)) completedFields++;
                 if (userAboutInput.value.trim() !== '' && validateField(userAboutInput)) completedFields++;
-                
-                // Check if profile pic is default or changed
-                if (profileDisplayPic.src.includes('assets/images/profile.png') && profileDisplayPic.src === originalUserData.profilePic) {
-                    // Profile pic is still default and has not been changed from default
-                } else {
-                    completedFields++; // Profile pic has been changed from default or is a custom one
+
+                // Profile picture counts if it's NOT the default picture
+                if (profileDisplayPic.src !== window.location.origin + '/' + DEFAULT_PROFILE_PIC_PATH) {
+                    completedFields++;
                 }
 
                 const percentage = Math.round((completedFields / totalFields) * 100);
                 profileProgressBar.style.width = `${percentage}%`;
                 completionPercentage.textContent = `${percentage}%`;
-                
+
                 // Add glow effect for high completion
                 if (percentage >= 75) {
                     profileProgressBar.classList.add('high-completion');
@@ -929,26 +1012,24 @@
 
             // --- Load User Data ---
             function loadUserData() {
-                // Name and Email are fixed and always readonly
-                userNameInput.value = currentUser.name || '';
-                userEmailInput.value = currentUser.email || '';
-                userNameInput.readOnly = true;
-                userEmailInput.readOnly = true; 
+                userNameInput.value = currentUser.name;
+                userEmailInput.value = currentUser.email;
 
-                userDobInput.value = currentUser.dob || '';
-                userPhoneInput.value = currentUser.phone || '';
-                userAddressInput.value = currentUser.address || '';
-                userAboutInput.value = currentUser.about || '';
-                profileDisplayPic.src = currentUser.profilePic || 'assets/images/profile.png';
+                userDobInput.value = currentUser.dob;
+                userPhoneInput.value = currentUser.phone;
+                userAddressInput.value = currentUser.address;
+                userAboutInput.value = currentUser.about;
+                profileDisplayPic.src = currentUser.profilePic;
 
                 // Store original values for discard functionality
                 originalUserData = {
-                    name: currentUser.name || '',
-                    dob: currentUser.dob || '',
-                    phone: currentUser.phone || '',
-                    address: currentUser.address || '',
-                    about: currentUser.about || '',
-                    profilePic: currentUser.profilePic || 'assets/images/profile.png'
+                    name: currentUser.name,
+                    email: currentUser.email, // Include email in original, even if readonly, for strict change detection
+                    dob: currentUser.dob,
+                    phone: currentUser.phone,
+                    address: currentUser.address,
+                    about: currentUser.about,
+                    profilePic: currentUser.profilePic
                 };
 
                 // Set data-original-value for mutable fields
@@ -957,15 +1038,16 @@
                 userAddressInput.dataset.originalValue = originalUserData.address;
                 userAboutInput.dataset.originalValue = originalUserData.about;
 
-                discardChangesBtn.disabled = true; // No changes to discard initially
-                updateProfileCompletion(); // Update completion bar
+                // Call validation and completion update
+                updateProfileCompletion();
                 validateAllFields(); // Initial validation check
+                checkFormChanges(); // Update save/discard button states
             }
-            
+
             // --- Save User Data ---
             profileEditForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                
+
                 if (!validateAllFields()) {
                     Swal.fire({
                         icon: 'error',
@@ -993,33 +1075,34 @@
                         saveProfileBtn.disabled = true;
                         saveProfileBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
 
-                        // Name and Email are not updated here as they are fixed
+                        // Update currentUser object with new values
                         currentUser.dob = userDobInput.value;
                         currentUser.phone = userPhoneInput.value.trim();
                         currentUser.address = userAddressInput.value.trim();
                         currentUser.about = userAboutInput.value.trim();
-                        currentUser.profilePic = profileDisplayPic.src; 
-                        
-                        // Update the user in the allUsers array
+                        currentUser.profilePic = profileDisplayPic.src;
+
+                        // Find and update the user in the allUsers array in localStorage
                         const userIndex = allUsers.findIndex(u => u.email === currentUser.email);
                         if (userIndex !== -1) {
-                            allUsers[userIndex] = {
-                                ...allUsers[userIndex],
-                                // Name and email are not changed in allUsers during update
-                                dob: currentUser.dob,
-                                phone: currentUser.phone,
-                                address: currentUser.address,
-                                about: currentUser.about,
-                                profilePic: currentUser.profilePic
-                            }; 
+                            allUsers[userIndex] = { ...allUsers[userIndex], ...currentUser }; // Merge updated current user data
                         } else {
-                            allUsers.push(currentUser); 
+                            // This case should ideally not happen if user is authenticated, but good fallback
+                            allUsers.push(currentUser);
                         }
-                        
-                        localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                        localStorage.setItem('users', JSON.stringify(allUsers));
-                        
-                        setTimeout(() => { // Simulate network delay
+
+                        // Save updated data to localStorage, specific to the user's UID for data fields
+                        localStorage.setItem(`dob_${currentUser.uid}`, currentUser.dob);
+                        localStorage.setItem(`phone_${currentUser.uid}`, currentUser.phone);
+                        localStorage.setItem(`address_${currentUser.uid}`, currentUser.address);
+                        localStorage.setItem(`about_${currentUser.uid}`, currentUser.about);
+                        localStorage.setItem(`profilePic_${currentUser.uid}`, currentUser.profilePic); // Save profile pic specific to user
+
+                        localStorage.setItem('currentUser', JSON.stringify(currentUser)); // Keep currentUser updated for immediate use
+                        localStorage.setItem('users', JSON.stringify(allUsers)); // Update the main users array
+
+                        // Simulate network delay for saving
+                        setTimeout(() => {
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Profile Updated!',
@@ -1028,7 +1111,8 @@
                                 background: getComputedStyle(document.documentElement).getPropertyValue('--card-bg'),
                                 color: getComputedStyle(document.documentElement).getPropertyValue('--text-color')
                             });
-                            loadUserData(); // Reload to ensure consistency and reset discard state
+                            // Reload data to reset original values and update UI
+                            loadUserData(); 
                             saveProfileBtn.disabled = false;
                             saveProfileBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
 
@@ -1037,7 +1121,7 @@
                                 const inputGroup = field.closest('.input-group');
                                 inputGroup.classList.remove('error', 'success');
                                 const errorMessageElement = inputGroup.querySelector('.error-message');
-                                if(errorMessageElement) {
+                                if (errorMessageElement) {
                                     errorMessageElement.textContent = '';
                                     errorMessageElement.style.display = 'none';
                                 }
@@ -1076,7 +1160,7 @@
                             const inputGroup = field.closest('.input-group');
                             inputGroup.classList.remove('error', 'success');
                             const errorMessageElement = inputGroup.querySelector('.error-message');
-                            if(errorMessageElement) {
+                            if (errorMessageElement) {
                                 errorMessageElement.textContent = '';
                                 errorMessageElement.style.display = 'none';
                             }
@@ -1087,85 +1171,86 @@
                 });
             });
 
-            // --- Check for changes to enable/disable Discard button and trigger validations ---
+            // --- Check for changes to enable/disable Save/Discard buttons and trigger validations ---
             const checkFormChanges = () => {
                 let hasChanged = false;
-                // Name and Email are fixed, so they don't trigger discard changes
+                // Compare current values with original values
                 if (userDobInput.value !== originalUserData.dob) hasChanged = true;
                 if (userPhoneInput.value.trim() !== originalUserData.phone) hasChanged = true;
                 if (userAddressInput.value.trim() !== originalUserData.address) hasChanged = true;
                 if (userAboutInput.value.trim() !== originalUserData.about) hasChanged = true;
+                
+                // Compare profile picture src, handle potential Base64 differences if the file is re-uploaded
                 if (profileDisplayPic.src !== originalUserData.profilePic) hasChanged = true;
 
                 discardChangesBtn.disabled = !hasChanged;
                 // Save button enabled only if form is valid and has changes
-                saveProfileBtn.disabled = !hasChanged || !validateAllFields(); 
+                saveProfileBtn.disabled = !hasChanged || !validateAllFields();
             };
 
             // Add event listeners for input changes to trigger validation and checkFormChanges
             formFields.forEach(field => {
                 field.addEventListener('input', () => {
-                    validateField(field);
-                    checkFormChanges();
-                    updateProfileCompletion();
+                    validateField(field); // Validate individual field
+                    checkFormChanges(); // Check if any changes
+                    updateProfileCompletion(); // Update completion bar
                 });
             });
 
-            // For profile picture changes, trigger checkFormChanges
+            // For profile picture changes, trigger checkFormChanges after the image loads
             profileDisplayPic.addEventListener('load', () => {
                 checkFormChanges();
                 updateProfileCompletion();
             });
 
-
             // --- Profile Picture Gallery Modal ---
             changePicBtn.addEventListener('click', () => {
-                galleryModal.style.display = 'flex'; // Use flex for centering
+                galleryModal.classList.remove('hidden'); // Show modal
                 // Clear any previous selection and pre-select current if in gallery
                 galleryItems.forEach(item => {
                     item.classList.remove('selected');
-                    const currentProfilePicFileName = profileDisplayPic.src.split('/').pop().split('?')[0]; 
-                    const galleryItemFileName = item.dataset.path.split('/').pop().split('?')[0]; 
-                    
-                    if (galleryItemFileName === currentProfilePicFileName) {
+                    // Normalize paths for comparison (remove protocol, domain, etc. if comparing full URLs)
+                    const currentProfilePicCleanPath = profileDisplayPic.src.replace(window.location.origin + '/', '');
+                    const galleryItemCleanPath = item.dataset.path; // data-path is relative
+
+                    if (galleryItemCleanPath === currentProfilePicCleanPath) {
                         item.classList.add('selected');
                         selectedProfilePicPath = item.dataset.path;
                     }
                 });
-                confirmSelectionBtn.disabled = !selectedProfilePicPath; 
+                confirmSelectionBtn.disabled = !selectedProfilePicPath;
                 // Reset file input display
                 fileNameDisplay.textContent = 'No file chosen';
-                fileInput.value = ''; 
+                fileInput.value = '';
             });
-            
+
             closeButton.addEventListener('click', () => {
-                galleryModal.style.display = 'none';
+                galleryModal.classList.add('hidden');
             });
-            
+
             galleryModal.addEventListener('click', (e) => {
                 if (e.target === galleryModal) {
-                    galleryModal.style.display = 'none';
+                    galleryModal.classList.add('hidden');
                 }
             });
-            
+
             galleryItems.forEach(item => {
                 item.addEventListener('click', () => {
                     galleryItems.forEach(i => i.classList.remove('selected'));
                     item.classList.add('selected');
                     selectedProfilePicPath = item.dataset.path;
                     confirmSelectionBtn.disabled = false;
-                    
+
                     // Deselect file input if a gallery image is chosen
                     fileNameDisplay.textContent = 'No file chosen';
                     fileInput.value = '';
                 });
             });
-            
+
             confirmSelectionBtn.addEventListener('click', () => {
                 if (selectedProfilePicPath) {
                     profileDisplayPic.src = selectedProfilePicPath;
-                    currentUser.profilePic = selectedProfilePicPath; 
-                    galleryModal.style.display = 'none';
+                    galleryModal.classList.add('hidden');
                     Swal.fire({
                         icon: 'success',
                         title: 'Picture Selected!',
@@ -1199,20 +1284,20 @@
                     }
 
                     fileNameDisplay.textContent = file.name;
-                    // Disable gallery selection if a file is chosen
+                    // Deselect gallery selection if a file is chosen
                     galleryItems.forEach(i => i.classList.remove('selected'));
                     selectedProfilePicPath = null;
-                    confirmSelectionBtn.disabled = false; 
+                    confirmSelectionBtn.disabled = false;
 
                     const reader = new FileReader();
                     reader.onload = function(event) {
-                        profileDisplayPic.src = event.target.result; 
-                        selectedProfilePicPath = event.target.result; 
+                        profileDisplayPic.src = event.target.result;
+                        selectedProfilePicPath = event.target.result; // Store Base64 for update
                     };
-                    reader.readAsDataURL(file); 
+                    reader.readAsDataURL(file);
                 } else {
                     fileNameDisplay.textContent = 'No file chosen';
-                    confirmSelectionBtn.disabled = true; 
+                    confirmSelectionBtn.disabled = true;
                 }
                 checkFormChanges(); // Check for changes after file input
                 updateProfileCompletion(); // Update completion after file input
@@ -1226,10 +1311,9 @@
                 aboutWordCount.textContent = `${wordCount}/${maxWords} words`;
                 validateField(userAboutInput); // Validate live as user types
             });
-            
-            // Initial load of user data when the page loads
-            loadUserData();
-            checkFormChanges(); // Initial check for discard button state
+
+            // Initial state: hide content until Firebase Auth resolves
+            document.querySelector('.profile-wrapper').classList.add('hidden');
         });
     </script>
 </body>
