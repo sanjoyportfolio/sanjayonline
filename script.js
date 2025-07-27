@@ -45,61 +45,14 @@ document.addEventListener("DOMContentLoaded", () => {
   // Define session duration (12 hours in milliseconds)
   const SESSION_DURATION = 12 * 60 * 60 * 1000; // 12 hours
 
-  // --- Centralized Session Management Logic ---
-  // This logic runs on every page load except for auth pages
-  if (!isAuthPage) {
-    const isLoggedIn = localStorage.getItem('isLoggedIn');
-    const lastLoginTime = localStorage.getItem('lastLoginTime');
-    const currentUser = localStorage.getItem('currentUser'); // Ensure currentUser also exists
-
-    // Log for debugging
-    console.log('Page Load Check:');
-    console.log('isLoggedIn:', isLoggedIn);
-    console.log('lastLoginTime:', lastLoginTime);
-    console.log('currentUser:', currentUser ? JSON.parse(currentUser).email : 'N/A');
-
-    if (isLoggedIn === 'true' && lastLoginTime && currentUser) {
-      const currentTime = Date.now();
-      const timeElapsed = currentTime - parseInt(lastLoginTime);
-
-      if (timeElapsed > SESSION_DURATION) {
-        // Session expired, force logout
-        console.log('Session expired. Logging out.');
-        clearUserSession(); // Use a dedicated function to clear session
-        showSessionExpiredAlert(); // Show alert and redirect
-      } else {
-        // Session is still active
-        console.log('Session active. Time remaining:', (SESSION_DURATION - timeElapsed) / (1000 * 60 * 60), 'hours');
-        if (isIndexPage) {
-          applyProfilePicToHero(); // Apply profile pic if on index page
-        }
-      }
-    } else {
-      // Not logged in or essential session data missing, redirect to login
-      console.log('Not logged in or session data missing. Redirecting to login.');
-      // Avoid redirecting immediately if user just came from login on profile page, or if it's the index page and they just navigated there.
-      // The current logic needs to distinguish between initial access and session expiry.
-      // Let's ensure this redirect only happens if there's truly no active session and it's not the login page itself.
-      if (window.location.pathname.endsWith('profile.html')) {
-        showAccessDeniedAlert(); // Specific alert for profile page access
-      } else if (window.location.pathname.endsWith('index.html')) {
-         // On index, if not logged in, just redirect to login without an alert if they haven't visited before (or after explicit logout/session expire)
-         // This is handled by the initial check for 'hasVisitedSite' in a more robust way.
-         // For now, if the session data is missing, we redirect.
-         window.location.replace('login.html');
-      } else {
-        window.location.replace('login.html'); // Default redirect for other non-auth pages
-      }
-      return; // Stop further execution for this page
-    }
-  }
-
   // --- Helper Functions for Session Management ---
   function clearUserSession() {
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('currentUser');
     localStorage.removeItem('lastLoginTime');
-    localStorage.removeItem('hasVisitedSite'); // Crucial for proper redirect on next visit
+    // Keep 'hasVisitedSite' only for specific cases, or handle it differently.
+    // For now, clearing it here means the next visit starts fresh for login checks.
+    localStorage.removeItem('hasVisitedSite');
   }
 
   function showSessionExpiredAlert() {
@@ -123,25 +76,78 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function showAccessDeniedAlert() {
-      const swalBackground = getComputedStyle(document.documentElement).getPropertyValue('--card-bg');
-      const swalColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
-      const swalConfirmButtonColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
+    const swalBackground = getComputedStyle(document.documentElement).getPropertyValue('--card-bg');
+    const swalColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
+    const swalConfirmButtonColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
 
-      Swal.fire({
-          icon: 'warning',
-          title: 'Access Denied',
-          text: 'Please log in to view this page.',
-          allowOutsideClick: false,
-          showCancelButton: false,
-          confirmButtonText: 'Go to Login',
-          confirmButtonColor: swalConfirmButtonColor,
-          background: swalBackground,
-          color: swalColor
-      }).then(() => {
-          window.location.replace('login.html');
-      });
+    Swal.fire({
+      icon: 'warning',
+      title: 'Access Denied',
+      text: 'Please log in to view this page.',
+      allowOutsideClick: false,
+      showCancelButton: false,
+      confirmButtonText: 'Go to Login',
+      confirmButtonColor: swalConfirmButtonColor,
+      background: swalBackground,
+      color: swalColor
+    }).then(() => {
+      window.location.replace('login.html');
+    });
   }
 
+  // --- Centralized Session Management Logic ---
+  // This logic runs on every page load except for auth pages
+  if (!isAuthPage) {
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    const lastLoginTime = localStorage.getItem('lastLoginTime');
+    const currentUser = localStorage.getItem('currentUser');
+    const hasVisitedSite = localStorage.getItem('hasVisitedSite'); // Get the hasVisitedSite flag
+
+    // Log for debugging
+    console.log('Page Load Check:');
+    console.log('isLoggedIn:', isLoggedIn);
+    console.log('lastLoginTime:', lastLoginTime);
+    console.log('currentUser:', currentUser ? JSON.parse(currentUser).email : 'N/A');
+    console.log('hasVisitedSite:', hasVisitedSite);
+
+
+    if (isLoggedIn === 'true' && lastLoginTime && currentUser) {
+      const currentTime = Date.now();
+      const timeElapsed = currentTime - parseInt(lastLoginTime);
+
+      if (timeElapsed > SESSION_DURATION) {
+        // Session expired, force logout
+        console.log('Session expired. Logging out.');
+        clearUserSession();
+        showSessionExpiredAlert();
+        return; // Stop further execution
+      } else {
+        // Session is still active
+        console.log('Session active. Time remaining:', (SESSION_DURATION - timeElapsed) / (1000 * 60 * 60), 'hours');
+        if (isIndexPage) {
+          applyProfilePicToHero(); // Apply profile pic if on index page
+        }
+        // If logged in and session is active, ensure hasVisitedSite is true
+        localStorage.setItem('hasVisitedSite', 'true');
+      }
+    } else {
+      // Not logged in or essential session data missing, redirect to login
+      console.log('Not logged in or session data missing. Redirecting to login.');
+
+      // Only redirect if it's NOT an auth page and hasVisitedSite is not true (meaning they haven't visited since login)
+      // This prevents immediate redirects if the user just explicitly logged out or session expired.
+      if (!isAuthPage) {
+        // If not logged in and not on the login page, redirect.
+        // We ensure profile page always redirects if not logged in.
+        if (isProfilePage) {
+          showAccessDeniedAlert();
+        } else {
+          window.location.replace('login.html');
+        }
+        return; // Stop further execution for this page
+      }
+    }
+  }
 
   // Function to apply profile picture to hero section
   const applyProfilePicToHero = () => {
@@ -402,41 +408,41 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     function showAuthForm(formType) {
-        if (formType === 'login') {
-            loginForm.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
-            registerForm.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
+      if (formType === 'login') {
+        loginForm.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
+        registerForm.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
 
-            loginForm.style.transform = 'translateX(0%)';
-            loginForm.style.opacity = '1';
-            loginForm.style.visibility = 'visible';
-            loginForm.style.position = 'relative';
+        loginForm.style.transform = 'translateX(0%)';
+        loginForm.style.opacity = '1';
+        loginForm.style.visibility = 'visible';
+        loginForm.style.position = 'relative';
 
-            registerForm.style.transform = 'translateX(100%)';
-            registerForm.style.opacity = '0';
-            registerForm.style.visibility = 'hidden';
-            registerForm.style.position = 'absolute';
+        registerForm.style.transform = 'translateX(100%)';
+        registerForm.style.opacity = '0';
+        registerForm.style.visibility = 'hidden';
+        registerForm.style.position = 'absolute';
 
-            showLoginBtn.classList.add('active');
-            showRegisterBtn.classList.remove('active');
-            setAuthFormWrapperHeight(loginForm);
-        } else {
-            loginForm.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
-            registerForm.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
+        showLoginBtn.classList.add('active');
+        showRegisterBtn.classList.remove('active');
+        setAuthFormWrapperHeight(loginForm);
+      } else {
+        loginForm.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
+        registerForm.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
 
-            loginForm.style.transform = 'translateX(-100%)';
-            loginForm.style.opacity = '0';
-            loginForm.style.visibility = 'hidden';
-            loginForm.style.position = 'absolute';
+        loginForm.style.transform = 'translateX(-100%)';
+        loginForm.style.opacity = '0';
+        loginForm.style.visibility = 'hidden';
+        loginForm.style.position = 'absolute';
 
-            registerForm.style.transform = 'translateX(0%)';
-            registerForm.style.opacity = '1';
-            registerForm.style.visibility = 'visible';
-            registerForm.style.position = 'relative';
+        registerForm.style.transform = 'translateX(0%)';
+        registerForm.style.opacity = '1';
+        registerForm.style.visibility = 'visible';
+        registerForm.style.position = 'relative';
 
-            showRegisterBtn.classList.add('active');
-            showLoginBtn.classList.remove('active');
-            setAuthFormWrapperHeight(registerForm);
-        }
+        showRegisterBtn.classList.add('active');
+        showLoginBtn.classList.remove('active');
+        setAuthFormWrapperHeight(registerForm);
+      }
     }
 
 
@@ -460,6 +466,7 @@ document.addEventListener("DOMContentLoaded", () => {
         };
         delete currentUserData.password; // Don't store password in currentUser
         localStorage.setItem('currentUser', JSON.stringify(currentUserData));
+        localStorage.setItem('hasVisitedSite', 'true'); // <--- CRUCIAL FIX: Set hasVisitedSite on successful login
 
         Swal.fire({
           icon: 'success',
@@ -616,31 +623,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Open gallery modal
     if (changePicBtn) { // Null check
-        changePicBtn.addEventListener('click', () => {
-            galleryModal.style.display = 'flex';
-            galleryItems.forEach(item => {
-                item.classList.remove('selected');
-                const currentProfilePicPath = profileDisplayPic.src;
-                const galleryItemFullPath = new URL(item.dataset.path, window.location.href).href;
+      changePicBtn.addEventListener('click', () => {
+        galleryModal.style.display = 'flex';
+        galleryItems.forEach(item => {
+          item.classList.remove('selected');
+          const currentProfilePicPath = profileDisplayPic.src;
+          const galleryItemFullPath = new URL(item.dataset.path, window.location.href).href;
 
-                if (currentProfilePicPath === galleryItemFullPath) {
-                    item.classList.add('selected');
-                    selectedGalleryPic = item.dataset.path;
-                    confirmSelectionBtn.disabled = false;
-                }
-            });
-            if (!selectedGalleryPic) {
-                confirmSelectionBtn.disabled = true;
-            }
+          if (currentProfilePicPath === galleryItemFullPath) {
+            item.classList.add('selected');
+            selectedGalleryPic = item.dataset.path;
+            confirmSelectionBtn.disabled = false;
+          }
         });
+        if (!selectedGalleryPic) {
+          confirmSelectionBtn.disabled = true;
+        }
+      });
     }
 
 
     // Close gallery modal
     if (closeButton) { // Null check
-        closeButton.addEventListener('click', () => {
-            galleryModal.style.display = 'none';
-        });
+      closeButton.addEventListener('click', () => {
+        galleryModal.style.display = 'none';
+      });
     }
     window.addEventListener('click', (e) => {
       if (e.target == galleryModal) {
@@ -660,85 +667,85 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Confirm profile picture selection
     if (confirmSelectionBtn) { // Null check
-        confirmSelectionBtn.addEventListener('click', () => {
-            if (selectedGalleryPic) {
-                profileDisplayPic.src = selectedGalleryPic;
+      confirmSelectionBtn.addEventListener('click', () => {
+        if (selectedGalleryPic) {
+          profileDisplayPic.src = selectedGalleryPic;
 
-                currentUserData.profilePic = selectedGalleryPic;
+          currentUserData.profilePic = selectedGalleryPic;
 
-                let users = JSON.parse(localStorage.getItem('users')) || [];
-                // Find user by their email (which is fixed to 'sanjay.das@example.com')
-                const userIndex = users.findIndex(u => u.email === 'sanjay.das@example.com');
-                if (userIndex !== -1) {
-                    users[userIndex].profilePic = selectedGalleryPic;
-                    localStorage.setItem('users', JSON.stringify(users));
-                }
+          let users = JSON.parse(localStorage.getItem('users')) || [];
+          // Find user by their email (which is fixed to 'sanjay.das@example.com')
+          const userIndex = users.findIndex(u => u.email === 'sanjay.das@example.com');
+          if (userIndex !== -1) {
+            users[userIndex].profilePic = selectedGalleryPic;
+            localStorage.setItem('users', JSON.stringify(users));
+          }
 
-                localStorage.setItem('currentUser', JSON.stringify(currentUserData));
-                galleryModal.style.display = 'none';
+          localStorage.setItem('currentUser', JSON.stringify(currentUserData));
+          galleryModal.style.display = 'none';
 
-                const swalBackground = getComputedStyle(document.documentElement).getPropertyValue('--card-bg');
-                const swalColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
+          const swalBackground = getComputedStyle(document.documentElement).getPropertyValue('--card-bg');
+          const swalColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
 
-                Swal.fire({
-                    toast: true,
-                    icon: 'success',
-                    title: 'Profile picture updated!',
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    background: swalBackground,
-                    color: swalColor,
-                });
-            }
-        });
+          Swal.fire({
+            toast: true,
+            icon: 'success',
+            title: 'Profile picture updated!',
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            background: swalBackground,
+            color: swalColor,
+          });
+        }
+      });
     }
 
     // Handle Profile Edit Form Submission (simulated)
     if (profileEditForm) { // Null check
-        profileEditForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const newDob = userDobInput.value;
-            const newPhone = userPhoneInput.value.trim();
-            const newAddress = userAddressInput.value.trim();
-            const newAbout = userAboutTextarea.value.trim();
+      profileEditForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const newDob = userDobInput.value;
+        const newPhone = userPhoneInput.value.trim();
+        const newAddress = userAddressInput.value.trim();
+        const newAbout = userAboutTextarea.value.trim();
 
-            const swalBackground = getComputedStyle(document.documentElement).getPropertyValue('--card-bg');
-            const swalColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
-            const swalConfirmButtonColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
+        const swalBackground = getComputedStyle(document.documentElement).getPropertyValue('--card-bg');
+        const swalColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
+        const swalConfirmButtonColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
 
-            // Update currentUserData directly (since name/email are fixed)
-            currentUserData.dob = newDob;
-            currentUserData.phone = newPhone;
-            currentUserData.address = newAddress;
-            currentUserData.about = newAbout;
+        // Update currentUserData directly (since name/email are fixed)
+        currentUserData.dob = newDob;
+        currentUserData.phone = newPhone;
+        currentUserData.address = newAddress;
+        currentUserData.about = newAbout;
 
-            let users = JSON.parse(localStorage.getItem('users')) || [];
-            // Find user by fixed email and update their data
-            const userIndex = users.findIndex(u => u.email === 'sanjay.das@example.com');
-            if (userIndex !== -1) {
-                users[userIndex] = {
-                    ...users[userIndex], // Keep existing properties
-                    dob: newDob,
-                    phone: newPhone,
-                    address: newAddress,
-                    about: newAbout
-                };
-                localStorage.setItem('users', JSON.stringify(users));
-            }
-            localStorage.setItem('currentUser', JSON.stringify(currentUserData));
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        // Find user by fixed email and update their data
+        const userIndex = users.findIndex(u => u.email === 'sanjay.das@example.com');
+        if (userIndex !== -1) {
+          users[userIndex] = {
+            ...users[userIndex], // Keep existing properties
+            dob: newDob,
+            phone: newPhone,
+            address: newAddress,
+            about: newAbout
+          };
+          localStorage.setItem('users', JSON.stringify(users));
+        }
+        localStorage.setItem('currentUser', JSON.stringify(currentUserData));
 
-            Swal.fire({
-                icon: 'success',
-                title: 'Profile Updated!',
-                text: 'Your profile information has been updated (simulated).',
-                confirmButtonColor: swalConfirmButtonColor,
-                background: swalBackground,
-                color: swalColor
-            });
-            loadProfileData(); // Reload data to ensure consistency
+        Swal.fire({
+          icon: 'success',
+          title: 'Profile Updated!',
+          text: 'Your profile information has been updated (simulated).',
+          confirmButtonColor: swalConfirmButtonColor,
+          background: swalBackground,
+          color: swalColor
         });
+        loadProfileData(); // Reload data to ensure consistency
+      });
     }
 
     // Handle Logout
@@ -1071,49 +1078,49 @@ function getBotResponse(userMessage) {
 // --- Toggle Chat ---
 // Added null checks to prevent errors if elements aren't found
 if (chatToggleBtn) {
-    chatToggleBtn.addEventListener("click", () => {
-        chatBotOpen = !chatBotOpen;
-        chatBotContainer.classList.toggle("show", chatBotOpen);
-        if (chatBotOpen) chatInput.focus();
-    });
+  chatToggleBtn.addEventListener("click", () => {
+    chatBotOpen = !chatBotOpen;
+    chatBotContainer.classList.toggle("show", chatBotOpen);
+    if (chatBotOpen) chatInput.focus();
+  });
 }
 
 
 // --- Close Chat ---
 // Added null checks
 if (closeChatBtn) {
-    closeChatBtn.addEventListener("click", () => {
-        chatBotOpen = false;
-        chatBotContainer.classList.remove("show");
-    });
+  closeChatBtn.addEventListener("click", () => {
+    chatBotOpen = false;
+    chatBotContainer.classList.remove("show");
+  });
 }
 
 
 // --- Send Button ---
 // Added null checks
 if (sendMessageBtn) {
-    sendMessageBtn.addEventListener("click", () => {
-        const userMessage = chatInput.value.trim();
-        if (userMessage) {
-            addMessage(userMessage, "user");
-            chatInput.value = "";
-            setTimeout(() => {
-                const botResponse = getBotResponse(userMessage);
-                addMessage(botResponse, "bot");
-            }, 500);
-        }
-    });
+  sendMessageBtn.addEventListener("click", () => {
+    const userMessage = chatInput.value.trim();
+    if (userMessage) {
+      addMessage(userMessage, "user");
+      chatInput.value = "";
+      setTimeout(() => {
+        const botResponse = getBotResponse(userMessage);
+        addMessage(botResponse, "bot");
+      }, 500);
+    }
+  });
 }
 
 
 // --- Enter Key Press ---
 // Added null checks
 if (chatInput) {
-    chatInput.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") {
-            if (sendMessageBtn) { // Ensure sendMessageBtn exists before clicking
-                sendMessageBtn.click();
-            }
-        }
-    });
+  chatInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+      if (sendMessageBtn) { // Ensure sendMessageBtn exists before clicking
+        sendMessageBtn.click();
+      }
+    }
+  });
 }
