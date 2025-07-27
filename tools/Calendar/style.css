@@ -1,0 +1,808 @@
+:root {
+    /* Base Colors - Adjusted for a darker, richer canvas */
+    --primary-bg: #0d1a2b; /* Very dark navy/charcoal */
+    --calendar-bg: #1a2b3d; /* Slightly lighter for calendar body */
+    --header-bg: #2a3d50; /* Muted steel blue for header */
+    --text-color: #e0f2f7; /* Soft cyan-white text */
+    --inactive-text: #6b849e; /* Muted text for inactive days */
+    --border-color: #3b506b; /* Darker blue-gray border */
+    --shadow-color: rgba(0, 0, 0, 0.5); /* Stronger shadows */
+
+    /* Primary Accent - The new #00ffff focus */
+    --primary-accent: #00ffff; /* Cyan - Main interactive highlight */
+    --primary-accent-dark: #00ccdd; /* Darker cyan for hover states */
+    --primary-glow: rgba(0, 255, 255, 0.4); /* Cyan glow effect */
+
+    /* Secondary Accent - For contrast and secondary actions */
+    --secondary-accent: #ff00ff; /* Magenta - For add event, edit buttons etc. */
+    --secondary-accent-dark: #cc00cc; /* Darker magenta for hover */
+    --secondary-glow: rgba(255, 0, 255, 0.4); /* Magenta glow effect */
+
+    /* Special State Colors */
+    --today-bg: #00ff80; /* Emerald Green - For "Today" */
+    --today-text: #00331a; /* Dark text for today's cell */
+    --event-bg: #8b5cf6; /* Lavender (keeping this for now, or can change to a blend) */
+    --event-text: #f0f9ff; /* Light event text */
+    --delete-btn-bg: #e53e3e; /* Red for delete */
+    --delete-btn-hover: #c53030; /* Darker red */
+
+    /* Fonts */
+    --font-primary: 'Signika', sans-serif, 'Inter', sans-serif;
+
+    /* Transitions & Effects */
+    --transition-speed: 0.3s;
+    --hover-scale: 1.01; /* Slightly less scale for subtle effect */
+}
+
+/* Base styles for the body */
+body {
+    font-family: var(--font-primary);
+    background: linear-gradient(135deg, var(--primary-bg), #0f1c2c); /* Gradient background */
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    overflow: hidden; /* Hide scrollbars if not needed */
+    position: relative;
+    user-select: none; /* Prevent text selection */
+}
+
+/* Background gradient animation (optional, for extra uniqueness) */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at top left, rgba(0, 255, 255, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at bottom right, rgba(255, 0, 255, 0.05) 0%, transparent 40%);
+    z-index: -1;
+    animation: backgroundGlow 20s infinite alternate;
+}
+
+@keyframes backgroundGlow {
+    from {
+        background-position: 0% 0%;
+    }
+    to {
+        background-position: 100% 100%;
+    }
+}
+
+
+/* Calendar Container - The main structure */
+.calendar-container {
+    background-color: var(--calendar-bg);
+    border-radius: 18px; /* More rounded corners */
+    box-shadow: 0 15px 40px var(--shadow-color), 0 0 30px var(--primary-glow); /* Deeper shadow with primary glow */
+    width: 95%;
+    max-width: 680px; /* Slightly larger */
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    animation: fadeInScale 0.8s ease-out forwards;
+    position: relative; /* For pseudo-elements */
+    z-index: 1; /* Ensure it's above body pseudo-elements */
+}
+
+/* Subtle inner glow for the container */
+.calendar-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 18px;
+    box-shadow: inset 0 0 15px rgba(0, 255, 255, 0.15); /* Inner cyan glow */
+    pointer-events: none; /* Allows clicks to pass through */
+    z-index: 2;
+}
+
+@keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Calendar Header - Adjusted to be in a single line */
+.calendar-header {
+    display: flex;
+    align-items: center; /* Vertically align items */
+    justify-content: space-between; /* Distribute space between items */
+    padding: 15px 20px;
+    background-color: var(--header-bg);
+    border-bottom: 1px solid var(--border-color);
+    border-top-left-radius: 18px;
+    border-top-right-radius: 18px;
+    flex-wrap: nowrap; /* Prevent wrapping by default */
+}
+
+.month-year-display {
+    font-size: 1.5em;
+    font-weight: 600;
+    color: var(--text-color);
+    /* No flex-grow here to prevent it from taking too much space */
+    text-align: center; /* Centered within its own available space */
+    padding: 0 10px; /* Add some horizontal padding */
+    white-space: nowrap; /* Prevent text from wrapping */
+    min-width: 150px; /* Ensure enough space for month/year */
+}
+
+/* Buttons Container for Nav buttons */
+.nav-buttons {
+    display: flex;
+    gap: 5px; /* Space between nav buttons */
+    align-items: center;
+}
+
+/* Buttons Container for Action buttons (Today, View Toggle, Add Event) */
+.action-buttons {
+    display: flex;
+    gap: 10px; /* Space between action buttons */
+    align-items: center;
+}
+
+/* Buttons (General Styles) */
+.nav-btn, .view-btn, .today-btn, .add-event-btn {
+    background-color: var(--calendar-bg); /* Simple background matching calendar body */
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 6px; /* Slightly less rounded */
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 500;
+    transition: all var(--transition-speed) ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Simpler shadow */
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    text-shadow: none;
+    white-space: nowrap; /* Prevent button text from wrapping */
+}
+
+.nav-btn:hover, .view-btn:hover, .today-btn:hover {
+    background-color: var(--header-bg); /* Slightly darker on hover */
+    color: var(--primary-accent); /* Cyan highlight on hover */
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+    border-color: var(--primary-accent);
+}
+
+/* Specific nav button adjustments */
+.nav-btn {
+    font-size: 1.1em;
+    padding: 6px 10px;
+    background: transparent; /* Arrows remain transparent */
+    border: none;
+    color: var(--text-color);
+}
+.nav-btn:hover {
+    background: transparent;
+    color: var(--primary-accent);
+    transform: translateY(-1px) scale(1.1);
+    box-shadow: none;
+}
+
+.view-toggle {
+    display: flex;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    overflow: hidden;
+    /* margin: 0 10px; removed to manage spacing with gap on action-buttons*/
+    box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.2);
+}
+
+.view-btn {
+    padding: 8px 12px;
+    border-radius: 0;
+    border: none;
+    background-color: transparent; /* Transparent default */
+    color: var(--text-color);
+}
+
+.view-btn.active {
+    background-color: var(--primary-accent); /* Solid cyan for active */
+    color: var(--primary-bg); /* Dark text on cyan */
+    font-weight: 600;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.view-btn.active:hover {
+    background-color: var(--primary-accent-dark); /* Slightly darker cyan on hover for active */
+    transform: translateY(0);
+    box-shadow: inset 0 0 7px rgba(0, 0, 0, 0.4);
+}
+
+.add-event-btn {
+    background-color: var(--secondary-accent); /* Magenta for add event button */
+    color: white;
+    border-color: var(--secondary-accent);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.add-event-btn:hover {
+    background-color: var(--secondary-accent-dark);
+    box-shadow: 0 4px 8px rgba(255, 0, 255, 0.4);
+}
+
+
+/* Calendar Body - Main display area for days (NO CHANGE HERE) */
+.calendar-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+/* Weekdays Header */
+.weekdays-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: var(--primary-accent); /* Cyan weekdays */
+    border-bottom: 1px dashed var(--border-color); /* Dashed border for uniqueness */
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.2);
+}
+
+.weekday {
+    padding: 8px 0;
+    font-size: 0.95em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Days Grid - The actual calendar days */
+.days-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    flex-grow: 1;
+}
+
+.day-cell {
+    background-color: rgba(26, 43, 61, 0.7); /* Slightly transparent background for crystal effect */
+    border-radius: 10px;
+    padding: 10px;
+    min-height: 75px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    overflow: hidden;
+    backdrop-filter: blur(2px); /* Subtle blur for crystal effect */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.day-cell:hover {
+    background-color: rgba(0, 255, 255, 0.1); /* Cyan-tinted hover */
+    box-shadow: 0 5px 15px var(--primary-glow), inset 0 0 10px var(--primary-glow); /* Intense glow on hover */
+    border-color: var(--primary-accent); /* Cyan border on hover */
+    transform: translateY(-2px); /* Lift on hover */
+}
+
+.day-number {
+    font-size: 1.2em;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--text-color);
+    text-align: right;
+    padding-right: 5px;
+}
+
+.day-cell.today {
+    background: linear-gradient(135deg, var(--today-bg), #00a850); /* Emerald green gradient for today */
+    color: var(--today-text);
+    font-weight: 700;
+    box-shadow: 0 0 15px rgba(0, 255, 128, 0.8), inset 0 0 10px rgba(0, 255, 128, 0.5);
+    border-color: var(--today-bg);
+    transform: scale(1.02);
+}
+
+.day-cell.today .day-number {
+    color: var(--today-text);
+    text-shadow: none;
+}
+
+.day-cell.inactive {
+    opacity: 0.4;
+    cursor: default;
+    background-color: rgba(26, 43, 61, 0.3);
+    border: 1px solid rgba(59, 80, 107, 0.3);
+}
+
+.day-cell.inactive:hover {
+    background-color: rgba(26, 43, 61, 0.3);
+    box-shadow: none;
+    border-color: rgba(59, 80, 107, 0.3);
+    transform: translateY(0);
+}
+
+/* Week and Day View specific styles (NO CHANGE HERE) */
+.week-day-cell, .full-day-cell {
+    min-height: 120px;
+    justify-content: flex-start;
+    padding: 15px;
+}
+
+.week-day-header, .day-view-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    width: 100%;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--primary-accent);
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
+.week-day-header .weekday-name, .day-view-header .weekday-name {
+    font-size: 1.2em;
+    text-transform: capitalize;
+}
+
+.week-day-header .day-number, .day-view-header .day-number {
+    font-size: 1.5em;
+    color: var(--text-color);
+    font-weight: 700;
+}
+
+
+/* Event Styling - More Distinct (NO CHANGE HERE) */
+.event {
+    background-color: var(--event-bg);
+    color: var(--event-text);
+    border-radius: 6px;
+    padding: 5px 8px;
+    margin-bottom: 4px;
+    font-size: 0.8em;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.event:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4), 0 0 8px var(--event-bg);
+    background-color: #a872ff;
+}
+
+/* Event List inside day cell (NO CHANGE HERE) */
+.events-list {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+/* Scrollbar for event list (NO CHANGE HERE) */
+.events-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.events-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.events-list::-webkit-scrollbar-thumb {
+    background-color: var(--border-color);
+    border-radius: 4px;
+}
+.events-list::-webkit-scrollbar-thumb:hover {
+    background-color: var(--primary-accent);
+}
+
+
+/* Modal Styles (General for both add & details) (NO CHANGE HERE) */
+.modal {
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    animation: modalFadeIn 0.3s ease-out forwards;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background-color: var(--calendar-bg);
+    margin: 20px;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px var(--shadow-color), 0 0 25px var(--primary-glow);
+    width: 90%;
+    max-width: 450px;
+    position: relative;
+    border: 2px solid var(--primary-accent);
+    animation: modalPopIn 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+}
+
+@keyframes modalPopIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.close-button {
+    color: var(--text-color);
+    font-size: 30px;
+    font-weight: bold;
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    cursor: pointer;
+    transition: color 0.2s ease, transform 0.2s ease;
+    opacity: 0.7;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: var(--primary-accent);
+    transform: scale(1.2);
+    opacity: 1;
+}
+
+.modal-content h3 {
+    color: var(--primary-accent);
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 1.8em;
+    font-weight: 700;
+    border-bottom: 1px dashed var(--border-color);
+    padding-bottom: 10px;
+    text-shadow: 0 0 5px var(--primary-glow);
+}
+
+.modal-content form label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-color);
+    font-weight: 500;
+    font-size: 1em;
+}
+
+.modal-content form input,
+.modal-content form textarea {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--primary-bg);
+    color: var(--text-color);
+    font-size: 1em;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.modal-content form input:focus,
+.modal-content form textarea:focus {
+    border-color: var(--primary-accent);
+    box-shadow: 0 0 0 3px var(--primary-glow);
+    outline: none;
+}
+
+.modal-content form button {
+    width: 100%;
+    padding: 12px 15px;
+    background: linear-gradient(45deg, var(--primary-accent), var(--primary-accent-dark));
+    color: var(--primary-bg); /* Dark text on cyan for submit */
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 3px 8px var(--primary-glow);
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content form button:hover {
+    background: linear-gradient(45deg, var(--primary-accent-dark), var(--primary-accent));
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px var(--primary-glow);
+}
+
+/* Event Details Modal Specific Styles (NO CHANGE HERE) */
+#eventDetailsModal .modal-content {
+    max-width: 450px;
+    padding: 35px;
+    background-color: var(--calendar-bg);
+    border: 3px solid var(--secondary-accent);
+    box-shadow: 0 15px 40px var(--shadow-color), 0 0 35px var(--secondary-glow);
+}
+
+#eventDetailsModal h3 {
+    color: var(--secondary-accent);
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 2em;
+    font-weight: 700;
+    border-bottom: 2px solid var(--secondary-accent);
+    padding-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 0 8px var(--secondary-glow);
+}
+
+.details-info-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 15px;
+    margin-bottom: 18px;
+    align-items: flex-start;
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.details-info-row i {
+    color: var(--primary-accent);
+    font-size: 1.3em;
+    width: 25px;
+    text-align: center;
+    line-height: 1.2;
+    text-shadow: 0 0 5px var(--primary-glow);
+}
+
+.details-info-row span {
+    color: var(--text-color);
+    font-size: 1.05em;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+#eventDetailsModal #detailsDescription {
+    white-space: pre-wrap;
+    max-height: 180px;
+    overflow-y: auto;
+    background-color: var(--primary-bg);
+    padding: 15px;
+    border-radius: 10px;
+    border: 2px solid var(--border-color);
+    margin-top: 20px;
+    display: block;
+    font-size: 0.95em;
+    color: var(--text-color);
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 35px;
+    gap: 20px;
+}
+
+.modal-action-btn {
+    padding: 14px 25px;
+    border-radius: 10px;
+    font-size: 1.05em;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    border: none;
+}
+
+#editEventBtn {
+    background: linear-gradient(45deg, var(--today-bg), #00bb66);
+    color: var(--today-text);
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+}
+
+#editEventBtn:hover {
+    background: linear-gradient(45deg, #00bb66, var(--today-bg));
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0, 255, 128, 0.6);
+}
+
+#deleteEventBtn {
+    background: linear-gradient(45deg, var(--delete-btn-bg), var(--delete-btn-hover));
+    color: white;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+}
+
+#deleteEventBtn:hover {
+    background: linear-gradient(45deg, var(--delete-btn-hover), var(--delete-btn-bg));
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(229, 62, 62, 0.6);
+}
+
+/* Scrollbar - Subtle & themed (NO CHANGE HERE) */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--primary-bg);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--border-color);
+    border-radius: 10px;
+    border: 2px solid var(--primary-bg);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--primary-accent);
+    border-color: var(--primary-accent-dark);
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    .calendar-container {
+        max-width: 95%;
+        margin: 10px;
+    }
+    .calendar-header {
+        /* Allow wrapping on very small screens if necessary, but try to keep things compact */
+        flex-wrap: wrap; 
+        justify-content: center;
+        gap: 10px; /* Space between wrapped items */
+        padding: 15px;
+    }
+    .month-year-display {
+        font-size: 1.3em; /* Slightly smaller for mobile */
+        width: 100%; /* Take full width on small screens for better centering */
+        margin-bottom: 5px; /* Add some space below */
+        order: 1; /* Make it appear first */
+    }
+    .nav-buttons {
+        order: 2; /* Nav buttons second */
+        justify-content: center; /* Center them */
+        width: 100%;
+    }
+    .action-buttons {
+        order: 3; /* Action buttons third */
+        justify-content: center; /* Center them */
+        width: 100%;
+        flex-wrap: wrap; /* Allow these buttons to wrap too */
+    }
+    .nav-btn, .today-btn, .add-event-btn {
+        font-size: 0.8em;
+        padding: 7px 10px;
+    }
+    .view-toggle {
+        margin: 0;
+        /* width: 100%; removed to let flex manage it */
+        flex: 1; /* Allow it to take available space */
+    }
+    .view-btn {
+        flex: 1; /* Distribute evenly */
+        font-size: 0.75em;
+        padding: 7px 8px;
+    }
+    .weekdays-header {
+        font-size: 0.8em;
+    }
+    .day-cell {
+        min-height: 60px;
+        padding: 8px;
+    }
+    .day-number {
+        font-size: 1em;
+    }
+    .event {
+        font-size: 0.7em;
+        padding: 3px 5px;
+    }
+    .modal-content {
+        padding: 20px;
+        max-width: 90%;
+    }
+    .modal-content h3 {
+        font-size: 1.5em;
+    }
+    .modal-content form input,
+    .modal-content form textarea,
+    .modal-content form button {
+        font-size: 0.9em;
+        padding: 8px;
+    }
+    #eventDetailsModal .modal-content {
+        padding: 25px;
+    }
+    #eventDetailsModal h3 {
+        font-size: 1.6em;
+    }
+    .details-info-row {
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+    .details-info-row i {
+        font-size: 1.1em;
+    }
+    .details-info-row span {
+        font-size: 0.9em;
+    }
+    .modal-actions {
+        flex-direction: column; /* Stack buttons on small screens */
+        gap: 10px;
+    }
+    .modal-action-btn {
+        width: 100%;
+        padding: 10px;
+    }
+}
+
+/* For animating content when view changes (e.g., month to week) */
+.days-grid {
+    /* Existing styles */
+    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.fade-out-content {
+    opacity: 0;
+    transform: scale(0.98); /* Slightly shrink as it fades out */
+}
+
+.fade-in-content {
+    opacity: 1;
+    transform: scale(1); /* Return to normal size */
+    /* No transition duration here, as it's handled by the base .days-grid */
+}
+
+/* For modal transitions */
+.modal {
+    /* Existing styles (background-color, backdrop-filter, display: none etc.) */
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Add transform for pop-in */
+    pointer-events: none; /* Prevent clicks when hidden */
+}
+
+.modal.modal-active {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto; /* Allow clicks when active */
+}
+
+/* For Today button highlight */
+.today-highlight {
+    animation: todayBtnHighlight 0.5s ease-out forwards;
+}
+
+@keyframes todayBtnHighlight {
+    0% {
+        box-shadow: 0 0 10px var(--today-bg);
+        border-color: var(--today-bg);
+        transform: scale(1.05);
+    }
+    50% {
+        box-shadow: 0 0 20px var(--today-bg);
+        border-color: var(--today-bg);
+        transform: scale(1);
+    }
+    100% {
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Revert to original shadow */
+        border-color: var(--border-color); /* Revert to original border */
+        transform: scale(1);
+    }
+}

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Modern Calendar</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Signika:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="calendar-container">
+        <header class="calendar-header">
+            <button id="prevMonthBtn" class="nav-btn"><i class="fas fa-chevron-left"></i></button>
+            <h2 id="currentMonthYear" class="month-year-display">July 2025</h2>
+            <button id="nextMonthBtn" class="nav-btn"><i class="fas fa-chevron-right"></i></button>
+            <div class="view-toggle">
+                <button id="monthViewBtn" class="view-btn active">Month</button>
+                <button id="weekViewBtn" class="view-btn">Week</button>
+                <button id="dayViewBtn" class="view-btn">Day</button>
+            </div>
+            <button id="todayBtn" class="today-btn">Today</button>
+            <button id="addEventBtn" class="add-event-btn"><i class="fas fa-plus"></i> Event</button>
+        </header>
+
+        <div class="calendar-body">
+            <div class="weekdays-header">
+                <div class="weekday">Sun</div>
+                <div class="weekday">Mon</div>
+                <div class="weekday">Tue</div>
+                <div class="weekday">Wed</div>
+                <div class="weekday">Thu</div>
+                <div class="weekday">Fri</div>
+                <div class="weekday">Sat</div>
+            </div>
+            <div class="days-grid" id="daysGrid">
+                </div>
+        </div>
+    </div>
+
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="closeAddEventModal">&times;</span>
+            <h3>Add New Event</h3>
+            <form id="eventForm">
+                <label for="eventTitle">Title:</label>
+                <input type="text" id="eventTitle" required>
+
+                <label for="eventDate">Date:</label>
+                <input type="date" id="eventDate" required>
+
+                <label for="eventTime">Time (Optional):</label>
+                <input type="time" id="eventTime">
+
+                <label for="eventDescription">Description (Optional):</label>
+                <textarea id="eventDescription"></textarea>
+
+                <button type="submit">Add Event</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="eventDetailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="closeDetailsModal">&times;</span>
+            <h3 id="detailsTitle">Event Details</h3>
+            <p><strong>Date:</strong> <span id="detailsDate"></span></p>
+            <p><strong>Time:</strong> <span id="detailsTime"></span></p>
+            <p><strong>Description:</strong> <span id="detailsDescription"></span></p>
+            <div class="modal-actions">
+                <button id="editEventBtn" class="modal-action-btn">Edit</button>
+                <button id="deleteEventBtn" class="modal-action-btn delete-btn">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
