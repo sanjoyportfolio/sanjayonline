@@ -42,15 +42,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const isProfilePage = document.body.classList.contains('profile-body');
   const isAuthPage = document.body.classList.contains('auth-body');
 
-  // Define session duration (12 hours in milliseconds)
-  const SESSION_DURATION = 12 * 60 * 60 * 1000; // 12 hours
+  // Define session duration (12 hours in milliseconds) - THIS WILL BE REMOVED FOR INDEFINITE SESSION
+  // const SESSION_DURATION = 12 * 60 * 60 * 1000; // 12 hours
 
   // --- Helper Functions for Session Management ---
   function clearUserSession() {
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('currentUser');
-    localStorage.removeItem('lastLoginTime');
-    // We can safely remove hasVisitedSite as its logic is now simpler
+    localStorage.removeItem('lastLoginTime'); // This can also be removed if session timeout is gone
     localStorage.removeItem('hasVisitedSite');
   }
 
@@ -98,51 +97,35 @@ document.addEventListener("DOMContentLoaded", () => {
   // This logic runs on every page load except for auth pages
   if (!isAuthPage) {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
-    const lastLoginTime = localStorage.getItem('lastLoginTime');
+    // const lastLoginTime = localStorage.getItem('lastLoginTime'); // Removed as session timeout is gone
     const currentUser = localStorage.getItem('currentUser');
-    // Removed hasVisitedSite from being checked here, as it was redundant for session validity
 
     // Log for debugging
     console.log('Page Load Check:');
     console.log('isLoggedIn:', isLoggedIn);
-    console.log('lastLoginTime:', lastLoginTime);
+    // console.log('lastLoginTime:', lastLoginTime); // Removed
     console.log('currentUser:', currentUser ? JSON.parse(currentUser).email : 'N/A');
 
-
-    if (isLoggedIn === 'true' && lastLoginTime && currentUser) {
-      const currentTime = Date.now();
-      const timeElapsed = currentTime - parseInt(lastLoginTime);
-
-      if (timeElapsed > SESSION_DURATION) {
-        // Session expired, force logout
-        console.log('Session expired. Logging out.');
-        clearUserSession();
-        showSessionExpiredAlert();
-        return; // Stop further execution
-      } else {
-        // Session is still active
-        console.log('Session active. Time remaining:', (SESSION_DURATION - timeElapsed) / (1000 * 60 * 60), 'hours');
-        if (isIndexPage) {
-          applyProfilePicToHero(); // Apply profile pic if on index page
-        }
-        // No need to set hasVisitedSite here anymore.
+    // --- MODIFICATION: Remove session timeout logic ---
+    if (isLoggedIn === 'true' && currentUser) {
+      // User is logged in, no session expiration check needed
+      console.log('Session active. User is logged in indefinitely.');
+      if (isIndexPage) {
+        applyProfilePicToHero(); // Apply profile pic if on index page
       }
     } else {
-      // Not logged in or essential session data missing, redirect to login
-      console.log('Not logged in or session data missing. Redirecting to login.');
+      // Not logged in or essential session data missing
+      console.log('Not logged in or session data missing.');
 
-      // IMPORTANT: Only redirect if it's NOT an auth page.
-      // Auth pages (login/register) are exceptions and should not redirect themselves.
+      // IMPORTANT: Only redirect if it's the profile page and not logged in.
+      // Index page should NOT redirect if not logged in. Auth pages are handled separately.
       if (isProfilePage) {
         // Profile page specifically requires login, so show alert and redirect
         showAccessDeniedAlert();
         return; // Stop further execution
-      } else if (isIndexPage) {
-        // If on the index page and not logged in, redirect to login
-        window.location.replace('login.html');
-        return; // Stop further execution for this page
       }
-      // No redirection if it's an auth page, or if it's another type of page that doesn't strictly require login
+      // MODIFICATION: No redirection for isIndexPage if not logged in.
+      // The user should simply see the index page without login features.
     }
   }
 
@@ -168,6 +151,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- Main Page Specifics (if on index.html) ---
   if (isIndexPage) {
+    // MODIFICATION: Call applyProfilePicToHero unconditionally if currentUser exists.
+    // This ensures that if a user is logged in, their profile pic shows up on index.html
+    // even if they landed there directly (e.g., from a fresh browser tab or after closing/reopening).
+    const currentUser = localStorage.getItem('currentUser');
+    if (currentUser) {
+      applyProfilePicToHero();
+    }
+
+
     const menuIcon = document.querySelector(".menu-icon i");
     const navLinks = document.querySelector(".nav-links"); // This is your mobile menu container
     const navbar = document.querySelector(".navbar");
@@ -458,12 +450,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (user) {
         localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('lastLoginTime', Date.now().toString()); // Set last login time
+        // localStorage.setItem('lastLoginTime', Date.now().toString()); // Removed: No more session timeout
         const currentUserData = { ...user
         };
         delete currentUserData.password; // Don't store password in currentUser
         localStorage.setItem('currentUser', JSON.stringify(currentUserData));
-        // Removed hasVisitedSite setting here, it's not strictly necessary for session.
 
         Swal.fire({
           icon: 'success',
@@ -600,15 +591,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // --- Function to load profile data into fields ---
     function loadProfileData() {
-      // FIX THE NAME AND EMAIL (as per previous instructions)
-      // DANGER: Hardcoding name and email will cause issues if you have multiple users.
-      // This should ideally come from currentUserData if you want dynamic user data.
-      // If you intend for this to be a static "Sanjay's profile" page, keep it.
-      // Assuming it's meant to be dynamic, use:
+      // It's crucial to use currentUserData for dynamic values if your system supports multiple users.
+      // Based on your comment, userNameInput and userEmailInput were hardcoded.
+      // I'm providing both options. If you want dynamic, uncomment the next two lines and comment out the hardcoded ones.
       // userNameInput.value = currentUserData.name || '';
       // userEmailInput.value = currentUserData.email || '';
+
       userNameInput.value = 'Sanjay Das'; // Keeping your hardcoded value for now
       userEmailInput.value = 'sanjay.das@example.com'; // Keeping your hardcoded value for now
+
 
       // Load other data from currentUserData
       profileDisplayPic.src = currentUserData.profilePic || 'assets/images/profile.png';
