@@ -552,7 +552,7 @@
   <script type="module">
     // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 
     // Your web app's Firebase configuration
@@ -581,29 +581,16 @@
       const linkToLogin = document.getElementById('linkToLogin');
       const authFormWrapper = document.querySelector('.auth-form-wrapper');
       const authToggleButtons = document.querySelector('.auth-toggle-buttons');
-      const loginEmailInput = document.getElementById('loginEmail'); // Added for login email validation
+      const loginEmailInput = document.getElementById('loginEmail');
       const registerEmailInput = document.getElementById('registerEmail');
-      const registerPasswordInput = document.getElementById('registerPassword'); // Correctly selected
+      const registerPasswordInput = document.getElementById('registerPassword');
       const passwordStrengthBar = document.getElementById('passwordStrengthBar');
       const passwordStrengthStatus = document.getElementById('passwordStrengthStatus');
       const passwordStrengthEmoji = passwordStrengthStatus.querySelector('.emoji');
       const passwordStrengthText = passwordStrengthStatus.querySelector('.text');
 
-      // --- Firebase Auth State Observer ---
-      // This is crucial for checking if a user is already logged in.
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          // User is signed in, redirect to profile page
-          console.log("User is already logged in:", user.uid);
-          window.location.href = 'profile.html';
-        } else {
-          // No user is signed in. Allow them to see the login/register forms.
-          console.log("No user is logged in.");
-          // Initial height setting if no user is logged in
-          setAuthFormWrapperHeight(loginForm);
-        }
-      });
-
+      // Initial height setting for the login form when the page loads
+      setAuthFormWrapperHeight(loginForm);
 
       // Function to dynamically adjust wrapper height based on active form
       function setAuthFormWrapperHeight(form) {
@@ -660,8 +647,6 @@
       });
 
       // --- Email Validation Function ---
-      // This regex is more robust for general email validation but might not catch all edge cases.
-      // Firebase's internal validation is the ultimate check.
       function isValidEmail(email) {
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         return emailRegex.test(email);
@@ -678,25 +663,24 @@
           return { text: '', emoji: '', className: '', score: 0 };
         }
 
-        // Criteria for scoring
-        if (password.length >= 8) score += 1; // Minimum length for security
-        if (password.length >= 12) score += 1; // Stronger length
-        if (/[A-Z]/.test(password)) score += 1; // Uppercase letters
-        if (/[a-z]/.test(password)) score += 1; // Lowercase letters
-        if (/\d/.test(password)) score += 1; // Numbers
-        if (/[^A-Za-z0-9]/.test(password)) score += 1; // Special characters
+        if (password.length >= 8) score += 1;
+        if (password.length >= 12) score += 1;
+        if (/[A-Z]/.test(password)) score += 1;
+        if (/[a-z]/.test(password)) score += 1;
+        if (/\d/.test(password)) score += 1;
+        if (/[^A-Za-z0-9]/.test(password)) score += 1;
 
         if (score < 3) {
           text = 'Weak';
-          emoji = '🙁'; // Frowning face
+          emoji = '🙁';
           className = 'weak';
         } else if (score < 5) {
           text = 'Good';
-          emoji = '😊'; // Smiling face
+          emoji = '😊';
           className = 'good';
         } else {
           text = 'Strong';
-          emoji = '💪'; // Flexed biceps (strength)
+          emoji = '💪';
           className = 'strong';
         }
 
@@ -711,16 +695,14 @@
         passwordStrengthText.textContent = strength.text;
         passwordStrengthEmoji.textContent = strength.emoji;
 
-        // Remove previous classes and add the new one
-        passwordStrengthBar.className = 'password-strength-bar'; // Reset
+        passwordStrengthBar.className = 'password-strength-bar';
         passwordStrengthBar.classList.add(strength.className);
 
-        passwordStrengthStatus.className = 'password-strength-status'; // Reset
+        passwordStrengthStatus.className = 'password-strength-status';
         passwordStrengthStatus.classList.add(strength.className);
 
-        // If password is empty, hide the bar and text
         if (password.length === 0) {
-          passwordStrengthBar.style.width = '0%'; // Explicitly reset width
+          passwordStrengthBar.style.width = '0%';
           passwordStrengthText.textContent = '';
           passwordStrengthEmoji.textContent = '';
           passwordStrengthStatus.className = 'password-strength-status';
@@ -735,8 +717,8 @@
             userId: userId,
             userName: userName,
             email: email,
-            activityType: activityType, // e.g., 'login', 'register'
-            timestamp: serverTimestamp() // Get server timestamp from Firestore
+            activityType: activityType,
+            timestamp: serverTimestamp()
           });
           console.log("Activity logged successfully!");
         } catch (error) {
@@ -747,7 +729,7 @@
       // --- Handle Login Form Submission (using Firebase) ---
       loginForm.addEventListener('submit', async function(e) {
         e.preventDefault();
-        const email = loginEmailInput.value; // Use the grabbed element
+        const email = loginEmailInput.value;
         const password = document.getElementById('loginPassword').value;
 
         if (!isValidEmail(email)) {
@@ -768,7 +750,6 @@
 
           localStorage.setItem('currentUserDisplayName', user.displayName || user.email);
 
-          // Log activity after successful login
           await logUserActivity(user.uid, user.displayName || 'N/A', 'login', user.email);
 
           Swal.fire({
@@ -782,7 +763,7 @@
             color: getComputedStyle(document.documentElement).getPropertyValue('--text-color'),
             confirmButtonColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color')
           }).then(() => {
-            window.location.href = 'profile.html'; // Redirect to profile or dashboard
+            window.location.href = 'profile.html'; // Redirect only after successful login
           });
         } catch (error) {
           let errorMessage = 'An unknown error occurred. Please try again.';
@@ -817,7 +798,7 @@
         e.preventDefault();
         const name = document.getElementById('registerName').value.trim();
         const email = registerEmailInput.value.trim();
-        const password = registerPasswordInput.value; // Correctly referencing the input field
+        const password = registerPasswordInput.value;
         const confirmPassword = document.getElementById('confirmPassword').value;
 
         if (!name || !email || !password || !confirmPassword) {
@@ -866,7 +847,7 @@
             color: getComputedStyle(document.documentElement).getPropertyValue('--text-color'),
             confirmButtonColor: 'var(--primary-color)'
           });
-          return; // This line prevents registration with a weak password.
+          return;
         }
 
         try {
@@ -877,24 +858,17 @@
             displayName: name
           });
 
-          // Log activity after successful registration
           await logUserActivity(user.uid, name, 'register', user.email);
 
           Swal.fire({
             icon: 'success',
             title: 'Registration Successful!',
-            text: 'Your account has been created. You can now log in.',
+            text: 'Your account has been created. Redirecting to profile...',
             background: getComputedStyle(document.documentElement).getPropertyValue('--card-bg'),
             color: getComputedStyle(document.documentElement).getPropertyValue('--text-color'),
             confirmButtonColor: 'var(--primary-color)'
           }).then(() => {
-            document.getElementById('loginEmail').value = email;
-            document.getElementById('loginPassword').value = '';
-            // After successful registration, instead of showing login form,
-            // we should directly redirect to profile.html if they are now logged in.
-            // The onAuthStateChanged listener will handle this.
-            // showAuthForm('login'); // Removed this line
-            window.location.href = 'profile.html';
+            window.location.href = 'profile.html'; // Redirect only after successful registration
           });
         } catch (error) {
           let errorMessage = 'An unknown error occurred during registration.';
