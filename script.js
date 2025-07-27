@@ -50,8 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('currentUser');
     localStorage.removeItem('lastLoginTime');
-    // Keep 'hasVisitedSite' only for specific cases, or handle it differently.
-    // For now, clearing it here means the next visit starts fresh for login checks.
+    // We can safely remove hasVisitedSite as its logic is now simpler
     localStorage.removeItem('hasVisitedSite');
   }
 
@@ -101,14 +100,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     const lastLoginTime = localStorage.getItem('lastLoginTime');
     const currentUser = localStorage.getItem('currentUser');
-    const hasVisitedSite = localStorage.getItem('hasVisitedSite'); // Get the hasVisitedSite flag
+    // Removed hasVisitedSite from being checked here, as it was redundant for session validity
 
     // Log for debugging
     console.log('Page Load Check:');
     console.log('isLoggedIn:', isLoggedIn);
     console.log('lastLoginTime:', lastLoginTime);
     console.log('currentUser:', currentUser ? JSON.parse(currentUser).email : 'N/A');
-    console.log('hasVisitedSite:', hasVisitedSite);
 
 
     if (isLoggedIn === 'true' && lastLoginTime && currentUser) {
@@ -127,25 +125,24 @@ document.addEventListener("DOMContentLoaded", () => {
         if (isIndexPage) {
           applyProfilePicToHero(); // Apply profile pic if on index page
         }
-        // If logged in and session is active, ensure hasVisitedSite is true
-        localStorage.setItem('hasVisitedSite', 'true');
+        // No need to set hasVisitedSite here anymore.
       }
     } else {
       // Not logged in or essential session data missing, redirect to login
       console.log('Not logged in or session data missing. Redirecting to login.');
 
-      // Only redirect if it's NOT an auth page and hasVisitedSite is not true (meaning they haven't visited since login)
-      // This prevents immediate redirects if the user just explicitly logged out or session expired.
-      if (!isAuthPage) {
-        // If not logged in and not on the login page, redirect.
-        // We ensure profile page always redirects if not logged in.
-        if (isProfilePage) {
-          showAccessDeniedAlert();
-        } else {
-          window.location.replace('login.html');
-        }
+      // IMPORTANT: Only redirect if it's NOT an auth page.
+      // Auth pages (login/register) are exceptions and should not redirect themselves.
+      if (isProfilePage) {
+        // Profile page specifically requires login, so show alert and redirect
+        showAccessDeniedAlert();
+        return; // Stop further execution
+      } else if (isIndexPage) {
+        // If on the index page and not logged in, redirect to login
+        window.location.replace('login.html');
         return; // Stop further execution for this page
       }
+      // No redirection if it's an auth page, or if it's another type of page that doesn't strictly require login
     }
   }
 
@@ -466,7 +463,7 @@ document.addEventListener("DOMContentLoaded", () => {
         };
         delete currentUserData.password; // Don't store password in currentUser
         localStorage.setItem('currentUser', JSON.stringify(currentUserData));
-        localStorage.setItem('hasVisitedSite', 'true'); // <--- CRUCIAL FIX: Set hasVisitedSite on successful login
+        // Removed hasVisitedSite setting here, it's not strictly necessary for session.
 
         Swal.fire({
           icon: 'success',
@@ -479,7 +476,7 @@ document.addEventListener("DOMContentLoaded", () => {
           color: swalColor
         }).then(() => {
           // *** Crucial Fix: Use replace to prevent back button issues and ensure clean history ***
-          window.location.replace('index.html');
+          window.location.replace('index.html'); // Redirect to your desired post-login page
         });
       } else {
         Swal.fire({
@@ -604,8 +601,14 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- Function to load profile data into fields ---
     function loadProfileData() {
       // FIX THE NAME AND EMAIL (as per previous instructions)
-      userNameInput.value = 'Sanjay Das'; // Fixed Name
-      userEmailInput.value = 'sanjay.das@example.com'; // Fixed Email
+      // DANGER: Hardcoding name and email will cause issues if you have multiple users.
+      // This should ideally come from currentUserData if you want dynamic user data.
+      // If you intend for this to be a static "Sanjay's profile" page, keep it.
+      // Assuming it's meant to be dynamic, use:
+      // userNameInput.value = currentUserData.name || '';
+      // userEmailInput.value = currentUserData.email || '';
+      userNameInput.value = 'Sanjay Das'; // Keeping your hardcoded value for now
+      userEmailInput.value = 'sanjay.das@example.com'; // Keeping your hardcoded value for now
 
       // Load other data from currentUserData
       profileDisplayPic.src = currentUserData.profilePic || 'assets/images/profile.png';
@@ -674,8 +677,9 @@ document.addEventListener("DOMContentLoaded", () => {
           currentUserData.profilePic = selectedGalleryPic;
 
           let users = JSON.parse(localStorage.getItem('users')) || [];
-          // Find user by their email (which is fixed to 'sanjay.das@example.com')
-          const userIndex = users.findIndex(u => u.email === 'sanjay.das@example.com');
+          // Find user by their email (which is hardcoded to 'sanjay.das@example.com' on this page)
+          // If you ever want multiple users, this find mechanism needs to use the dynamic currentUserData.email
+          const userIndex = users.findIndex(u => u.email === (currentUserData.email || 'sanjay.das@example.com')); // Use currentUserData.email primarily
           if (userIndex !== -1) {
             users[userIndex].profilePic = selectedGalleryPic;
             localStorage.setItem('users', JSON.stringify(users));
@@ -715,7 +719,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const swalColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
         const swalConfirmButtonColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
 
-        // Update currentUserData directly (since name/email are fixed)
+        // Update currentUserData directly (since name/email are fixed for now)
         currentUserData.dob = newDob;
         currentUserData.phone = newPhone;
         currentUserData.address = newAddress;
@@ -723,7 +727,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         let users = JSON.parse(localStorage.getItem('users')) || [];
         // Find user by fixed email and update their data
-        const userIndex = users.findIndex(u => u.email === 'sanjay.das@example.com');
+        const userIndex = users.findIndex(u => u.email === (currentUserData.email || 'sanjay.das@example.com')); // Use currentUserData.email primarily
         if (userIndex !== -1) {
           users[userIndex] = {
             ...users[userIndex], // Keep existing properties
